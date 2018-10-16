@@ -4,7 +4,7 @@
     <nav class="navbar navbar-static-top">
       <div class="container-fluid">
         <div class="navbar-header">
-          {{ link_to(null, 'class': 'navbar-brand', website.name)}}
+          {{ link_to(null, 'class': 'navbar-brand', "VökuróLTE")}}
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
             <i class="fa fa-bars"></i>
           </button>
