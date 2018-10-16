@@ -9,7 +9,7 @@
 
 	<div class="form-group">
 		<label for="profileId">Profile</label>
-		{{ select('profileId', profiles, 'using': ['id', 'name'], 'class': 'form-control', 'useEmpty': true, 'emptyText': '...', 'emptyValue': '') }}
+		{{ select('profileId', profiles, 'using': ['id', 'name'], 'class': 'form-control', 'useEmpty': true, 'emptyText': '...', 'emptyValue': '0') }}
 		{{ submit_button('Search', 'class': 'btn btn-primary', 'name' : 'search') }}
 	</div>
 
