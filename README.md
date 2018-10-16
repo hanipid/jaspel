@@ -44,7 +44,9 @@ curl -s http://getcomposer.org/installer | php
 Run the composer installer:
 
 ```bash
-cd vokuro
+cd vokurolte
+php composer.phar install
+cd public
 php composer.phar install
 ```
 
