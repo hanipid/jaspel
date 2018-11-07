@@ -1,4 +1,4 @@
-<body class="skin-blue-light layout-top-nav">
+<body class="skin-blue layout-top-nav">
 
   <header class="main-header">
     <nav class="navbar navbar-static-top">

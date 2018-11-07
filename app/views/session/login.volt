@@ -19,8 +19,8 @@
 		</div>
 
 		<div align="center" class="checkbox remember">
-			{{ form.render('remember') }}
-			{{ form.label('remember') }}
+			{#{ form.render('remember') }}
+			{{ form.label('remember') }#}
 		</div>
 
 		{{ form.render('csrf', ['value': security.getToken()]) }}

@@ -1,5 +1,5 @@
 <?php
-namespace Vokuro\Controllers;
+namespace Jaspel\Controllers;
 
 /**
  * Display the terms and conditions page.

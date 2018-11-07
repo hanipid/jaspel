@@ -1,11 +1,11 @@
 <?php
-namespace Vokuro\Models;
+namespace Jaspel\Models;
 
 use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\Relation;
 
 /**
- * Vokuro\Models\Profiles
+ * Jaspel\Models\Profiles
  * All the profile levels in the application. Used in conjenction with ACL lists
  */
 class Profiles extends Model

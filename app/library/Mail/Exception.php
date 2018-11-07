@@ -1,5 +1,5 @@
 <?php
-namespace Vokuro\Mail;
+namespace Jaspel\Mail;
 
 class Exception extends \Exception
 {

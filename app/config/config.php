@@ -9,7 +9,7 @@ return new Config([
         'host' => '127.0.0.1',
         'username' => 'root',
         'password' => '',
-        'dbname' => 'vokuro',
+        'dbname' => 'vokuro_ori',
         'charset'     => 'utf8',
     ],
     'application' => [

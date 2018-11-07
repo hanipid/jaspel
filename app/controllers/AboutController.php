@@ -1,5 +1,5 @@
 <?php
-namespace Vokuro\Controllers;
+namespace Jaspel\Controllers;
 
 /**
  * Display the "About" page.

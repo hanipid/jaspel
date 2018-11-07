@@ -30,13 +30,13 @@
     <div class="col-md-4">
       <h3>Example addresses</h3>
       <address>
-        <strong>Vokuri, Inc.</strong><br>
+        <strong>Vokuro, Inc.</strong><br>
         456 Infinite Loop, Suite 101<br>
         <abbr title="Phone">P:</abbr> (123) 456-7890
       </address>
       <address>
         <strong>Full Name</strong><br>
-        <a href="mailto:#">vokuro@phalconphp.com</a>
+        <a href="mailto:#">jaspel@phalconphp.com</a>
       </address>
     </div>
 

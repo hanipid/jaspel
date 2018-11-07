@@ -1,15 +1,15 @@
 <?php
-namespace Vokuro\Auth;
+namespace Jaspel\Auth;
 
 use Phalcon\Mvc\User\Component;
-use Vokuro\Models\Users;
-use Vokuro\Models\RememberTokens;
-use Vokuro\Models\SuccessLogins;
-use Vokuro\Models\FailedLogins;
+use Jaspel\Models\Users;
+use Jaspel\Models\RememberTokens;
+use Jaspel\Models\SuccessLogins;
+use Jaspel\Models\FailedLogins;
 
 /**
- * Vokuro\Auth\Auth
- * Manages Authentication/Identity Management in Vokuro
+ * Jaspel\Auth\Auth
+ * Manages Authentication/Identity Management in Jaspel
  */
 class Auth extends Component
 {
@@ -50,14 +50,15 @@ class Auth extends Component
         $this->session->set('auth-identity', [
             'id' => $user->id,
             'name' => $user->name,
-            'profile' => $user->profile->name
+            'profile' => $user->profile->name,
+            'profilesId' => $user->profilesId
         ]);
     }
 
     /**
      * Creates the remember me environment settings the related cookies and generating tokens
      *
-     * @param \Vokuro\Models\Users $user
+     * @param \Jaspel\Models\Users $user
      * @throws Exception
      */
     public function saveSuccessLogin($user)
@@ -112,7 +113,7 @@ class Auth extends Component
     /**
      * Creates the remember me environment settings the related cookies and generating tokens
      *
-     * @param \Vokuro\Models\Users $user
+     * @param \Jaspel\Models\Users $user
      */
     public function createRememberEnvironment(Users $user)
     {
@@ -199,7 +200,7 @@ class Auth extends Component
     /**
      * Checks if the user is banned/inactive/suspended
      *
-     * @param \Vokuro\Models\Users $user
+     * @param \Jaspel\Models\Users $user
      * @throws Exception
      */
     public function checkUserFlags(Users $user)
@@ -285,7 +286,7 @@ class Auth extends Component
     /**
      * Get the entity related to user in the active identity
      *
-     * @return \Vokuro\Models\Users
+     * @return \Jaspel\Models\Users
      * @throws Exception
      */
     public function getUser()

@@ -1,35 +1,40 @@
 
 <form class="form" method="post" autocomplete="off">
 
-<ul class="pager">
-    <li class="previous pull-left">
-        {{ link_to("users", "&larr; Go Back") }}
-    </li>
-    <li class="pull-right">
-        {{ submit_button("Save", "class": "btn btn-success") }}
-    </li>
-</ul>
+  {{ content() }}
 
-{{ content() }}
-
-<div class="col-md-4">
-    <h2>Create a User</h2>
-
-    <div class="form-group">
-        <label for="name">Name</label>
-        {{ form.render("name") }}
+  <div class="box box-primary">
+    <div class="box-header with-border">
+      <h3 class="box-title">Create a User</h3>
+      <div class="box-tools pull-right">
+      </div>
     </div>
+    <!-- /.box-header -->
+    <!-- form start -->
+    <form role="form">
+      <div class="box-body">
+        <div class="form-group">
+          <label for="name">Name</label>
+          {{ form.render("name") }}
+        </div>
 
-    <div class="form-group">
-        <label for="email">E-Mail</label>
-        {{ form.render("email") }}
-    </div>
+        <div class="form-group">
+          <label for="email">E-Mail</label>
+          {{ form.render("email") }}
+        </div>
 
-    <div class="form-group">
-        <label for="profilesId">Profile</label>
-        {{ form.render("profilesId") }}
-    </div>
+        <div class="form-group">
+          <label for="profilesId">Profile</label>
+          {{ form.render("profilesId") }}
+        </div>
+      </div>
+      <!-- /.box-body -->
 
-</div>
+      <div class="box-footer">
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+    </form>
+  </div>
+  <!-- /.box -->
 
 </form>

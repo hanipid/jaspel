@@ -1,5 +1,5 @@
 <?php
-namespace Vokuro\Auth;
+namespace Jaspel\Auth;
 
 class Exception extends \Exception
 {

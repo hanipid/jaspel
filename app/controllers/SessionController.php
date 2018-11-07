@@ -1,13 +1,13 @@
 <?php
 
-namespace Vokuro\Controllers;
+namespace Jaspel\Controllers;
 
-use Vokuro\Forms\LoginForm;
-use Vokuro\Forms\SignUpForm;
-use Vokuro\Forms\ForgotPasswordForm;
-use Vokuro\Auth\Exception as AuthException;
-use Vokuro\Models\Users;
-use Vokuro\Models\ResetPasswords;
+use Jaspel\Forms\LoginForm;
+use Jaspel\Forms\SignUpForm;
+use Jaspel\Forms\ForgotPasswordForm;
+use Jaspel\Auth\Exception as AuthException;
+use Jaspel\Models\Users;
+use Jaspel\Models\ResetPasswords;
 
 /**
  * Controller used handle non-authenticated session actions like login/logout, user signup, and forgotten passwords

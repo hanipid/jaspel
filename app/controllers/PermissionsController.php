@@ -1,8 +1,8 @@
 <?php
-namespace Vokuro\Controllers;
+namespace Jaspel\Controllers;
 
-use Vokuro\Models\Profiles;
-use Vokuro\Models\Permissions;
+use Jaspel\Models\Profiles;
+use Jaspel\Models\Permissions;
 
 /**
  * View and define permissions for the various profile levels.
@@ -10,57 +10,83 @@ use Vokuro\Models\Permissions;
 class PermissionsController extends ControllerBase
 {
 
-    /**
-     * View the permissions for a profile level, and change them if we have a POST.
-     */
-    public function indexAction()
-    {
-        $this->view->setTemplateBefore('private');
+  public $privateResourcesFile = APP_PATH . '/config/privateResources.php';
 
-        if ($this->request->isPost()) {
+  /**
+   * View the permissions for a profile level, and change them if we have a POST.
+   */
+  public function indexAction()
+  {
+    $this->view->setTemplateBefore('private');
 
-            // Validate the profile
-            $profile = Profiles::findFirstById($this->request->getPost('profileId'));
+    if ($this->request->isPost()) {
 
-            if ($profile) {
+      // Validate the profile
+      $profile = Profiles::findFirstById($this->request->getPost('profileId'));
 
-                if ($this->request->hasPost('permissions') && $this->request->hasPost('submit')) {
+      if ($profile) {
 
-                    // Deletes the current permissions
-                    $profile->getPermissions()->delete();
+        if ($this->request->hasPost('permissions') && $this->request->hasPost('submit')) {
 
-                    // Save the new permissions
-                    foreach ($this->request->getPost('permissions') as $permission) {
+          // Deletes the current permissions
+          $profile->getPermissions()->delete();
 
-                        $parts = explode('.', $permission);
+          // Save the new permissions
+          foreach ($this->request->getPost('permissions') as $permission) {
 
-                        $permission = new Permissions();
-                        $permission->profilesId = $profile->id;
-                        $permission->resource = $parts[0];
-                        $permission->action = $parts[1];
+            $parts = explode('.', $permission);
 
-                        $permission->save();
-                    }
+            $permission = new Permissions();
+            $permission->profilesId = $profile->id;
+            $permission->resource = $parts[0];
+            $permission->action = $parts[1];
 
-                    $this->flash->success('Permissions were updated with success');
-                }
+            $permission->save();
+          }
 
-                // Rebuild the ACL with
-                $this->acl->rebuild();
-
-                // Pass the current permissions to the view
-                $this->view->permissions = $this->acl->getPermissions($profile);
-            }
-
-            $this->view->profile = $profile;
+          $this->flash->success('Permissions were updated with success');
         }
 
-        // Pass all the active profiles
-        $this->view->profiles = Profiles::find([
-            'active = :active:',
-            'bind' => [
-                'active' => 'Y'
-            ]
-        ]);
+        // Rebuild the ACL with
+        $this->acl->rebuild();
+
+        // Pass the current permissions to the view
+        $this->view->permissions = $this->acl->getPermissions($profile);
+      }
+
+      $this->view->profile = $profile;
     }
+
+    // Pass all the active profiles
+    $this->view->profiles = Profiles::find([
+      'active = :active:',
+      'bind' => [
+        'active' => 'Y'
+      ]
+    ]);
+
+    $this->view->fileContent = file_get_contents($this->privateResourcesFile);
+  }
+
+  public function editAction()
+  {
+    if ($this->request->isPost()) {
+
+      $content = $this->request->getPost("content");
+      if (file_put_contents($this->privateResourcesFile, $content) === false) {
+        $result = array(
+          "saved" => false,
+          "content" => $content
+        );
+      } else {
+        $result = array(
+          "saved" => true,
+          "content" => $content
+        );
+      }
+
+      $content = json_encode($result);
+      $this->response->setContent($content);
+    }
+  }
 }

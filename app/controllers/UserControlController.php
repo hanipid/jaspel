@@ -1,8 +1,8 @@
 <?php
-namespace Vokuro\Controllers;
+namespace Jaspel\Controllers;
 
-use Vokuro\Models\EmailConfirmations;
-use Vokuro\Models\ResetPasswords;
+use Jaspel\Models\EmailConfirmations;
+use Jaspel\Models\ResetPasswords;
 
 /**
  * UserControlController

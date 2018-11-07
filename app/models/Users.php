@@ -1,12 +1,12 @@
 <?php
-namespace Vokuro\Models;
+namespace Jaspel\Models;
 
 use Phalcon\Mvc\Model;
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\Uniqueness;
 
 /**
- * Vokuro\Models\Users
+ * Jaspel\Models\Users
  * All the users registered in the application
  */
 class Users extends Model

@@ -1,5 +1,5 @@
 <?php
-namespace Vokuro\Forms;
+namespace Jaspel\Forms;
 
 use Phalcon\Forms\Form;
 use Phalcon\Forms\Element\Text;

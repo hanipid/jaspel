@@ -1,5 +1,5 @@
 <?php
-namespace Vokuro\Models;
+namespace Jaspel\Models;
 
 use Phalcon\Mvc\Model;
 
