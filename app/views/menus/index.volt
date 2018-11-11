@@ -37,7 +37,7 @@
                   {% if menu_item.parent == 0 %}
                     <i class="fa fa-arrows"></i>
                   {% endif %}
-                  {{ menu_item.nama }} <small><i>{{ menu_item.controller }}</i></small>
+                  <strong>{{ menu_item.nama }}</strong> <small><i>{{ menu_item.controller }}</i></small>
                 </div>
 
                 <div class="col-md-4">

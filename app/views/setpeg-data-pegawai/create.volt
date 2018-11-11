@@ -212,6 +212,11 @@
           </div>
 
           <div class="form-group">
+            <label for="namaBank">Nama Bank</label>
+            {{ text_field("namaBank", "class": "form-control") }}
+          </div>
+
+          <div class="form-group">
             <label for="noRekening">Nomor Rekening</label>
             {{ text_field("noRekening", "class": "form-control") }}
           </div>

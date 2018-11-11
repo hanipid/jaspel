@@ -1,8 +1,8 @@
 {{ content() }}
 
 <div class="row">
-	<form method="post" action="">
-		<div class="col-md-6">
+	<div class="col-md-6">
+		<form method="post" action="">
 		  <div class="box box-primary">
 		    <div class="box-header with-border">
 		      <h3 class="box-title">Klaim</h3>
@@ -41,9 +41,99 @@
 		    </div>
 		  </div>
 		  <!-- /.box -->
-		</div>
-		<!-- /.col-md-6 -->
-	</form>
+		</form>
+	</div>
+	<!-- /.col-md-6 -->
+
+	<div class="col-md-6">
+	  <div class="box box-primary">
+	    <div class="box-header with-border">
+	      <h3 class="box-title">Upload</h3>
+	      <div class="box-tools pull-right">
+	      </div>
+	    </div>
+	    <!-- /.box-header -->
+
+	    <div class="box-body" style="max-height:371px; overflow: auto;">
+	    	
+	    	<table class="table table-hover table-striped">
+	    		<thead>
+	    			<tr>
+	    				<th>No.</th>
+	    				<th>Nama Pegawai</th>
+	    				<th>NIP</th>
+	    				<th>No. Rek.</th>
+	    				<th>Jumlah Penerimaan</th>
+	    			</tr>
+	    		</thead>
+	    		<tbody>
+	    			<tr>
+	    				<td>1.</td>
+	    				<td>{{ link_to("#", "Dr. MUHDAHANI, Sp.M.", "data-toggle": "modal", "data-target": "#modalDetailUpload") }}</td>
+	    				<td>19580828 198509 1 002</td>
+	    				<td>0143250121</td>
+	    				<td>  1,910,346</td>
+	    			</tr>
+	    		</tbody>
+	    	</table>
+
+	    	<div class="modal fade" id="modalDetailUpload">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Detail Upload</h4>
+              </div>
+              <div class="modal-body">
+                <div class="form-group">
+                	<label>Nama</label>
+                	Dr. MUHDAHANI, Sp.M.
+                </div>
+                <div class="form-group">
+                	<label>Golongan</label>
+                	IV
+                </div>
+                <div class="form-group">
+                	<label>Index</label>
+                	381
+                </div>
+                <div class="form-group">
+                	<label>JPU-BPJS</label>
+                	 2,247,466 
+                </div>
+                <div class="form-group">
+                	<label>JPL-BPJS</label>
+                	-
+                </div>
+                <div class="form-group">
+                	<label>Jumlah</label>
+                	 2,247,466 
+                </div>
+                <div class="form-group">
+                	<label>Pajak</label>
+                	 337,120 
+                </div>
+                <div class="form-group">
+                	<label>Jumlah Diterima</label>
+                	 1,910,346 
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+            <!-- /.modal-content -->
+          </div>
+          <!-- /.modal-dialog -->
+        </div>
+
+	    </div>
+	    <!-- /.box-body -->
+	  </div>
+	  <!-- /.box -->
+	</div>
+	<!-- /.col-md-6 -->
 </div>
 
 
