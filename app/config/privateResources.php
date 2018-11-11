@@ -103,6 +103,11 @@ return new Config([
       'delete',
       'createKlaim',
       'createPesan',
+    ],
+    
+//     DASHBOARD
+    'dashboard-instalasi' => [
+      'index'
     ]
   ]
 ]);
