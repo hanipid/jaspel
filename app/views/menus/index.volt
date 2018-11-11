@@ -37,7 +37,7 @@
                   {% if menu_item.parent == 0 %}
                     <i class="fa fa-arrows"></i>
                   {% endif %}
-                  {{ menu_item.nama }} {#- {{ menu_item.sort }}#}
+                  {{ menu_item.nama }} <small><i>{{ menu_item.controller }}</i></small>
                 </div>
 
                 <div class="col-md-4">
@@ -65,6 +65,10 @@
         {{ print_menu_level(root_menu_items) }}
       </div>
       <!-- /.box-body -->
+
+      <div class="box-footer">
+        {{ link_to("menus", "Refresh", "class": "btn btn-primary") }}
+      </div>
     </form>
   </div>
   <!-- /.box -->

@@ -31,17 +31,78 @@ return new Config([
       'delete',
       'order'
     ],
-    'dataGolongan' => [
+    // SETTING PEGAWAI
+    'setpeg-data-pegawai' => [
       'index',
       'create',
       'edit',
       'delete'
     ],
-    'dataPegawai' => [
+    'setpeg-data-golongan' => [
       'index',
       'create',
       'edit',
       'delete'
+    ],
+    // SETTING JASPEL
+    'setjas-jenis-jaspel' => [
+      'index',
+      'create',
+      'edit',
+      'delete'
+    ],
+    'setjas-persentase-jaspel' => [
+      'index',
+      'create',
+      'edit',
+      'delete'
+    ],
+    'setjas-persentase-direksi' => [
+      'index',
+      'create',
+      'edit',
+      'delete'
+    ],
+    'setjas-persentase-manajemen' => [
+      'index',
+      'create',
+      'edit',
+      'delete'
+    ],
+    'setjas-instalasi' => [
+      'index',
+      'create',
+      'edit',
+      'delete',
+      'createPelayanan',
+      'editPelayanan',
+      'deletePelayanan'
+    ],
+	// Setting Poli
+    'setins-pengajuan-jaspel' => [
+      'index',
+      'create',
+      'edit',
+      
+      'createPendapatan',
+      
+      'createDirect',
+      
+      'createSplit'
+    ],
+    'setins-pelayanan' => [
+      'index',
+      'create',
+      'edit',
+      'delete'
+    ],
+    'pengajuan-jaspel' => [
+      'index',
+      'create',
+      'edit',
+      'delete',
+      'createKlaim',
+      'createPesan',
     ]
   ]
 ]);

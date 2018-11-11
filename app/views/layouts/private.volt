@@ -113,13 +113,13 @@ desired effect
                 {# Buat menu #}
                 {% if menu_item.controller == dispatcher.getControllerName() %}
                   <li class="active">
-                    <a href="{{ url(menu_item.url) }}"><i class="fa fa-circle-o"></i> {{ menu_item.nama }}</a>
+                    <a href="{{ url(menu_item.url) }}"><i class="fa fa-circle"></i> {{ menu_item.nama }}</a>
                 {% elseif is_parents is true %}
                   
                   {% if is_ok2 %}
                     {% if dispatcher.getControllerName() == menu_item.isThis(menu_item.id,dispatcher.getControllerName()) %}
                       <li class="treeview active">
-                        <a href="{{ url(menu_item.url) }}"><i class="fa fa-circle-o"></i> {{ menu_item.nama }} <i class="fa fa-angle-left pull-right"></i></a>
+                        <a href="{{ url(menu_item.url) }}"><i class="fa fa-circle"></i> {{ menu_item.nama }} <i class="fa fa-angle-left pull-right"></i></a>
                         <ul class="treeview-menu" style="display: block">
                     {% else %}
                       <li class="treeview">

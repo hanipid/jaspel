@@ -1,7 +1,5 @@
 {{ content() }}
 
-{##}
-
 <div class="col-md-12">
   <div class="box box-primary">
     <div class="box-header with-border">

@@ -33,11 +33,11 @@ class ProfilesController extends ControllerBase
     $profiles = Profiles::find();
     if (count($profiles) == 0) {
 
-      $this->flash->notice("The search did not find any profiles");
+      $this->flashSession->notice("The search did not find any profiles");
 
-      return $this->dispatcher->forward([
-        "action" => "index"
-      ]);
+      // return $this->dispatcher->forward([
+      //   "action" => "index"
+      // ]);
     }
 
     $paginator = new Paginator([
