@@ -284,3 +284,23 @@
   </form>
 
 </div> <!-- /.col-md-6 -->
+
+<div class="col-md-6">
+  <div class="box box-primary">
+    <div class="box-header with-border">
+      <h3 class="box-title">Detail Pendapatan Jaspel</h3>
+      <div class="box-tools pull-right">
+
+      </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+      <ol>
+        <li><a href="!#">Periode April 2018</a></li>
+        <li><a href="!#">Periode Maret 2018</a></li>
+      </ol>
+    </div>
+    <!-- /.box-body -->
+  </div>
+  <!-- /.box -->
+</div>

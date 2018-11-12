@@ -15,6 +15,7 @@
     {{ javascript_include("vendor/almasaeed2010/adminlte/bower_components/jquery/dist/jquery.min.js") }}
     {{ javascript_include("vendor/almasaeed2010/adminlte/bower_components/jquery-ui/jquery-ui.min.js") }}
     {{ javascript_include("vendor/almasaeed2010/adminlte/bower_components/bootstrap/dist/js/bootstrap.min.js") }}
+    {{ javascript_include("vendor/almasaeed2010/adminlte/bower_components/jquery-slimscroll/jquery.slimscroll.min.js") }}
     {{ javascript_include("vendor/almasaeed2010/adminlte/dist/js/adminlte.min.js") }}
   </head>
 
