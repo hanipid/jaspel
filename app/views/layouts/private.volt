@@ -96,6 +96,7 @@ desired effect
 
               {# looping getchilds() #}
               {% set is_ok2 = false %}
+              <?php if (is_array($menu_item->getChilds()) || is_object($menu_item->getChilds())) { ?>
               {% for child in menu_item.getChilds() %}
                 {# looping checkper #}
                 {% for cp in checkper %}
@@ -105,6 +106,7 @@ desired effect
                   {% endif %}
                 {% endfor %} {# /for checkper #}
               {% endfor %} {# /for getChilds #}
+              <?php } ?>
 
 
 

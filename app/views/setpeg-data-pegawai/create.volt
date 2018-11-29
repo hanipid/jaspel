@@ -1,5 +1,5 @@
 
-<form class="form" method="post" autocomplete="off">
+<form class="form" method="post" autocomplete="off" enctype="multipart/form-data">
 
 	{{ content() }}
 
@@ -15,48 +15,48 @@
       <!-- /.box-header -->
       <div class="box-body">
         <div class="form-group">
-          <label for="name">Name</label>
-          {{ text_field("name", "class": "form-control") }}
+          <label for="namaPegawai">Nama</label>
+          {{ form.render("namaPegawai") }}
         </div>
 
         <div class="form-group">
           <label for="jenisKelamin">Jenis Kelamin</label>
-          {{ text_field("jenisKelamin", "class": "form-control") }}
+          {{ form.render("jenisKelamin") }}
         </div>
 
         <div class="form-group">
           <label for="gelarDepan">Gelar Depan</label>
-          {{ text_field("gelarDepan", "class": "form-control") }}
+          {{ form.render("gelarDepan") }}
         </div>
 
         <div class="form-group">
           <label for="gelarBelakang">Gelar Belakang</label>
-          {{ text_field("gelarBelakang", "class": "form-control") }}
+          {{ form.render("gelarBelakang") }}
         </div>
 
         <div class="form-group">
           <label for="posisiStatus">Posisi/Status</label>
-          {{ select_static("posisiStatus", ['dokter': 'Dokter', 'bukan': 'Bukan Dokter'], "class": "form-control") }}
+          {{ form.render("posisiStatus") }}
         </div>
 
         <div class="form-group">
           <label for="nip">NIP</label>
-          {{ text_field("nip", "class": "form-control") }}
+          {{ form.render("nip") }}
         </div>
 
         <div class="form-group">
           <label for="tempatLahir">Tempat Lahir</label>
-          {{ text_field("tempatLahir", "class": "form-control") }}
+          {{ form.render("tempatLahir") }}
         </div>
 
         <div class="form-group">
           <label for="tanggalLahir">Tanggal lahir</label>
-          {{ text_field("tanggalLahir", "class": "form-control") }}
+          {{ form.render("tanggalLahir") }}
         </div>
 
         <div class="form-group">
           <label for="eselon">Eselon</label>
-          {{ text_field("eselon", "class": "form-control") }}
+          {{ form.render("eselon") }}
         </div>
       </div>
       <!-- /.box-body -->
@@ -77,7 +77,7 @@
       <!-- /.box-header -->
       <div class="box-body">
         <div class="form-group">
-          {{ file_field("name", "class": "form-control") }}
+          {{ file_field("foto") }}
         </div>
       </div>
       <!-- /.box-body -->
@@ -99,35 +99,35 @@
       <div class="box-body">
         <div class="form-group col-md-1">
           <label for="ib">IB</label>
-          {{ text_field("ib", "class": "form-control") }}
+          {{ form.render("indexIB") }}
         </div>
         <div class="form-group col-md-1">
-          <label for="ik">IK</label>
-          {{ text_field("ik", "class": "form-control") }}
+          <label for="indexIK">IK</label>
+          {{ form.render("indexIK") }}
         </div>
         <div class="form-group col-md-1">
-          <label for="ik">IR</label>
-          {{ text_field("ik", "class": "form-control") }}
+          <label for="indexIR">IR</label>
+          {{ form.render("indexIR") }}
         </div>
         <div class="form-group col-md-1">
-          <label for="ik">IE</label>
-          {{ text_field("ik", "class": "form-control") }}
+          <label for="indexIE">IE</label>
+          {{ form.render("indexIE") }}
         </div>
         <div class="form-group col-md-1">
-          <label for="ik">IP</label>
-          {{ text_field("ik", "class": "form-control") }}
+          <label for="indexIP">IP</label>
+          {{ form.render("indexIP") }}
         </div>
         <div class="form-group col-md-2">
-          <label for="ik">Perform</label>
-          {{ text_field("ik", "class": "form-control") }}
+          <label for="indexPerform">Perform</label>
+          {{ form.render("indexPerform") }}
         </div>
         <div class="form-group col-md-2">
-          <label for="ik">Skor</label>
-          {{ text_field("ik", "class": "form-control") }}
+          <label for="skor">Skor</label>
+          {{ text_field("skor", "class": "form-control") }}
         </div>
         <div class="form-group col-md-2">
-          <label for="ik">Gaji Pokok</label>
-          {{ text_field("ik", "class": "form-control") }}
+          <label for="gajiPokok">Gaji Pokok</label>
+          {{ form.render("gajiPokok") }}
         </div>
       </div>
       <!-- /.box-body -->
@@ -151,79 +151,79 @@
         <div class="col-md-6">
           <div class="form-group">
             <label for="statusPns">Status PNS</label>
-            {{ select_static("statusPns", ["pns": "PNS", "non pns": "Non PNS"], "class": "form-control") }}
+            {{ form.render("statusPns") }}
           </div>
           
           <div class="form-group">
             <label for="tmpPns">TMP PNS</label>
-            {{ text_field("tmpPns", "class": "form-control") }}
+            {{ form.render("tmpPns") }}
           </div>
 
           <div class="form-group">
             <label for="golongan">Golongan</label>
-            {{ text_field("golongan", "class": "form-control") }}
+            {{ form.render("idGolongan") }}
           </div>
 
           <div class="form-group">
             <label for="pangkat">Pangkat</label>
-            {{ text_field("pangkat", "class": "form-control") }}
+            {{ form.render("idPangkat") }}
           </div>
 
           <div class="form-group">
             <label for="golonganRuang">Golongan Ruang</label>
-            {{ text_field("golonganRuang", "class": "form-control") }}
+            {{ form.render("idGolonganRuang") }}
           </div>
 
           <div class="form-group">
             <label for="tmt">TMT</label>
-            {{ text_field("tmt", "class": "form-control") }}
+            {{ form.render("tmt") }}
           </div>
 
           <div class="form-group">
             <label for="telepon">Telepon</label>
-            {{ text_field("telepon", "class": "form-control") }}
+            {{ form.render("telepon") }}
           </div>
 
           <div class="form-group">
             <label for="email">Email</label>
-            {{ text_field("email", "class": "form-control") }}
+            {{ form.render("email") }}
           </div>
 
           <div class="form-group">
             <label for="keterangan">Keterangan</label>
-            {{ text_area("keterangan", "class": "form-control") }}
+            {{ form.render("keterangan") }}
           </div>
         </div> <!-- /.col-md-6 -->
 
         <div class="col-md-6">
           <div class="form-group">
             <label for="jenjang">Jenjang</label>
-            {{ text_field("jenjang", "class": "form-control") }}
+            {{ form.render("idJenjang") }}
           </div>
           
           <div class="form-group">
             <label for="namaSekolah">Nama Sekolah</label>
-            {{ text_field("namaSekolah", "class": "form-control") }}
+            {{ form.render("namaSekolah") }}
           </div>
 
           <div class="form-group">
             <label for="jabatan">Jabatan</label>
-            {{ text_field("jabatan", "class": "form-control") }}
+            {{ form.render("idJabatan") }}
           </div>
 
           <div class="form-group">
             <label for="namaBank">Nama Bank</label>
-            {{ text_field("namaBank", "class": "form-control") }}
+            {{ form.render("bank") }}
           </div>
 
           <div class="form-group">
             <label for="noRekening">Nomor Rekening</label>
-            {{ text_field("noRekening", "class": "form-control") }}
+            {{ form.render("noRekening") }}
           </div>
 
           <div class="form-group">
             <label for="alamat">Alamat</label>
-            {{ text_field("alamat", "class": "form-control") }}
+            {{ form.render("alamat") }}
           </div>
 
           <div class="form-group">
@@ -232,6 +232,11 @@
               {{ text_field("pajak", "class": "form-control") }}
               <span class="input-group-addon">%</span>
             </div>
+          </div>
+
+          <div class="form-group">
+            <label for="statusAktif">Status Aktif</label>
+            {{ form.render("statusAktif") }}
           </div>
         </div> <!-- /.col-md-6 -->
 
@@ -246,14 +251,14 @@
     <!-- /.box -->
 
   </div> <!-- /.col-md-12 -->
-
-</form>
+<!-- 
+</form> -->
 
 
 
 <div class="col-md-6">
 
-  <form method="post" action="{{url('setpeg-data-pegawai/uploadBerkas')}}">
+  <!-- <form method="post" action="{{url('setpeg-data-pegawai/uploadBerkas')}}"> -->
     <div class="box box-primary">
       <div class="box-header with-border">
         <h3 class="box-title">Upload Berkas</h3>
@@ -281,9 +286,10 @@
       <!-- /.box-body -->
     </div>
     <!-- /.box -->
-  </form>
+  <!-- </form> -->
 
 </div> <!-- /.col-md-6 -->
+</form>
 
 <div class="col-md-6">
   <div class="box box-primary">

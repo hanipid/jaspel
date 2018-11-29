@@ -1,14 +1,14 @@
 <?php
 namespace Jaspel\Controllers;
 
-use Jaspel\Models\Golongan;
-use Jaspel\Forms\GolonganForm;
+use Jaspel\Models\Pangkat;
+use Jaspel\Forms\PangkatForm;
 use Phalcon\Paginator\Adapter\Model as Paginator;
 
 /**
- * Controller Data Golongan
+ * Controller Pangkat
  */
-class SetpegDataGolonganController extends ControllerBase
+class SetpegPangkatController extends ControllerBase
 {
 	
 	public function initialize()
@@ -19,22 +19,19 @@ class SetpegDataGolonganController extends ControllerBase
 	public function indexAction()
 	{
 		$this->persistent->conditions = null;
-		$golongan = Golongan::getData('all');
+		$pangkat = Pangkat::getData('all');
 		$numberPage = 1;
 		if ($this->request->isGet()) {
       $numberPage = $this->request->getQuery("page", "int");
 		}
-    if (count($golongan) == 0) {
+    if (count($pangkat) == 0) {
 
-      $this->flash->notice("The search did not find any golongan");
+      $this->flash->notice("The search did not find any pangkat");
 
-      return $this->dispatcher->forward([
-        "action" => "index"
-      ]);
     }
 
     $paginator = new Paginator([
-      "data" => $golongan,
+      "data" => $pangkat,
       "limit" => 10,
       "page" => $numberPage
     ]);
@@ -44,7 +41,7 @@ class SetpegDataGolonganController extends ControllerBase
 
 	public function createAction()
 	{
-		$form = new GolonganForm(null);
+		$form = new PangkatForm(null);
 
 		if ($this->request->isPost()) {
 
@@ -56,9 +53,10 @@ class SetpegDataGolonganController extends ControllerBase
 
 			} else {
 
-				$golongan = $this->request->getPost();
-				Golongan::addData($golongan);
-				$this->response->redirect('setpeg-data-golongan');
+				$pangkat = $this->request->getPost();
+				// die(var_dump($pangkat['namaPangkat']));
+				Pangkat::addData($pangkat);
+				$this->response->redirect('setpeg-pangkat');
 
 			}
 		}
@@ -69,9 +67,9 @@ class SetpegDataGolonganController extends ControllerBase
 	public function editAction($id)
 	{
 		if ($this->request->isGet()) {
-			$getGolongan = Golongan::getData('null', $id);
+			$getPangkat = Pangkat::getData('null', $id);
 		}
-		$form = new GolonganForm($getGolongan[0], ['edit' => true]);	
+		$form = new PangkatForm($getPangkat[0], ['edit' => true]);	
 
 		if ($this->request->isPost()) {
 			if ($form->isValid($this->request->getPost()) == false) {
@@ -82,9 +80,9 @@ class SetpegDataGolonganController extends ControllerBase
 
 			} else {
 
-				$golongan = $this->request->getPost();
-				Golongan::updateData($id, $golongan);
-				$this->response->redirect('setpeg-data-golongan');
+				$pangkat = $this->request->getPost();
+				Pangkat::updateData($id, $pangkat);
+				$this->response->redirect('setpeg-pangkat');
 
 			}
 
@@ -94,9 +92,9 @@ class SetpegDataGolonganController extends ControllerBase
 
 	public function deleteAction($id)
 	{
-		if (Golongan::deleteData($id)) {
-			return $this->response->redirect('setpeg-data-golongan');
+		if (Pangkat::deleteData($id)) {
+			return $this->response->redirect('setpeg-pangkat');
 		}
-		die("Error delete golongan");
+		die("Error delete pangkat");
 	}
 }

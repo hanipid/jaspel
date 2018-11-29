@@ -6,21 +6,16 @@
 
     <div class="box box-primary">
       <div class="box-header with-border">
-        <h3 class="box-title">Form Ubah Data Golongan</h3>
+        <h3 class="box-title">Form Ubah Data Pangkat</h3>
         <div class="box-tools pull-right">
-          <a href="{{url('setpeg-data-golongan')}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
+          <a href="{{url('setpeg-data-Pangkat')}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
         </div>
       </div>
       <!-- /.box-header -->
       <div class="box-body">
         <div class="form-group">
-          <label for="namaGolongan">Nama Golongan</label>
-          {{ form.render("namaGolongan") }}
-        </div>
-
-        <div class="form-group">
-          <label for="pajak">Nilai Pajak</label>
-          {{ form.render("pajak") }}
+          <label for="namaPangkat">Nama Pangkat</label>
+          {{ form.render("namaPangkat") }}
         </div>
       </div>
       <!-- /.box-body -->

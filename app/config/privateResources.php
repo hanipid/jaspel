@@ -44,6 +44,30 @@ return new Config([
       'edit',
       'delete'
     ],
+    'setpeg-jabatan' => [
+      'index',
+      'create',
+      'edit',
+      'delete'
+    ],
+    'setpeg-pangkat' => [
+      'index',
+      'create',
+      'edit',
+      'delete'
+    ],
+    'setpeg-jenjang' => [
+      'index',
+      'create',
+      'edit',
+      'delete'
+    ],
+    'setpeg-golongan-ruang' => [
+      'index',
+      'create',
+      'edit',
+      'delete'
+    ],
     // SETTING JASPEL
     'setjas-jenis-jaspel' => [
       'index',

@@ -20,8 +20,8 @@ class UsersForm extends Form
             $id = new Hidden('id');
         } else {
             $id = new Text('id', [
-            'class' => 'form-control'
-        ]);
+                'class' => 'form-control'
+            ]);
         }
 
         $this->add($id);

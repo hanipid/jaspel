@@ -102,6 +102,7 @@ class Menus extends Model
     public function isThis($id, $controller)
     {
         $urls = self::findByParent($id);
+        $result = null;
         foreach ($urls as $url) {
             if ($url->controller == $controller) {
                 $result = $url->controller;
