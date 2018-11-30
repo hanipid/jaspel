@@ -10,3 +10,4 @@ vendor/
 app/config/config.dev.php
 public/vendor/
 public/codemirror/
+public/uploads/
