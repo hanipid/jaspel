@@ -1,5 +1,5 @@
 
-<form class="form" method="post" autocomplete="off">
+<form class="form" method="post" autocomplete="off" enctype="multipart/form-data">
 
   {{ content() }}
 
@@ -76,9 +76,9 @@
       </div>
       <!-- /.box-header -->
       <div class="box-body">
-        <img src="{{url('uploads/photos/'~pegawai.foto)}}">
+        <img src="{{url('uploads/photos/'~pegawai.foto)}}" class="img-responsive">
         <div class="form-group">
-          {{ file_field("foto") }} {{dump(pegawai.berkas)}}
+          {{ file_field("foto") }}
         </div>
       </div>
       <!-- /.box-body -->
@@ -259,8 +259,8 @@
 
 <div class="col-md-6">
 
-  <form method="post" action="{{url('setpeg-data-pegawai/uploadBerkas')}}">
-    <div class="box box-primary">
+  <form method="post" action="{{url('setpeg-data-pegawai/uploadBerkas/'~pegawai.idPegawai)}}" enctype="multipart/form-data">
+    <div class="box box-primary" id="berkas">
       <div class="box-header with-border">
         <h3 class="box-title">Upload Berkas</h3>
         <div class="box-tools pull-right">
@@ -278,11 +278,14 @@
           </div>
         <!-- </div> -->
 
-        <ol>
-          <li><a href="!#">Ijazah SD</a></li>
-          <li><a href="!#">Ijazah SMP</a></li>
-          <li><a href="!#">Ijazah SMK</a></li>
-        </ol>
+        <table>
+          {% for bp in berkasPegawai %}
+            <tr>
+              <td width="98%" style="padding:10px 0;"><a href="{{url('uploads/documents/'~bp.namaFile)}}" target="_blank">{{bp.namaFile}}</a></td>
+              <td><a href="{{url('setpeg-data-pegawai/deleteFile/'~bp.idBerkasPegawai)}}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')"><i class="fa fa-trash"></i></a></td>
+            </tr>
+          {% endfor %}
+        </table>
       </div>
       <!-- /.box-body -->
     </div>

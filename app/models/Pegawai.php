@@ -44,7 +44,6 @@ class Pegawai extends Model
   public $keterangan;
   public $statusAktif;
   public $foto;
-  public $berkas;
 
   public function validation()
   {
@@ -62,6 +61,11 @@ class Pegawai extends Model
     $this->belongsTo('idGolongan', __NAMESPACE__ . '\Golongan', 'idGolongan', [
       'reusable' => true
     ]);
+    $this->hasMany('idPegawai', __NAMESPACE__ . '\BerkasPegawai', 'idPegawai', [
+      'foreignKey' => [
+        'message' => 'Pegawai cannot be deleted because it\'s used on BerkasPegawai'
+      ]
+    ]);
   }
 
   public static function getData($method = null, $id = null) {
@@ -71,15 +75,15 @@ class Pegawai extends Model
     return new Resultset(null, $pegawai, $pegawai->getReadConnection()->query($sql));
   }
 
-  public static function addData($pegawai = NULL, $foto = NULL, $berkas = NULL) {
-    $sql = "CALL `pegawaiCreate`('$pegawai[jenisKelamin]','$pegawai[namaPegawai]','$pegawai[gelarDepan]','$pegawai[gelarBelakang]','$pegawai[posisiStatus]','$pegawai[nip]','$pegawai[tempatLahir]','$pegawai[tanggalLahir]','$pegawai[eselon]','$pegawai[indexIB]','$pegawai[indexIK]','$pegawai[indexIR]','$pegawai[indexIE]','$pegawai[indexIP]','$pegawai[indexPerform]','$pegawai[gajiPokok]','$pegawai[statusPns]','$pegawai[tmpPns]','$pegawai[idGolongan]','$pegawai[idPangkat]','$pegawai[idGolonganRuang]','$pegawai[tmt]','$pegawai[telepon]','$pegawai[email]','$pegawai[idJenjang]','$pegawai[namaSekolah]','$pegawai[idJabatan]','$pegawai[bank]','$pegawai[noRekening]','$pegawai[alamat]','$pegawai[keterangan]','$pegawai[statusAktif]','$foto', '$berkas')";
+  public static function addData($pegawai = NULL, $foto = NULL) {
+    $sql = "CALL `pegawaiCreate`('$pegawai[jenisKelamin]','$pegawai[namaPegawai]','$pegawai[gelarDepan]','$pegawai[gelarBelakang]','$pegawai[posisiStatus]','$pegawai[nip]','$pegawai[tempatLahir]','$pegawai[tanggalLahir]','$pegawai[eselon]','$pegawai[indexIB]','$pegawai[indexIK]','$pegawai[indexIR]','$pegawai[indexIE]','$pegawai[indexIP]','$pegawai[indexPerform]','$pegawai[gajiPokok]','$pegawai[statusPns]','$pegawai[tmpPns]','$pegawai[idGolongan]','$pegawai[idPangkat]','$pegawai[idGolonganRuang]','$pegawai[tmt]','$pegawai[telepon]','$pegawai[email]','$pegawai[idJenjang]','$pegawai[namaSekolah]','$pegawai[idJabatan]','$pegawai[bank]','$pegawai[noRekening]','$pegawai[alamat]','$pegawai[keterangan]','$pegawai[statusAktif]','$foto')";
     $pegawai = new Pegawai();
     return $pegawai->getReadConnection()->query($sql);
     // return new Resultset(null, $pegawai, $pegawai->getReadConnection()->query($sql));
   }
 
-  public static function updateData($id, $pegawai = NULL, $foto = NULL, $berkas = NULL) {
-    $sql = "CALL `pegawaiUpdate`('$id', '$pegawai[jenisKelamin]','$pegawai[namaPegawai]','$pegawai[gelarDepan]','$pegawai[gelarBelakang]','$pegawai[posisiStatus]','$pegawai[nip]','$pegawai[tempatLahir]','$pegawai[tanggalLahir]','$pegawai[eselon]','$pegawai[indexIB]','$pegawai[indexIK]','$pegawai[indexIR]','$pegawai[indexIE]','$pegawai[indexIP]','$pegawai[indexPerform]','$pegawai[gajiPokok]','$pegawai[statusPns]','$pegawai[tmpPns]','$pegawai[idGolongan]','$pegawai[idPangkat]','$pegawai[idGolonganRuang]','$pegawai[tmt]','$pegawai[telepon]','$pegawai[email]','$pegawai[idJenjang]','$pegawai[namaSekolah]','$pegawai[idJabatan]','$pegawai[bank]','$pegawai[noRekening]','$pegawai[alamat]','$pegawai[keterangan]','$pegawai[statusAktif]','$foto', '$berkas')";
+  public static function updateData($id, $pegawai = NULL, $foto = NULL) {
+    $sql = "CALL `pegawaiUpdate`('$id', '$pegawai[jenisKelamin]','$pegawai[namaPegawai]','$pegawai[gelarDepan]','$pegawai[gelarBelakang]','$pegawai[posisiStatus]','$pegawai[nip]','$pegawai[tempatLahir]','$pegawai[tanggalLahir]','$pegawai[eselon]','$pegawai[indexIB]','$pegawai[indexIK]','$pegawai[indexIR]','$pegawai[indexIE]','$pegawai[indexIP]','$pegawai[indexPerform]','$pegawai[gajiPokok]','$pegawai[statusPns]','$pegawai[tmpPns]','$pegawai[idGolongan]','$pegawai[idPangkat]','$pegawai[idGolonganRuang]','$pegawai[tmt]','$pegawai[telepon]','$pegawai[email]','$pegawai[idJenjang]','$pegawai[namaSekolah]','$pegawai[idJabatan]','$pegawai[bank]','$pegawai[noRekening]','$pegawai[alamat]','$pegawai[keterangan]','$pegawai[statusAktif]','$foto')";
     $pegawai = new Pegawai();
     return $pegawai->getReadConnection()->query($sql);
     // return new Resultset(null, $pegawai, $pegawai->getReadConnection()->query($sql));

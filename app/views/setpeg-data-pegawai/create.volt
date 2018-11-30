@@ -251,12 +251,12 @@
     <!-- /.box -->
 
   </div> <!-- /.col-md-12 -->
-<!-- 
-</form> -->
+
+</form>
 
 
 
-<div class="col-md-6">
+{#<div class="col-md-6">
 
   <!-- <form method="post" action="{{url('setpeg-data-pegawai/uploadBerkas')}}"> -->
     <div class="box box-primary">
@@ -288,8 +288,7 @@
     <!-- /.box -->
   <!-- </form> -->
 
-</div> <!-- /.col-md-6 -->
-</form>
+</div> <!-- /.col-md-6 -->#}
 
 <div class="col-md-6">
   <div class="box box-primary">

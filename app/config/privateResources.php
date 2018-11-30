@@ -36,7 +36,9 @@ return new Config([
       'index',
       'create',
       'edit',
-      'delete'
+      'delete',
+      'uploadBerkas',
+      'deleteFile'
     ],
     'setpeg-data-golongan' => [
       'index',

@@ -2,6 +2,7 @@
 namespace Jaspel\Controllers;
 
 use Jaspel\Models\Pegawai;
+use Jaspel\Models\BerkasPegawai;
 use Phalcon\Paginator\Adapter\Model as Paginator;
 use Jaspel\Forms\DataPegawaiForm;
 /**
@@ -63,22 +64,9 @@ class SetpegDataPegawaiController extends ControllerBase
 	        	$file->moveTo($upload_dir . $foto);
 	        	$this->flashSession->success($foto.' has been successfully uploaded.');
 
-	      	} elseif ($file->getExtension() == 'doc' || $file->getExtension() == 'DOC' ||
-	      						$file->getExtension() == 'docx' || $file->getExtension() == 'DOCX' ||
-	      						$file->getExtension() == 'pdf' || $file->getExtension() == 'PDF') {
-
-	      		$upload_dir = __DIR__ . '/../../public/uploads/documents/';
-	      		$berkas = substr($data['namaPegawai'], 0, 6) . $random->base64Safe(8) . '.' . $file->getExtension();
-	      		if (!is_dir($upload_dir)) {
-			        mkdir($upload_dir, 0755);
-			      }	        
-			      $file->moveTo($upload_dir . $berkas);
-	        	$this->flashSession->success($berkas.' has been successfully uploaded.');
-
-	      	}
-
+	      	} 
 	      }
-				Pegawai::addData($data, $foto, $berkas);
+				Pegawai::addData($data, $foto);
 	    } else {
 				Pegawai::addData($data);
 	    }
@@ -91,13 +79,10 @@ class SetpegDataPegawaiController extends ControllerBase
 
 	public function editAction($idPegawai)
 	{
-		// if ($this->request->isGet()) {
-			// $getPegawai = Pegawai::getData('null', $idPegawai);
-			$getPegawai = Pegawai::findFirstByIdPegawai($idPegawai);
-		// }
-		// var_dump($getPegawai);
-		// $form = new DataPegawaiForm($getPegawai[0]);
+		$getPegawai = Pegawai::findFirstByIdPegawai($idPegawai);
+		$berkasPegawai = BerkasPegawai::findByIdPegawai($idPegawai);
 		$form = new DataPegawaiForm($getPegawai);
+		$random = new \Phalcon\Security\Random();
 
 		if ($this->request->isPost()) {
 
@@ -116,25 +101,15 @@ class SetpegDataPegawaiController extends ControllerBase
 	      		if (!is_dir($upload_dir)) {
 			        mkdir($upload_dir, 0755);
 			      }
-	        	$file->moveTo($upload_dir . $foto);
-	        	$this->flashSession->success($foto.' has been successfully uploaded.');
+			      unlink($upload_dir . $getPegawai->foto);
+	        	if ($file->moveTo($upload_dir . $foto)) {
+	        		$this->flashSession->success($foto.' has been successfully uploaded.');
+	        	}
+	        	Pegawai::updateData($idPegawai, $data, $foto);
 
-	      	} elseif ($file->getExtension() == 'doc' || $file->getExtension() == 'DOC' ||
-	      						$file->getExtension() == 'docx' || $file->getExtension() == 'DOCX' ||
-	      						$file->getExtension() == 'pdf' || $file->getExtension() == 'PDF') {
-
-	      		$upload_dir = __DIR__ . '/../../public/uploads/documents/';
-	      		$berkas = substr($data['namaPegawai'], 0, 6) . $random->base64Safe(8) . '.' . $file->getExtension();
-	      		if (!is_dir($upload_dir)) {
-			        mkdir($upload_dir, 0755);
-			      }	        
-			      $file->moveTo($upload_dir . $berkas);
-	        	$this->flashSession->success($berkas.' has been successfully uploaded.');
-
-	      	}
-
+	      	} 
 	      }
-				Pegawai::updateData($idPegawai, $data, $foto, $berkas);
+
 	    } else {
 				Pegawai::updateData($idPegawai, $data);
 	    }
@@ -144,6 +119,7 @@ class SetpegDataPegawaiController extends ControllerBase
 
 		$this->view->form = $form;
 		$this->view->pegawai = $getPegawai;
+		$this->view->berkasPegawai = $berkasPegawai;
 	}
 
 	public function deleteAction($id)
@@ -152,5 +128,48 @@ class SetpegDataPegawaiController extends ControllerBase
 			return $this->response->redirect('setpeg-data-pegawai');
 		}
 		die('Error delete pegawai');
+	}
+
+	public function uploadBerkasAction($idPegawai)
+	{
+		if ($this->request->isPost()) {
+			
+			if ($this->request->hasFiles() == true) {
+				$random = new \Phalcon\Security\Random();
+
+	      foreach ($this->request->getUploadedFiles() as $file) {
+	      	if ($file->getExtension() == 'doc' || $file->getExtension() == 'DOC' ||
+	      						$file->getExtension() == 'docx' || $file->getExtension() == 'DOCX' ||
+	      						$file->getExtension() == 'pdf' || $file->getExtension() == 'PDF') {
+	      		$upload_dir = __DIR__ . '/../../public/uploads/documents/';
+	      		$berkas = $random->base64Safe(8) . '-' . $file->getName();
+	      		if (!is_dir($upload_dir)) {
+			        mkdir($upload_dir, 0755);
+			      }	        
+			      $berkasPegawai = new BerkasPegawai();
+			      $berkasPegawai->namaFile	= $berkas;
+			      $berkasPegawai->idPegawai = $idPegawai;
+			      if ($file->moveTo($upload_dir . $berkas) && $berkasPegawai->save()) {
+			      	$this->flashSession->success($berkas.' has been successfully uploaded.');
+			      } else {
+			      	$this->flashSession->error($berkas.' could not be uploaded.');
+			      }
+			      return $this->response->redirect('setpeg-data-pegawai/edit/'.$idPegawai.'#berkas');
+
+	      	}
+	      }
+
+	    }
+		}
+	}
+
+	public function deleteFileAction($idBerkasPegawai)
+	{
+		$upload_dir = __DIR__ . '/../../public/uploads/documents/';
+		$berkasPegawai = BerkasPegawai::findFirstByIdBerkasPegawai($idBerkasPegawai);
+		if ($berkasPegawai->delete() && unlink($upload_dir . $berkasPegawai->namaFile)) {
+    	$this->flashSession->success($berkasPegawai->namaFile.' has been successfully deleted.');
+    	return $this->response->redirect('setpeg-data-pegawai/edit/'.$berkasPegawai->idPegawai.'#berkas');
+		}
 	}
 }
