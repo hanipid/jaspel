@@ -8,60 +8,63 @@ use Phalcon\Forms\Element\Select;
 use Phalcon\Validation\Validator\PresenceOf;
 use Phalcon\Validation\Validator\Email;
 
-class SetjasJenisJaspelForm extends Form
+class JenisJaspelForm extends Form
 {
 
     public function initialize($entity = null, $options = null)
     {
         if (isset($options['edit']) && $options['edit']) {
-            $id = new Hidden('id');
+            $idJaspel = new Hidden('idJaspel');
         } else {
-            $id = new Text('id',[
+            $idJaspel = new Text('idJaspel',[
             'class' => 'form-control'
         ]);
         }
 
-        $this->add($id);
+        $this->add($idJaspel);
 
-        $jenis = new Text('jenis', [
-            'placeholder' => 'Jenis',
+        $namaJaspel = new Text('namaJaspel', [
+            'placeholder' => 'Jenis Jasa Pelayanan',
             'class' => 'form-control'
         ]);
 
-        $jenis->addValidators([
+        $namaJaspel->addValidators([
             new PresenceOf([
-                'message' => 'The jenis is required'
+                'message' => 'Jenis Jasa Pelayanan is required'
             ])
         ]);
 
-        $this->add($jenis);
+        $this->add($namaJaspel);
 
-        $nilaiKonversi = new Text('nilaiKonversi', [
+        $konversiJaspel = new Text('konversiJaspel', [
             'placeholder' => 'Nilai Konversi',
             'class' => 'form-control'
         ]);
 
-        $nilaiKonversi->addValidators([
+        $konversiJaspel->addValidators([
             new PresenceOf([
-                'message' => 'The nilaiKonversi is required'
+                'message' => 'Nilai konversi is required'
             ])
         ]);
 
-        $this->add($nilaiKonversi);
+        $this->add($konversiJaspel);
 
-        $this->add(new Select('tipe', [
-            '1' => 'Konversi',
-            '0' => 'Non Konversi'
+        $this->add(new Select('tipeJaspel', [
+            'konversi' => 'Konversi',
+            'non konversi' => 'Non Konversi'
         ],[
             'class' => 'form-control'
         ]));
 
         $this->add(new Select('status', [
-            '1' => 'Aktif',
-            '0' => 'Tidak Aktif'
+            'aktif' => 'Aktif',
+            'tidak aktif' => 'Tidak Aktif'
         ],[
             'class' => 'form-control'
         ]));
+
+
+
 
         $namaTambahan = new Text('namaTambahan', [
             'placeholder' => 'Pendapatan tambahan',

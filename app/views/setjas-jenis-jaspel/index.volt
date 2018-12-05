@@ -14,7 +14,7 @@
       <table class="table table-bordered table-striped" align="center">
         <thead>
           <tr>
-            <th width="3%">No</th>
+            <!-- <th width="3%">No</th> -->
             <th>Jenis</th>
             <th>Status</th>
             <th></th>
@@ -23,39 +23,25 @@
         </thead>
         <tbody>
       
+          {% for jj in page.items %}
           <tr>
-            <td>1</td>
-            <td>Umum</td>
-            <td>Aktif</td>
-            <td width="2%">{{ link_to("setjas-jenis-jaspel/edit/" ~ profile.id, '<i class="glyphicon glyphicon-pencil"></i> Edit', "class": "btn btn-primary") }}</td>
-            <td width="2%">{{ link_to("setjas-jenis-jaspel/delete/" ~ profile.id, '<i class="glyphicon glyphicon-remove"></i> Delete', "class": "btn btn-danger", "onclick": "return confirm('Are you sure?')") }}</td>
+            <!-- <td></td> -->
+            <td>{{jj.namaJaspel}}</td>
+            <td>{{jj.status}}</td>
+            <td width="2%">{{ link_to("setjas-jenis-jaspel/edit/" ~ jj.idJaspel, '<i class="glyphicon glyphicon-pencil"></i> Edit', "class": "btn btn-primary") }}</td>
+            <td width="2%">{{ link_to("setjas-jenis-jaspel/delete/" ~ jj.idJaspel, '<i class="glyphicon glyphicon-remove"></i> Delete', "class": "btn btn-danger", "onclick": "return confirm('Are you sure?')") }}</td>
           </tr>
-      
-          <tr>
-            <td>2</td>
-            <td>BPJS</td>
-            <td>Aktif</td>
-            <td width="2%">{{ link_to("setjas-jenis-jaspel/edit/" ~ profile.id, '<i class="glyphicon glyphicon-pencil"></i> Edit', "class": "btn btn-primary") }}</td>
-            <td width="2%">{{ link_to("setjas-jenis-jaspel/delete/" ~ profile.id, '<i class="glyphicon glyphicon-remove"></i> Delete', "class": "btn btn-danger", "onclick": "return confirm('Are you sure?')") }}</td>
-          </tr>
-      
-          <tr>
-            <td>3</td>
-            <td>Jamkesda</td>
-            <td>Aktif</td>
-            <td width="2%">{{ link_to("setjas-jenis-jaspel/edit/" ~ profile.id, '<i class="glyphicon glyphicon-pencil"></i> Edit', "class": "btn btn-primary") }}</td>
-            <td width="2%">{{ link_to("setjas-jenis-jaspel/delete/" ~ profile.id, '<i class="glyphicon glyphicon-remove"></i> Delete', "class": "btn btn-danger", "onclick": "return confirm('Are you sure?')") }}</td>
-          </tr>
+          {% endfor %}
       
         </tbody>
         <tfoot>
           <tr>
             <td colspan="10" align="right">
               <ul class="pagination pagination-sm no-margin pull-right">
-                <li>{{ link_to("setjas-jenis-jaspel/search", '<i class="glyphicon glyphicon-fast-backward"></i> First') }}</li>
-                <li>{{ link_to("setjas-jenis-jaspel/search?page=" ~ page.before, '<i class="glyphicon glyphicon-step-backward"></i> Previous') }}</li>
-                <li>{{ link_to("setjas-jenis-jaspel/search?page=" ~ page.next, '<i class="glyphicon glyphicon-step-forward"></i> Next') }}</li>
-                <li>{{ link_to("setjas-jenis-jaspel/search?page=" ~ page.last, '<i class="glyphicon glyphicon-fast-forward"></i> Last') }}</li>
+                <li>{{ link_to("setjas-jenis-jaspel/", '<i class="glyphicon glyphicon-fast-backward"></i> First') }}</li>
+                <li>{{ link_to("setjas-jenis-jaspel/?page=" ~ page.before, '<i class="glyphicon glyphicon-step-backward"></i> Previous') }}</li>
+                <li>{{ link_to("setjas-jenis-jaspel/?page=" ~ page.next, '<i class="glyphicon glyphicon-step-forward"></i> Next') }}</li>
+                <li>{{ link_to("setjas-jenis-jaspel/?page=" ~ page.last, '<i class="glyphicon glyphicon-fast-forward"></i> Last') }}</li>
                 <li><span class="help-inline">{{ page.current }}/{{ page.total_pages }}</span></li>
               </ul>
             </td>

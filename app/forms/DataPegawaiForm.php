@@ -210,7 +210,9 @@ class DataPegawaiForm extends Form
 			])
 		]);
 		$this->add($tmpPns);
+
 		
+		// $golongan = Golongan::getData('all');
 		$golongan = Golongan::find();
 		$idGolongan = new Select('idGolongan', $golongan, [
 			'using' => [
@@ -226,6 +228,7 @@ class DataPegawaiForm extends Form
 		]);
 		$this->add($idGolongan);
 		
+		// $pangkat = Pangkat::getData('all');
 		$pangkat = Pangkat::find();
 		$idPangkat = new Select('idPangkat', $pangkat, [
 			'using' => [
@@ -241,6 +244,7 @@ class DataPegawaiForm extends Form
 		]);
 		$this->add($idPangkat);
 		
+		// $golonganRuang = GolonganRuang::getData('all');
 		$golonganRuang = GolonganRuang::find();
 		$idGolonganRuang = new Select('idGolonganRuang', $golonganRuang, [
 			'using' => [
@@ -286,6 +290,7 @@ class DataPegawaiForm extends Form
 		]);
 		$this->add($email);
 		
+		// $jenjang = Jenjang::getData('all');
 		$jenjang = Jenjang::find();
 		$idJenjang = new Select('idJenjang', $jenjang, [
 			'using' => [

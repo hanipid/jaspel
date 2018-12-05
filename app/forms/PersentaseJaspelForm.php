@@ -8,7 +8,7 @@ use Phalcon\Forms\Element\Select;
 use Phalcon\Validation\Validator\PresenceOf;
 use Phalcon\Validation\Validator\Email;
 
-class SetjasPersentaseJaspelForm extends Form
+class PersentaseJaspelForm extends Form
 {
 
     public function initialize($entity = null, $options = null)
@@ -26,7 +26,6 @@ class SetjasPersentaseJaspelForm extends Form
         $direksi = new Text('direksi', [
             'placeholder' => 'Direksi',
             'class' => 'form-control',
-            'value' => '70'
         ]);
 
         $direksi->addValidators([
@@ -40,7 +39,6 @@ class SetjasPersentaseJaspelForm extends Form
         $jasa = new Text('jasa', [
             'placeholder' => 'Jasa',
             'class' => 'form-control',
-            'value' => '30'
         ]);
 
         $jasa->addValidators([
@@ -54,7 +52,6 @@ class SetjasPersentaseJaspelForm extends Form
         $jpu = new Text('jpu', [
             'placeholder' => 'JPU',
             'class' => 'form-control',
-            'value' => '20'
         ]);
 
         $jpu->addValidators([
@@ -91,17 +88,17 @@ class SetjasPersentaseJaspelForm extends Form
 
         $this->add($admin);
 
-        $jplFix = new Text('jplFix', [
+        $jasaFix = new Text('jasaFix', [
             'placeholder' => 'JPL Fix',
             'class' => 'form-control'
         ]);
 
-        $jplFix->addValidators([
+        $jasaFix->addValidators([
             new PresenceOf([
-                'message' => 'The jplFix is required'
+                'message' => 'The jasaFix is required'
             ])
         ]);
 
-        $this->add($jplFix);
+        $this->add($jasaFix);
     }
 }

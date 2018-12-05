@@ -80,7 +80,8 @@ $di->set('db', function () {
         'username' => $config->database->username,
         'password' => $config->database->password,
         'dbname'   => $config->database->dbname,
-        'charset'  => $config->database->charset
+        'charset'  => $config->database->charset,
+        // "options"  => array(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => false)
     ];
 
     if ($config->database->adapter == 'Postgresql') {

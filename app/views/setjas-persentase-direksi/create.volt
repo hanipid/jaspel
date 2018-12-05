@@ -33,36 +33,13 @@
           </thead>
 
           <tbody>
+            {% for p in page.items %}
             <tr>
               <td>1</td>
-              <td>Nama Pegawai</td>
-              <td>{{ check_field("pegawai") }}</td>
+              <td>{{p.namaPegawai}}</td>
+              <td>{{ check_field("pegawai", "value": p.namaPegawai, "id":"p"~p.idPegawai, "name": "pegawai[]") }}</td>
             </tr>
-            <tr>
-              <td>1</td>
-              <td>Nama Pegawai</td>
-              <td>{{ check_field("pegawai") }}</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Nama Pegawai</td>
-              <td>{{ check_field("pegawai") }}</td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td>Nama Pegawai</td>
-              <td>{{ check_field("pegawai") }}</td>
-            </tr>
-            <tr>
-              <td>4</td>
-              <td>Nama Pegawai</td>
-              <td>{{ check_field("pegawai") }}</td>
-            </tr>
-            <tr>
-              <td>5</td>
-              <td>Nama Pegawai</td>
-              <td>{{ check_field("pegawai") }}</td>
-            </tr>
+            {% endfor %}
           </tbody>
           <tfoot>
             <tr>
@@ -83,7 +60,34 @@
       <!-- /.box-body -->
 
       <div class="box-footer">
-        {{ submit_button("Add", "class": "btn btn-primary") }}
+        {#{ submit_button("Add", "class": "btn btn-primary") }#}
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-add">Add</button>
+        <div class="modal fade" id="modal-add">
+          <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Persentase</h4>
+              </div>
+              <div class="modal-body">
+                <div class="form-group">
+                  <div class="input-group">
+                    {{text_field("persentase", "class": "form-control")}}
+                    <span class="input-group-addon">%</span>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+              </div>
+            </div>
+            <!-- /.modal-content -->
+          </div>
+          <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
       </div>
 
     </div>

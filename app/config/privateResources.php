@@ -75,7 +75,10 @@ return new Config([
       'index',
       'create',
       'edit',
-      'delete'
+      'delete',
+      'createPTambahan',
+      'editPTambahan',
+      'deletePTambahan'
     ],
     'setjas-persentase-jaspel' => [
       'index',

@@ -124,7 +124,8 @@
         </div>
         <div class="form-group col-md-2">
           <label for="skor">Skor</label>
-          {{ text_field("skor", "class": "form-control") }}
+          {% set skor = pegawai.indexIB + pegawai.indexIK + pegawai.indexIR + pegawai.indexIE + pegawai.indexIP + pegawai.indexPerform %}
+          {{ text_field("skor", "class": "form-control", "value": skor) }}
         </div>
         <div class="form-group col-md-2">
           <label for="gajiPokok">Gaji Pokok</label>
@@ -313,3 +314,16 @@
   </div>
   <!-- /.box -->
 </div>
+
+<script>
+$("body").on("keyup", () => {
+  var perform = Number($("#indexPerform").val());
+  var IP = Number($("#indexIP").val());
+  var IE = Number($("#indexIE").val());
+  var IR = Number($("#indexIR").val());
+  var IK = Number($("#indexIK").val());
+  var IB = Number($("#indexIB").val());
+  var skor = perform+IP+IE+IR+IK+IB;
+  $("#skor").val( skor );
+});
+</script>

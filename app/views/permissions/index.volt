@@ -10,12 +10,12 @@
     font-family: "Consolas", "Lucida Console", monospace;
     border: 1px solid black;
     font-size:13px;
-    height: auto;
+    height: 400px;
 }
 
 .CodeMirror-scroll {
-    height: auto;
-    overflow-y: hidden!important;
+    height: 400px;
+    overflow-y: auto;
     overflow-x: auto;
 	width: 100%;
 }
@@ -148,6 +148,7 @@
         theme: "monokai",
         styleActiveLine: true,
         keyMap: "sublime",
+        height: "100px",
         onCursorActivity: function () {
           var line = myCodeMirror.getCursor().line, handle = myCodeMirror.getLineHandle(line);
           if (handle == currentHandle && line == currentLine) return;

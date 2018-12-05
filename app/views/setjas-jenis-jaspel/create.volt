@@ -8,24 +8,24 @@
       <div class="box-header with-border">
         <h3 class="box-title">Form Jenis Jasa Pelayanan</h3>
         <div class="box-tools pull-right">
-          <a href="{{url('setpeg-data-golongan')}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
+          <a href="{{url('setjas-jenis-jaspel')}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
         </div>
       </div>
       <!-- /.box-header -->
       <div class="box-body">
         <div class="form-group">
-          <label for="tipe">Tipe</label>
-          {{ form.render("tipe") }}
+          <label for="tipeJaspel">Tipe</label>
+          {{ form.render("tipeJaspel") }}
         </div>
 
         <div class="form-group">
-          <label for="jenis">Jenis Pelayanan</label>
-          {{ form.render("jenis") }}
+          <label for="namaJaspel">Jenis Jasa Pelayanan</label>
+          {{ form.render("namaJaspel") }}
         </div>
 
         <div class="form-group">
-          <label for="nilaiKonversi">Nilai Konversi</label>
-          {{ form.render("nilaiKonversi") }}
+          <label for="konversiJaspel">Nilai Konversi</label>
+          {{ form.render("konversiJaspel") }}
         </div>
 
         <div class="form-group">

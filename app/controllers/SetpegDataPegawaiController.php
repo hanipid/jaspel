@@ -79,6 +79,8 @@ class SetpegDataPegawaiController extends ControllerBase
 
 	public function editAction($idPegawai)
 	{
+		// $getPegawai = Pegawai::getData(null,$idPegawai)->getFirst();
+		// var_dump($getPegawai);
 		$getPegawai = Pegawai::findFirstByIdPegawai($idPegawai);
 		$berkasPegawai = BerkasPegawai::findByIdPegawai($idPegawai);
 		$form = new DataPegawaiForm($getPegawai);
@@ -109,7 +111,9 @@ class SetpegDataPegawaiController extends ControllerBase
 
 	      	} 
 	      }
-
+	      if (!$file->getName()) {
+	      	Pegawai::updateData($idPegawai, $data, $getPegawai->foto);
+	      }
 	    } else {
 				Pegawai::updateData($idPegawai, $data);
 	    }
@@ -151,10 +155,11 @@ class SetpegDataPegawaiController extends ControllerBase
 			      $berkasPegawai->idPegawai = $idPegawai;
 			      if ($file->moveTo($upload_dir . $berkas) && $berkasPegawai->save()) {
 			      	$this->flashSession->success($berkas.' has been successfully uploaded.');
+			      	return $this->response->redirect('setpeg-data-pegawai/edit/'.$idPegawai.'#berkas');
 			      } else {
 			      	$this->flashSession->error($berkas.' could not be uploaded.');
+			      	return $this->response->redirect('setpeg-data-pegawai/edit/'.$idPegawai.'#berkas');
 			      }
-			      return $this->response->redirect('setpeg-data-pegawai/edit/'.$idPegawai.'#berkas');
 
 	      	}
 	      }

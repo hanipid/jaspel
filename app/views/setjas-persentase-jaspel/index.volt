@@ -7,12 +7,12 @@
 </style>
 {{ content() }}
 
-<form>
+<form method="post" action="">
   <div class="col-md-4 col-sm-6 col-xs-12">
     <div class="info-box">
       <span class="info-box-icon bg-red">
         <small><strong>Direksi & Jasa</strong></small>
-        <p><strong>0%</strong></p>
+        <p><strong id="persentase1"></strong></p>
       </span>
 
       <div class="info-box-content" style="margin-left: 160px;">
@@ -42,7 +42,7 @@
     <div class="info-box">
       <span class="info-box-icon bg-yellow">
         <small><strong>Jasa</strong></small>
-        <p><strong>80%</strong></p>
+        <p><strong id="persentase2"></strong></p>
       </span>
 
       <div class="info-box-content" style="margin-left: 160px;">
@@ -72,7 +72,7 @@
     <div class="info-box">
       <span class="info-box-icon bg-green">
         <small><strong>JPL</strong></small>
-        <p><strong>100%</strong></p>
+        <p><strong id="persentase3"></strong></p>
       </span>
 
       <div class="info-box-content" style="margin-left: 160px;">
@@ -85,9 +85,9 @@
         </div>
 
         <div class="form-group">
-          <label for="jplFix">Persentase JPL Fix</label>
+          <label for="jasaFix">Persentase JPL Fix</label>
           <div class="input-group">
-            {{ form.render("jplFix") }}
+            {{ form.render("jasaFix") }}
             <span class="input-group-addon">%</span>
           </div>
         </div>
@@ -102,3 +102,28 @@
     {{ submit_button("Save", "class": "btn btn-primary") }}
   </div>
 </form>
+
+<script>
+$(document).ready(function() {
+  let direksi = parseFloat($("#direksi").val());
+  let jasa = parseFloat($("#jasa").val());
+  let jpu = parseFloat($("#jpu").val());
+  let jpl = parseFloat($("#jpl").val());
+  let admin = parseFloat($("#admin").val());
+  let jasaFix = parseFloat($("#jasaFix").val());
+  $("#persentase1").html( direksi+jasa + "%");
+  $("#persentase2").html( jpu+jpl + "%");
+  $("#persentase3").html( admin+jasaFix + "%");
+});
+$("body").on("keyup", function() {
+  let direksi = parseFloat($("#direksi").val());
+  let jasa = parseFloat($("#jasa").val());
+  let jpu = parseFloat($("#jpu").val());
+  let jpl = parseFloat($("#jpl").val());
+  let admin = parseFloat($("#admin").val());
+  let jasaFix = parseFloat($("#jasaFix").val());
+  $("#persentase1").html( direksi+jasa + "%");
+  $("#persentase2").html( jpu+jpl + "%");
+  $("#persentase3").html( admin+jasaFix + "%");
+});
+</script>
