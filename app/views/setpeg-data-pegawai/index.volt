@@ -46,7 +46,7 @@
             <th>{{pegawai.indexIE}}</th>
             <th>{{pegawai.indexIP}}</th>
             <th>{{pegawai.indexPerform}}</th>
-            {% set skor = pegawai.indexIB + pegawai.indexIK + pegawai.indexIR + pegawai.indexIE + pegawai.indexIP + pegawai.indexPerform %}
+            {% set skor = pegawai.indexIB + pegawai.indexIK + pegawai.indexIR + pegawai.indexIE + pegawai.indexIP + pegawai.indexPerform + pegawai.skorTambahan %}
             <th>{{skor}}</th>
             <td>{{pegawai.gajiPokok}}</td>
             <td width="2%">{{ link_to("setpeg-data-pegawai/edit/" ~ pegawai.idPegawai, '<i class="glyphicon glyphicon-pencil"></i> Edit', "class": "btn btn-primary") }}</td>

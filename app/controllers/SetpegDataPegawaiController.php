@@ -10,6 +10,7 @@ use Jaspel\Forms\DataPegawaiForm;
  */
 class SetpegDataPegawaiController extends ControllerBase
 {
+	public $upload_dir = BASE_PATH . '/public/uploads/photos/';
 	
 	public function initialize()
 	{
@@ -56,14 +57,16 @@ class SetpegDataPegawaiController extends ControllerBase
 	      			$file->getExtension() == 'jpeg' || $file->getExtension() == 'JPEG' || 
 	      			$file->getExtension() == 'gif' || $file->getExtension() == 'GIF') {
 
-	      		$upload_dir = __DIR__ . '/../../public/uploads/photos/';
+	      		// $upload_dir = __DIR__ . '/../../public/uploads/photos/';
 	      		$foto = substr($data['namaPegawai'], 0, 6) . $random->base64Safe(8) . '.' . $file->getExtension();
-	      		if (!is_dir($upload_dir)) {
-			        mkdir($upload_dir, 0755);
+	      		if (!is_dir($this->upload_dir)) {
+			        mkdir($this->upload_dir, 0755);
 			      }
-	        	$file->moveTo($upload_dir . $foto);
-	        	$this->flashSession->success($foto.' has been successfully uploaded.');
-
+	        	if($file->moveTo($this->upload_dir . $foto)){
+	        		$this->flashSession->success($foto.' has been successfully uploaded.');
+        		} else {
+        			$this->flashSession->error($foto.' could not be uploaded.');
+        		}
 	      	} 
 	      }
 				Pegawai::addData($data, $foto);
@@ -98,15 +101,17 @@ class SetpegDataPegawaiController extends ControllerBase
 	      			$file->getExtension() == 'jpeg' || $file->getExtension() == 'JPEG' || 
 	      			$file->getExtension() == 'gif' || $file->getExtension() == 'GIF') {
 
-	      		$upload_dir = __DIR__ . '/../../public/uploads/photos/';
+	      		// $upload_dir = __DIR__ . '/../../public/uploads/photos/';
 	      		$foto = substr($data['namaPegawai'], 0, 6) . $random->base64Safe(8) . '.' . $file->getExtension();
-	      		if (!is_dir($upload_dir)) {
-			        mkdir($upload_dir, 0755);
+	      		if (!is_dir($this->upload_dir)) {
+			        mkdir($this->upload_dir, 0755);
 			      }
-			      unlink($upload_dir . $getPegawai->foto);
-	        	if ($file->moveTo($upload_dir . $foto)) {
+			      unlink($this->upload_dir . $getPegawai->foto);
+	        	if($file->moveTo($this->upload_dir . $foto)){
 	        		$this->flashSession->success($foto.' has been successfully uploaded.');
-	        	}
+        		} else {
+        			$this->flashSession->error($foto.' could not be uploaded.');
+        		}
 	        	Pegawai::updateData($idPegawai, $data, $foto);
 
 	      	} 
@@ -128,7 +133,10 @@ class SetpegDataPegawaiController extends ControllerBase
 
 	public function deleteAction($id)
 	{
+		$pegawai = Pegawai::findFirstByIdPegawai($id);
+		unlink($this->upload_dir . $pegawai->foto);
 		if (Pegawai::deleteData($id)) {
+	    $this->flashSession->success($pegawai->namaPegawai.' has been successfully deleted.');
 			return $this->response->redirect('setpeg-data-pegawai');
 		}
 		die('Error delete pegawai');
@@ -145,15 +153,15 @@ class SetpegDataPegawaiController extends ControllerBase
 	      	if ($file->getExtension() == 'doc' || $file->getExtension() == 'DOC' ||
 	      						$file->getExtension() == 'docx' || $file->getExtension() == 'DOCX' ||
 	      						$file->getExtension() == 'pdf' || $file->getExtension() == 'PDF') {
-	      		$upload_dir = __DIR__ . '/../../public/uploads/documents/';
+	      		$this->upload_dir = __DIR__ . '/../../public/uploads/documents/';
 	      		$berkas = $random->base64Safe(8) . '-' . $file->getName();
-	      		if (!is_dir($upload_dir)) {
-			        mkdir($upload_dir, 0755);
+	      		if (!is_dir($this->upload_dir)) {
+			        mkdir($this->upload_dir, 0755);
 			      }	        
 			      $berkasPegawai = new BerkasPegawai();
 			      $berkasPegawai->namaFile	= $berkas;
 			      $berkasPegawai->idPegawai = $idPegawai;
-			      if ($file->moveTo($upload_dir . $berkas) && $berkasPegawai->save()) {
+			      if ($file->moveTo($this->upload_dir . $berkas) && $berkasPegawai->save()) {
 			      	$this->flashSession->success($berkas.' has been successfully uploaded.');
 			      	return $this->response->redirect('setpeg-data-pegawai/edit/'.$idPegawai.'#berkas');
 			      } else {
@@ -170,9 +178,9 @@ class SetpegDataPegawaiController extends ControllerBase
 
 	public function deleteFileAction($idBerkasPegawai)
 	{
-		$upload_dir = __DIR__ . '/../../public/uploads/documents/';
+		$this->upload_dir = __DIR__ . '/../../public/uploads/documents/';
 		$berkasPegawai = BerkasPegawai::findFirstByIdBerkasPegawai($idBerkasPegawai);
-		if ($berkasPegawai->delete() && unlink($upload_dir . $berkasPegawai->namaFile)) {
+		if ($berkasPegawai->delete() && unlink($this->upload_dir . $berkasPegawai->namaFile)) {
     	$this->flashSession->success($berkasPegawai->namaFile.' has been successfully deleted.');
     	return $this->response->redirect('setpeg-data-pegawai/edit/'.$berkasPegawai->idPegawai.'#berkas');
 		}

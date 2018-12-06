@@ -178,6 +178,16 @@ class DataPegawaiForm extends Form
 		]);
 		$this->add($indexPerform);
 		
+		$skorTambahan = new Text('skorTambahan', [
+			'class' => 'form-control'
+		]);
+		$skorTambahan->addValidators([
+			new PresenceOf([
+				'Skor tambahan harus diisi'
+			])
+		]);
+		$this->add($skorTambahan);
+		
 		$gajiPokok = new Text('gajiPokok', [
 			'class' => 'form-control'
 		]);

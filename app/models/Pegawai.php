@@ -26,6 +26,7 @@ class Pegawai extends Model
   public $indexIE;
   public $indexIP;
   public $indexPerform;
+  public $skorTambahan;
   public $gajiPokok;
   public $statusPns;
   public $tmpPns;
@@ -66,6 +67,9 @@ class Pegawai extends Model
         'message' => 'Pegawai cannot be deleted because it\'s used on BerkasPegawai'
       ]
     ]);
+    $this->hasMany('idPegawai', __NAMESPACE__ . '\DireksiManajemen', 'idPegawai', [
+      'alias' => 'direksiManajemen'
+    ]);
   }
 
   public static function getData($method = null, $id = null) {
@@ -76,14 +80,14 @@ class Pegawai extends Model
   }
 
   public static function addData($pegawai = NULL, $foto = NULL) {
-    $sql = "CALL `pegawaiCreate`('$pegawai[jenisKelamin]','$pegawai[namaPegawai]','$pegawai[gelarDepan]','$pegawai[gelarBelakang]','$pegawai[posisiStatus]','$pegawai[nip]','$pegawai[tempatLahir]','$pegawai[tanggalLahir]','$pegawai[eselon]','$pegawai[indexIB]','$pegawai[indexIK]','$pegawai[indexIR]','$pegawai[indexIE]','$pegawai[indexIP]','$pegawai[indexPerform]','$pegawai[gajiPokok]','$pegawai[statusPns]','$pegawai[tmpPns]','$pegawai[idGolongan]','$pegawai[idPangkat]','$pegawai[idGolonganRuang]','$pegawai[tmt]','$pegawai[telepon]','$pegawai[email]','$pegawai[idJenjang]','$pegawai[namaSekolah]','$pegawai[idJabatan]','$pegawai[bank]','$pegawai[noRekening]','$pegawai[alamat]','$pegawai[keterangan]','$pegawai[statusAktif]','$foto')";
+    $sql = "CALL `pegawaiCreate`('$pegawai[jenisKelamin]','$pegawai[namaPegawai]','$pegawai[gelarDepan]','$pegawai[gelarBelakang]','$pegawai[posisiStatus]','$pegawai[nip]','$pegawai[tempatLahir]','$pegawai[tanggalLahir]','$pegawai[eselon]','$pegawai[indexIB]','$pegawai[indexIK]','$pegawai[indexIR]','$pegawai[indexIE]','$pegawai[indexIP]','$pegawai[indexPerform]', '$pegawai[skorTambahan]','$pegawai[gajiPokok]','$pegawai[statusPns]','$pegawai[tmpPns]','$pegawai[idGolongan]','$pegawai[idPangkat]','$pegawai[idGolonganRuang]','$pegawai[tmt]','$pegawai[telepon]','$pegawai[email]','$pegawai[idJenjang]','$pegawai[namaSekolah]','$pegawai[idJabatan]','$pegawai[bank]','$pegawai[noRekening]','$pegawai[alamat]','$pegawai[keterangan]','$pegawai[statusAktif]','$foto')";
     $pegawai = new Pegawai();
     return $pegawai->getReadConnection()->query($sql);
     // return new Resultset(null, $pegawai, $pegawai->getReadConnection()->query($sql));
   }
 
   public static function updateData($id, $pegawai = NULL, $foto = NULL) {
-    $sql = "CALL `pegawaiUpdate`('$id', '$pegawai[jenisKelamin]','$pegawai[namaPegawai]','$pegawai[gelarDepan]','$pegawai[gelarBelakang]','$pegawai[posisiStatus]','$pegawai[nip]','$pegawai[tempatLahir]','$pegawai[tanggalLahir]','$pegawai[eselon]','$pegawai[indexIB]','$pegawai[indexIK]','$pegawai[indexIR]','$pegawai[indexIE]','$pegawai[indexIP]','$pegawai[indexPerform]','$pegawai[gajiPokok]','$pegawai[statusPns]','$pegawai[tmpPns]','$pegawai[idGolongan]','$pegawai[idPangkat]','$pegawai[idGolonganRuang]','$pegawai[tmt]','$pegawai[telepon]','$pegawai[email]','$pegawai[idJenjang]','$pegawai[namaSekolah]','$pegawai[idJabatan]','$pegawai[bank]','$pegawai[noRekening]','$pegawai[alamat]','$pegawai[keterangan]','$pegawai[statusAktif]','$foto')";
+    $sql = "CALL `pegawaiUpdate`('$id', '$pegawai[jenisKelamin]','$pegawai[namaPegawai]','$pegawai[gelarDepan]','$pegawai[gelarBelakang]','$pegawai[posisiStatus]','$pegawai[nip]','$pegawai[tempatLahir]','$pegawai[tanggalLahir]','$pegawai[eselon]','$pegawai[indexIB]','$pegawai[indexIK]','$pegawai[indexIR]','$pegawai[indexIE]','$pegawai[indexIP]','$pegawai[indexPerform]', '$pegawai[skorTambahan]','$pegawai[gajiPokok]','$pegawai[statusPns]','$pegawai[tmpPns]','$pegawai[idGolongan]','$pegawai[idPangkat]','$pegawai[idGolonganRuang]','$pegawai[tmt]','$pegawai[telepon]','$pegawai[email]','$pegawai[idJenjang]','$pegawai[namaSekolah]','$pegawai[idJabatan]','$pegawai[bank]','$pegawai[noRekening]','$pegawai[alamat]','$pegawai[keterangan]','$pegawai[statusAktif]','$foto')";
     $pegawai = new Pegawai();
     return $pegawai->getReadConnection()->query($sql);
     // return new Resultset(null, $pegawai, $pegawai->getReadConnection()->query($sql));

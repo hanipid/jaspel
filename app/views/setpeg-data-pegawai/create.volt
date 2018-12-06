@@ -117,9 +117,13 @@
           <label for="indexIP">IP</label>
           {{ form.render("indexIP") }}
         </div>
-        <div class="form-group col-md-2">
+        <div class="form-group col-md-1">
           <label for="indexPerform">Perform</label>
           {{ form.render("indexPerform") }}
+        </div>
+        <div class="form-group col-md-2">
+          <label for="skorTambahan">Skor Tambahan</label>
+          {{ form.render("skorTambahan") }}
         </div>
         <div class="form-group col-md-2">
           <label for="skor">Skor</label>
@@ -309,3 +313,17 @@
   </div>
   <!-- /.box -->
 </div>
+
+<script>
+$("body").on("keyup", () => {
+  var perform = Number($("#indexPerform").val());
+  var IP = Number($("#indexIP").val());
+  var IE = Number($("#indexIE").val());
+  var IR = Number($("#indexIR").val());
+  var IK = Number($("#indexIK").val());
+  var IB = Number($("#indexIB").val());
+  var ST = Number($("#skorTambahan").val());
+  var skor = perform+IP+IE+IR+IK+IB+ST;
+  $("#skor").val( skor );
+});
+</script>

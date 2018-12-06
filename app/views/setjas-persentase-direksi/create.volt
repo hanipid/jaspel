@@ -36,8 +36,8 @@
             {% for p in page.items %}
             <tr>
               <td>1</td>
-              <td>{{p.namaPegawai}}</td>
-              <td>{{ check_field("pegawai", "value": p.namaPegawai, "id":"p"~p.idPegawai, "name": "pegawai[]") }}</td>
+              <td>{{p.namaPegawai|capitalize}}</td>
+              <td>{{ check_field("pegawai", "value": p.idPegawai, "id":"p"~p.idPegawai, "name": "pegawai[]") }}</td>
             </tr>
             {% endfor %}
           </tbody>

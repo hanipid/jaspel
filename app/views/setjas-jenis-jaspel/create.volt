@@ -23,9 +23,12 @@
           {{ form.render("namaJaspel") }}
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="nilaiKonversi">
           <label for="konversiJaspel">Nilai Konversi</label>
-          {{ form.render("konversiJaspel") }}
+          <div class="input-group">
+            {{ form.render("konversiJaspel") }}
+            <span class="input-group-addon">%</span>
+          </div>
         </div>
 
         <div class="form-group">
@@ -46,3 +49,19 @@
   </div> <!-- /.col-md-6 -->
 
 </form>
+
+<script>
+$(function() {
+  function myFunction() {
+    if ($("#tipeJaspel").val() == "non konversi") {
+      $("#nilaiKonversi").hide();
+    } else {
+      $("#nilaiKonversi").show();
+    }
+  }
+  $(document).ready(myFunction());
+  $("#tipeJaspel").on("change", function () {
+    myFunction();
+  });
+});
+</script>
