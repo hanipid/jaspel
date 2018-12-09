@@ -19,7 +19,7 @@ class RuanganController extends ControllerBase
 
 	public function indexAction()
 	{
-		$query = "SELECT r.id,count(rjp.id) jumlahPelayanan,r.namaRuang
+		$query = "SELECT r.id,count(rjp.id) jumlahPelayanan,r.namaRuang,r.jenisRuang
 							FROM Jaspel\Models\Ruangan r
 							LEFT JOIN Jaspel\Models\RuanganJenisPelayanan rjp ON r.id=rjp.idRuangan
 							GROUP BY r.id";

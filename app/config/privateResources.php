@@ -135,6 +135,13 @@ return new Config([
       'createPesan',
     ],
     
+    'pegawai-ruangan' => [
+      'index',
+      'create',
+      'edit',
+      'delete'
+    ],
+    
 //     DASHBOARD
     'dashboard-instalasi' => [
       'index'

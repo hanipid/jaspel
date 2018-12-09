@@ -43,6 +43,7 @@
 </div>
 <!-- /.col-md-12 -->
 
+{% if ruangan.jenisRuang == "pelayanan" %}
 <div class="col-md-12">
   <div class="box box-primary">
     <div class="box-header with-border">
@@ -88,12 +89,14 @@
     <!-- /.box-body -->
 
     <div class="box-footer">
-      {{ link_to("ruangan/edit/#", "Dokter 5", "class": "btn btn-info btn-lg") }}
-      {{ link_to("ruangan/edit/#", "Perawat / Non Perawat", "class": "btn btn-info btn-lg") }}
-      {{ link_to("ruangan/edit/#", "History Jaspel", "class": "btn btn-info btn-lg") }}
     </div>
 
   </div>
   <!-- /.box -->
 </div>
 <!-- /.col-md-12 -->
+{% endif %}
+
+{{ link_to("ruangan/edit/#", "Dokter 5", "class": "btn btn-info btn-lg") }}
+{{ link_to("ruangan/edit/#", "Perawat / Non Perawat", "class": "btn btn-info btn-lg") }}
+{{ link_to("ruangan/edit/#", "History Jaspel", "class": "btn btn-info btn-lg") }}

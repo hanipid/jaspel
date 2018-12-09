@@ -20,6 +20,7 @@
           <tr>
             <th width="3%">No</th>
             <th>Nama Ruangan</th>
+            <th>Jenis Ruangan</th>
             <th>Jumlah Pelayanan</th>
             <th></th>
             <th></th>
@@ -30,7 +31,8 @@
           {% for rjp in ruanganJenisPelayanan %}
           <tr>
             <td>{{loop.index}}</td>
-            <td>{{rjp.namaRuang}}</td>
+            <td>{{rjp.namaRuang|capitalize}}</td>
+            <td>{{rjp.jenisRuang|capitalize}}</td>
             <td><span class="btn btn-success">{{rjp.jumlahPelayanan}}</span></td>
             <td width="2%">{{ link_to("ruangan/edit/" ~ rjp.id, '<i class="glyphicon glyphicon-pencil"></i> Detail', "class": "btn btn-primary") }}</td>
             <td width="2%">{{ link_to("ruangan/delete/" ~ rjp.id, '<i class="glyphicon glyphicon-remove"></i> Delete', "class": "btn btn-danger", "onclick": "return confirm('Are you sure?')") }}</td>
@@ -50,6 +52,6 @@
 
 <script>
 $(document).ready(function() {
-    $('#dataTable').DataTable();
+    $('#dataTable').dataTables();
 } );
 </script>

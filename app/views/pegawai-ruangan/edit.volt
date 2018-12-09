@@ -6,7 +6,7 @@
       <div class="box-header with-border">
         <h3 class="box-title">{{pegawaiRuangan.pegawai.namaPegawai|capitalize}}</h3>
         <div class="box-tools pull-right">
-          <a href="{{url('setjas-persentase-direksi')}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
+          <a href="{{url('pegawai-ruangan')}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
         </div>
       </div>
       <!-- /.box-header -->
@@ -14,11 +14,8 @@
       <div class="box-body">
         
         <div class="form-group">
-          <label for="persentase">Persentase Direksi</label>
-          <div class="input-group">
-            {{ text_field("persentase", "class": "form-control", "value": pegawaiRuangan.nilaiPersentase) }}
-            <span class="input-group-addon">%</span>
-          </div>
+          <label for="ruangan">Pilih ruangan</label>
+          {{ select("ruangan", ruangan, "using": ["id", "namaRuang"], "class": "form-control", "value": pegawaiRuangan.idRuangan) }}
         </div>
 
       </div>

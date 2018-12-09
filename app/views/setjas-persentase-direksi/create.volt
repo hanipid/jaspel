@@ -13,7 +13,7 @@
 
       <div class="box-body">
         
-        <div class="form-inline">
+        {#<div class="form-inline">
           <div class="form-group">
             {{ text_field("search", "class": "form-control") }}
           </div>
@@ -21,7 +21,7 @@
           <div class="form-group">
             {{ submit_button("Cari", "class": "btn btn-primary") }}
           </div>
-        </div>
+        </div>#}
 
         <table class="table">
           <thead>

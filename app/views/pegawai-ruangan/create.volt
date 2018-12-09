@@ -1,3 +1,7 @@
+{{ stylesheet_link('vendor/almasaeed2010/adminlte/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css') }}
+{{ javascript_include('vendor/almasaeed2010/adminlte/bower_components/datatables.net/js/jquery.dataTables.min.js') }}
+{{ javascript_include('vendor/almasaeed2010/adminlte/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js') }}
+
 {{ content() }}
 
 <form method="post" action="">
@@ -6,7 +10,7 @@
       <div class="box-header with-border">
         <h3 class="box-title">List Pegawai</h3>
         <div class="box-tools pull-right">
-          <a href="{{url('setjas-persentase-manajemen')}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
+          <a href="{{url('setjas-persentase-direksi')}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
         </div>
       </div>
       <!-- /.box-header -->
@@ -23,7 +27,7 @@
           </div>
         </div>#}
 
-        <table class="table">
+      	<table id="dataTable" class="table table-bordered table-striped" align="center">
           <thead>
             <tr>
               <th width="2%">No.</th>
@@ -33,7 +37,7 @@
           </thead>
 
           <tbody>
-            {% for p in page.items %}
+            {% for p in pegawai %}
             <tr>
               <td>1</td>
               <td>{{p.namaPegawai|capitalize}}</td>
@@ -41,19 +45,19 @@
             </tr>
             {% endfor %}
           </tbody>
-          <tfoot>
+          {#<tfoot>
             <tr>
               <td colspan="10" align="right">
                 <ul class="pagination pagination-sm no-margin pull-right">
-                  <li>{{ link_to("setpeg-persentase-manajemen/", '<i class="glyphicon glyphicon-fast-backward"></i> First') }}</li>
-                  <li>{{ link_to("setpeg-persentase-manajemen/?page=" ~ page.before, '<i class="glyphicon glyphicon-step-backward"></i> Previous') }}</li>
-                  <li>{{ link_to("setpeg-persentase-manajemen/?page=" ~ page.next, '<i class="glyphicon glyphicon-step-forward"></i> Next') }}</li>
-                  <li>{{ link_to("setpeg-persentase-manajemen/?page=" ~ page.last, '<i class="glyphicon glyphicon-fast-forward"></i> Last') }}</li>
+                  <li>{{ link_to("setpeg-persentase-direksi/", '<i class="glyphicon glyphicon-fast-backward"></i> First') }}</li>
+                  <li>{{ link_to("setpeg-persentase-direksi/?page=" ~ page.before, '<i class="glyphicon glyphicon-step-backward"></i> Previous') }}</li>
+                  <li>{{ link_to("setpeg-persentase-direksi/?page=" ~ page.next, '<i class="glyphicon glyphicon-step-forward"></i> Next') }}</li>
+                  <li>{{ link_to("setpeg-persentase-direksi/?page=" ~ page.last, '<i class="glyphicon glyphicon-fast-forward"></i> Last') }}</li>
                   <li><span class="help-inline">{{ page.current }}/{{ page.total_pages }}</span></li>
                 </ul>
               </td>
             </tr>
-          </tfoot>
+          </tfoot>#}
         </table>
 
       </div>
@@ -68,14 +72,11 @@
               <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Persentase</h4>
+                <h4 class="modal-title">Pilih ruangan</h4>
               </div>
               <div class="modal-body">
                 <div class="form-group">
-                  <div class="input-group">
-                    {{text_field("persentase", "class": "form-control")}}
-                    <span class="input-group-addon">%</span>
-                  </div>
+                  {{select("ruangan", ruangan, "using" : ["id", "namaRuang"], "class": "form-control")}}
                 </div>
               </div>
               <div class="modal-footer">
@@ -95,3 +96,9 @@
   </div>
   <!-- /.col-md-12 -->
 </form>
+
+<script>
+$(document).ready(function() {
+    $('#dataTable').dataTables();
+} );
+</script>

@@ -40,7 +40,7 @@ class MenusForm extends Form
                 'parent', 
                 Menus::find([
                     "parent = 0",
-                    "bind" => [1 => $entity->id],
+                    // "bind" => [1 => $entity->id],
                     "order" => "sort asc"
                 ]), 
                 [
