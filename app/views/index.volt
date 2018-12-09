@@ -3,7 +3,7 @@
   <head>
     <title>Welcome to Vökuró</title>
     {{ stylesheet_link("css/fonts.css") }}
-    {{ stylesheet_link("vendor/almasaeed2010/adminlte/bower_components/jquery-ui/themes/ui-darkness/jquery-ui.min.css") }}
+    {{ stylesheet_link("vendor/almasaeed2010/adminlte/bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css") }}
     {{ stylesheet_link("vendor/almasaeed2010/adminlte/bower_components/bootstrap/dist/css/bootstrap.min.css") }}
     {{ stylesheet_link("vendor/almasaeed2010/adminlte/bower_components/font-awesome/css/font-awesome.min.css") }}
     {{ stylesheet_link("vendor/almasaeed2010/adminlte/bower_components/ionicons/css/ionicons.min.css") }}

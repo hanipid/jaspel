@@ -45,10 +45,10 @@
             <tr>
               <td colspan="10" align="right">
                 <ul class="pagination pagination-sm no-margin pull-right">
-                  <li>{{ link_to("setpeg-persentase-direksi/search", '<i class="glyphicon glyphicon-fast-backward"></i> First') }}</li>
-                  <li>{{ link_to("setpeg-persentase-direksi/search?page=" ~ page.before, '<i class="glyphicon glyphicon-step-backward"></i> Previous') }}</li>
-                  <li>{{ link_to("setpeg-persentase-direksi/search?page=" ~ page.next, '<i class="glyphicon glyphicon-step-forward"></i> Next') }}</li>
-                  <li>{{ link_to("setpeg-persentase-direksi/search?page=" ~ page.last, '<i class="glyphicon glyphicon-fast-forward"></i> Last') }}</li>
+                  <li>{{ link_to("setpeg-persentase-direksi/", '<i class="glyphicon glyphicon-fast-backward"></i> First') }}</li>
+                  <li>{{ link_to("setpeg-persentase-direksi/?page=" ~ page.before, '<i class="glyphicon glyphicon-step-backward"></i> Previous') }}</li>
+                  <li>{{ link_to("setpeg-persentase-direksi/?page=" ~ page.next, '<i class="glyphicon glyphicon-step-forward"></i> Next') }}</li>
+                  <li>{{ link_to("setpeg-persentase-direksi/?page=" ~ page.last, '<i class="glyphicon glyphicon-fast-forward"></i> Last') }}</li>
                   <li><span class="help-inline">{{ page.current }}/{{ page.total_pages }}</span></li>
                 </ul>
               </td>

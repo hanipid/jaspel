@@ -70,6 +70,9 @@ class Pegawai extends Model
     $this->hasMany('idPegawai', __NAMESPACE__ . '\DireksiManajemen', 'idPegawai', [
       'alias' => 'direksiManajemen'
     ]);
+    $this->hasMany('idPegawai', __NAMESPACE__ . '\VDireksiManajemen', 'idPegawai', [
+      'alias' => 'vDireksiManajemen'
+    ]);
   }
 
   public static function getData($method = null, $id = null) {

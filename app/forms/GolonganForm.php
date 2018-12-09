@@ -46,10 +46,10 @@ class GolonganForm extends Form
 		]);
 		$pajak->addValidators([
 			new PresenceOf([
-				'Pasal harus diisi'
+				'Pajak harus diisi'
 			]),
 			new Numericality([
-				'Pasal harus angka'
+				'Pajak harus angka'
 			])
 		]);
 		$this->add($pajak);

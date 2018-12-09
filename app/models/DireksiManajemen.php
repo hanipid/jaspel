@@ -2,6 +2,7 @@
 namespace Jaspel\Models;
 
 use Phalcon\Mvc\Model;
+use Phalcon\Mvc\Model\Resultset\Simple as Resultset;
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\Uniqueness;
 
@@ -24,15 +25,4 @@ class DireksiManajemen extends Model
 			'alias' => 'pegawai'
 		]);
 	}
-
-  // public function validation()
-  // {
-  //   $validator = new Validation();
-
-  //   $validator->add('idPegawai', new Uniqueness([
-  //     "message" => "Pegawai tersebut sudah terdaftar menjadi Direksi atau Manajemen."
-  //   ]));
-
-  //   return $this->validate($validator);
-  // }
 }

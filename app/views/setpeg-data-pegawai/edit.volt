@@ -276,7 +276,7 @@
       <div class="box-body">
         <!-- <div class="form-inline"> -->
           <div class="form-group col-md-9">
-            {{ file_field("berkas", "class": "") }}
+            {{ file_field("berkas", "class": "", "required": "required") }}
           </div>
           <div class="form-group col-md-3">
             {{ submit_button("Upload", "class": "btn btn-info btn-block") }}

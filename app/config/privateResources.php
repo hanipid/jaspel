@@ -98,14 +98,15 @@ return new Config([
       'edit',
       'delete'
     ],
-    'setjas-instalasi' => [
+    'ruangan' => [
       'index',
       'create',
       'edit',
       'delete',
       'createPelayanan',
       'editPelayanan',
-      'deletePelayanan'
+      'deletePelayanan',
+      'getJenisPelayanan'
     ],
 	// Setting Poli
     'setins-pengajuan-jaspel' => [

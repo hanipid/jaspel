@@ -1,21 +1,25 @@
 {{ content() }}
 
-<div class="col-md-5">
+<div class="col-md-12">
   <div class="box box-primary">
     <div class="box-header with-border">
-      <h3 class="box-title">Instalasi Baru</h3>
+      <h3 class="box-title">Ruangan Baru</h3>
       <div class="box-tools pull-right">
-        <a href="{{url('setjas-instalasi')}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
+        <a href="{{url('ruangan')}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
       </div>
     </div>
     <!-- /.box-header -->
 
-    <div class="box-body">
+    <div class="box-body text-center">
       
       <form method="post" class="form-inline">
         <div class="form-inline">
           <div class="form-group">
-            {{ text_field("namaInstalasi", "class": "form-control input-lg", "placeholder": "Nama Instalasi") }}
+            {{ form.render("namaRuang") }}
+          </div>
+
+          <div class="form-group">
+            {{ form.render("jenisRuang") }}
           </div>
 
           <div class="form-group">

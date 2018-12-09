@@ -1,5 +1,38 @@
 {{ content() }}
 
+{#
+<div class="col-md-12">
+  <div class="box box-primary">
+    <div class="box-header with-border">
+      <h3 class="box-title">Rentang Waktu</h3>
+      <div class="box-tools pull-right">
+      </div>
+    </div>
+    <!-- /.box-header -->
+
+    <div class="box-body">
+      
+      <form class="form-inline" method="post" action="">
+        <div class="form-group">
+          <label for="tanggalAwal">Tanggal Awal</label>
+          <input type="date" class="form-control" id="tglAwal" name="tglAwal" placeholder="Tanggal Awal">
+        </div>
+        <div class="form-group">
+          <label for="tanggalAkhir">Tanggal Akhir</label>
+          <input type="date" class="form-control" id="tglAkhir" name="tglAkhir" placeholder="Tanggal Akhir">
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+      </form>
+
+    </div>
+    <!-- /.box-body -->
+
+  </div>
+  <!-- /.box -->
+</div>
+<!-- /.col-md-12 -->
+#}
+
 <div class="col-md-12">
   <div class="box box-primary">
     <div class="box-header with-border">
@@ -11,6 +44,7 @@
     <!-- /.box-header -->
 
     <div class="box-body">
+      
       <table class="table table-bordered table-striped" align="center">
         <thead>
           <tr>
@@ -28,7 +62,7 @@
             <td>{{d1.pegawai.namaPegawai|capitalize}}</td>
             <td>{{d1.nilaiPersentase}}%</td>
             <td width="2%">{{ link_to("setjas-persentase-direksi/edit/" ~ d1.id, '<i class="glyphicon glyphicon-pencil"></i> Edit', "class": "btn btn-primary") }}</td>
-            <td width="2%">{{ link_to("setjas-persentase-direksi/delete/" ~ d1.id, '<i class="glyphicon glyphicon-remove"></i> Delete', "class": "btn btn-danger", "onclick": "return confirm('Are you sure?')") }}</td>
+            <td width="2%">{{ link_to("setjas-persentase-direksi/delete/" ~ d1.id, '<i class="glyphicon glyphicon-remove"></i> Non Aktif', "class": "btn btn-danger", "onclick": "return confirm('Are you sure?')") }}</td>
           </tr>
           {% set persentase1 += d1.nilaiPersentase %}
           {% endfor %}
@@ -78,7 +112,7 @@
             <td>{{d2.pegawai.namaPegawai|capitalize}}</td>
             <td>{{d2.nilaiPersentase}}%</td>
             <td width="2%">{{ link_to("setjas-persentase-direksi/edit/" ~ d2.id, '<i class="glyphicon glyphicon-pencil"></i> Edit', "class": "btn btn-primary") }}</td>
-            <td width="2%">{{ link_to("setjas-persentase-direksi/delete/" ~ d2.id, '<i class="glyphicon glyphicon-remove"></i> Delete', "class": "btn btn-danger", "onclick": "return confirm('Are you sure?')") }}</td>
+            <td width="2%">{{ link_to("setjas-persentase-direksi/delete/" ~ d2.id, '<i class="glyphicon glyphicon-remove"></i> Non Aktif', "class": "btn btn-danger", "onclick": "return confirm('Are you sure?')") }}</td>
           </tr>
           {% set persentase2 += d2.nilaiPersentase %}
           {% endfor %}

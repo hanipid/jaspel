@@ -1,3 +1,6 @@
+  <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
 {{ content() }}
 
 <form method="post" class="form-inline">
@@ -7,7 +10,7 @@
       <div class="box-header with-border">
         <h3 class="box-title">Jenis Pelayanan</h3>
         <div class="box-tools pull-right">
-          <a href="{{url('setjas-instalasi')}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
+          <a href="{{url('ruangan')}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
         </div>
       </div>
       <!-- /.box-header -->
@@ -17,8 +20,8 @@
           
         <div class="row">
           <div class="form-group col-md-6">
-            <label for="namaJenisPelayanan">Nama Jenis Pelayanan</label>
-            {{ text_field("namaJenisPelayanan", "class": "form-control") }}
+            <label for="namaPelayanan">Nama Jenis Pelayanan</label>
+            {{ text_field("namaPelayanan", "class": "form-control") }}
           </div>
         </div>
 
@@ -26,17 +29,25 @@
           
         <div class="row">
           <div class="form-group col-md-6">
-            <label for="sarana">Sarana</label>
+            <label for="persentaseSarana">Sarana</label>
             <div class="input-group">
-              {{ text_field("sarana", "class": "form-control") }}
+              {{ text_field("persentaseSarana", "class": "form-control") }}
               <span class="input-group-addon">%</span>
             </div>
           </div>
           
           <div class="form-group col-md-6">
-            <label for="pelayanan">Pelayanan</label>
+            <label for="persentasePelayanan">Pelayanan</label>
             <div class="input-group">
-              {{ text_field("pelayanan", "class": "form-control") }}
+              {{ text_field("persentasePelayanan", "class": "form-control") }}
+              <span class="input-group-addon">%</span>
+            </div>
+          </div>
+          
+          <div class="form-group col-md-6">
+            <label for="persentasePerawat">Perawat</label>
+            <div class="input-group">
+              {{ text_field("persentasePerawat", "class": "form-control") }}
               <span class="input-group-addon">%</span>
             </div>
           </div>
@@ -59,3 +70,12 @@
   <!-- /.col-md-12 -->
 
 </form>
+
+<script>
+  $( function() {
+    $( "#namaPelayanan" ).autocomplete({
+      source: <?= $arr; ?>,
+      minLength:1        
+    });
+  } );
+</script>

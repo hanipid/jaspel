@@ -50,6 +50,11 @@ cd public
 php composer.phar install
 ```
 
+### CodeMirror
+
+You need to download [CodeMirror](https://codemirror.net/codemirror.zip) and put it on `public` directory then extract and rename it to `codemirror`. 
+
+
 **NOTE** After the installation, please ensure that the following folders have write permissions set:
 - `cache`
 

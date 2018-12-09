@@ -4,7 +4,7 @@
     <nav class="navbar navbar-static-top">
       <div class="container-fluid">
         <div class="navbar-header">
-          {{ link_to(null, 'class': 'navbar-brand', 'VökuróLTE')}}
+          {{ link_to(null, 'class': 'navbar-brand', 'JASPEL')}}
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
             <i class="fa fa-bars"></i>
           </button>
@@ -47,12 +47,12 @@
   </div>
 
   <footer>
-  Made with love by the Phalcon Team
+  {# Made with love by the Phalcon Team
 
       {{ link_to("privacy", "Privacy Policy") }}
       {{ link_to("terms", "Terms") }}
 
-  © {{ date("Y") }} Phalcon Team.
+  © {{ date("Y") }} Phalcon Team.#}
   </footer>
 
 
