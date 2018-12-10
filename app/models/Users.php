@@ -167,5 +167,7 @@ class Users extends Model
                 'message' => 'User cannot be deleted because he/she has activity in the system'
             ]
         ]);
+
+        $this->hasOne('idPegawai', __NAMESPACE__ . '\Pegawai', 'idPegawai', ['alias' => 'pegawai']);
     }
 }

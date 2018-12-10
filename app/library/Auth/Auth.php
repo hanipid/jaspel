@@ -51,7 +51,9 @@ class Auth extends Component
             'id' => $user->id,
             'name' => $user->name,
             'profile' => $user->profile->name,
-            'profilesId' => $user->profilesId
+            'profilesId' => $user->profilesId,
+            'idRuangan' => $user->idRuangan,
+            'idPegawai' => $user->idPegawai
         ]);
     }
 

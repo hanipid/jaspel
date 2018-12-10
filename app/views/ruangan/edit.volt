@@ -76,7 +76,6 @@
             <td>{{rjp.jenisPelayanan.namaPelayanan}}</td>
             <td>{{rjp.persentaseSarana}}</td>
             <td>{{rjp.persentasePelayanan}}</td>
-            <td>{{ check_field("statusPelayanan") }}</td>
             <td width="2%">{{ link_to("ruangan/editPelayanan/" ~ rjp.id, '<i class="glyphicon glyphicon-pencil"></i> Detail', "class": "btn btn-primary") }}</td>
             <td width="2%">{{ link_to("ruangan/deletePelayanan/" ~ rjp.id, '<i class="glyphicon glyphicon-remove"></i> Delete', "class": "btn btn-danger", "onclick": "return confirm('Are you sure?')") }}</td>
           </tr>

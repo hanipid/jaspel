@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Welcome to Vökuró</title>
+    <title>Jasa Pelayanan RS. Mardi Waluyo</title>
     {{ stylesheet_link("css/fonts.css") }}
     {{ stylesheet_link("vendor/almasaeed2010/adminlte/bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css") }}
     {{ stylesheet_link("vendor/almasaeed2010/adminlte/bower_components/bootstrap/dist/css/bootstrap.min.css") }}

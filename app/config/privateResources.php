@@ -11,7 +11,9 @@ return new Config([
       'edit',
       'create',
       'delete',
-      'changePassword'
+      'changePassword',
+      'getPegawai',
+      'getRuangan'
     ],
     'profiles' => [
       'index',
@@ -120,7 +122,7 @@ return new Config([
       
       'createSplit'
     ],
-    'setins-pelayanan' => [
+    'pelayanan-bagian' => [
       'index',
       'create',
       'edit',

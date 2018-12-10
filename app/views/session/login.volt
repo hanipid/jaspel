@@ -1,36 +1,43 @@
 {{ content() }}
 
-<div align="center" class="well col-md-10 col-md-offset-1">
+<div class="login-box">
+  <div class="login-logo">
+    <a href="#"><strong>JASA PELAYANAN</strong></a>
+    <p>RS. MARDI WALUYO</p>
+  </div>
+  <!-- /.login-logo -->
+  <div class="login-box-body">
+    <p class="login-box-msg">Lengkapi form di bawah ini untuk mengakses JASPEL</p>
 
-	{{ form('class': 'form-inline') }}
-
-	<div class="text-left">
-		<h2>Log In</h2>
-	</div>
-
-		<div class="row">
-			<div class="form-group">
+    {{ form() }}
+      <div class="form-group has-feedback">
 				{{ form.render('email') }}
-			</div>
-			<div class="form-group">
+        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+      </div>
+      <div class="form-group has-feedback">
 				{{ form.render('password') }}
-				{{ form.render('go') }}
-			</div>
-		</div>
+        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+      </div>
+      <div class="row">
+        {#<div class="col-xs-8">
+          <div class="checkbox icheck">
+            <label>
+              <input type="checkbox"> Remember Me
+            </label>
+          </div>
+        </div>#}
+        <!-- /.col -->
+        <div class="col-xs-4">
+        	{{ form.render('csrf', ['value': security.getToken()]) }}
+          <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
+        </div>
+        <!-- /.col -->
+      </div>
+    </form>
+    <hr>
+    <a href="{{url('session/forgotPassword')}}">Lupa password, klik di sini.</a><br>
 
-		<div align="center" class="checkbox remember">
-			{#{ form.render('remember') }}
-			{{ form.label('remember') }#}
-		</div>
-
-		{{ form.render('csrf', ['value': security.getToken()]) }}
-
-		<hr>
-
-		<div class="forgot">
-			{{ link_to("session/forgotPassword", "Forgot my password") }}
-		</div>
-
-	</form>
-
+  </div>
+  <!-- /.login-box-body -->
 </div>
+<!-- /.login-box -->

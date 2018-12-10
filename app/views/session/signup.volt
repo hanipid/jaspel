@@ -1,6 +1,56 @@
 {{ content() }}
 
-<div align="center">
+<div class="login-box" style="margin: 2% auto;">
+  <div class="login-logo">
+    <a href="{{url('session/login')}}"><strong>JASA PELAYANAN</strong></a>
+    <p>RS. MARDI WALUYO</p>
+  </div>
+  <!-- /.login-logo -->
+  <div class="login-box-body">
+    <p class="login-box-msg">Lengkapi form di bawah ini untuk membuat akun baru.</p>
+
+    {{ form() }}
+      <div class="form-group has-feedback">
+				{{ form.render('name') }}
+				{{ form.messages('name') }}
+        <span class="glyphicon glyphicon-user form-control-feedback"></span>
+      </div>
+      <div class="form-group has-feedback">
+				{{ form.render('email') }}
+				{{ form.messages('email') }}
+        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+      </div>
+      <div class="form-group has-feedback">
+				{{ form.render('password') }}
+				{{ form.messages('password') }}
+        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+      </div>
+      <div class="form-group has-feedback">
+				{{ form.render('confirmPassword') }}
+				{{ form.messages('confirmPassword') }}
+        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+      </div>
+      <div class="form-group has-feedback">
+				<div class="remember">{{ form.render('terms') }} {{ form.label('terms') }}</div>
+				{{ form.messages('terms') }}
+      </div>
+      <div class="row">
+        <!-- /.col -->
+        <div class="col-xs-4">
+					{{ form.render('csrf', ['value': security.getToken()]) }}
+					{{ form.messages('csrf') }}
+          <button type="submit" class="btn btn-primary btn-block btn-flat">Sign Up</button>
+        </div>
+        <!-- /.col -->
+      </div>
+    </form>
+
+  </div>
+  <!-- /.login-box-body -->
+</div>
+<!-- /.login-box -->
+
+{#<div align="center">
 
 	{{ form('class': 'form-search') }}
 
@@ -57,4 +107,4 @@
 
 	</form>
 
-</div>
+</div>#}

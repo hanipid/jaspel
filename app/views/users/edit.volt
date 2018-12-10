@@ -38,6 +38,11 @@
                 {{ form.render("profilesId") }}
               </div>
 
+              <div class="form-group" id="ruang">
+                <label for="idRuangan">Ruangan</label>
+                {{ form.render("idRuangan") }}
+              </div>
+
               <div class="form-group">
                 <label for="suspended">Suspended?</label>
                 {{ form.render("suspended") }}
@@ -154,3 +159,21 @@
   </div>
   <!-- /.box -->
 </form>
+
+<script>
+if ($("#profilesId").val() != '4') {
+  $("#ruang").hide();
+}
+
+$(function() {
+
+  $("#profilesId").on("change", function(){
+    if ($(this).val() == 4) {
+      $("#ruang").show();
+    } else {
+      $("#ruang").hide();
+    }
+  })
+
+});
+</script>

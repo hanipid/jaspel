@@ -8,6 +8,8 @@ use Jaspel\Forms\ChangePasswordForm;
 use Jaspel\Forms\UsersForm;
 use Jaspel\Models\Users;
 use Jaspel\Models\PasswordChanges;
+use Jaspel\Models\Pegawai;
+use Jaspel\Models\Ruangan;
 
 /**
  * Jaspel\Controllers\UsersController
@@ -105,7 +107,9 @@ class UsersController extends ControllerBase
         $user = new Users([
           'name' => $this->request->getPost('name', 'striptags'),
           'profilesId' => $this->request->getPost('profilesId', 'int'),
-          'email' => $this->request->getPost('email', 'email')
+          'email' => $this->request->getPost('email', 'email'),
+          'idPegawai' => $this->request->getPost('idPegawai', 'int'),
+          'idRuangan' => $this->request->getPost('idRuangan', 'int')
         ]);
 
         if (!$user->save()) {
@@ -114,7 +118,7 @@ class UsersController extends ControllerBase
 
           $this->flash->success("User was created successfully");
 
-          Tag::resetInput();
+          // Tag::resetInput();
         }
       }
     }
@@ -144,7 +148,8 @@ class UsersController extends ControllerBase
         'email' => $this->request->getPost('email', 'email'),
         'banned' => $this->request->getPost('banned'),
         'suspended' => $this->request->getPost('suspended'),
-        'active' => $this->request->getPost('active')
+        'active' => $this->request->getPost('active'),
+        'idRuangan' => $this->request->getPost('idRuangan', 'int')
       ]);
 
       $form = new UsersForm($user, [
@@ -165,7 +170,7 @@ class UsersController extends ControllerBase
 
           $this->flash->success("User was updated successfully");
 
-          Tag::resetInput();
+          // Tag::resetInput();
         }
       }
     }
@@ -235,11 +240,29 @@ class UsersController extends ControllerBase
 
           $this->flash->success('Your password was successfully changed');
 
-          Tag::resetInput();
+          // Tag::resetInput();
         }
       }
     }
 
     $this->view->form = $form;
+  }
+
+  public function getPegawaiAction()
+  {
+    $pegawai = Pegawai::findFirstByIdPegawai($this->request->getPost('id'));
+    $arr = ['idPegawai' => $pegawai->idPegawai, 'namaPegawai' => $pegawai->namaPegawai, 'email' => $pegawai->email];
+    return $this->response->setContent(json_encode($arr));
+  }
+
+  public function getRuanganAction()
+  {
+    $this->view->disable();
+    $ruang = Ruangan::find();
+    $data = [];
+    foreach ($ruang as $r) {
+      array_push($data, ['id' => $r->id, 'namaRuang' => $r->namaRuang]);
+    }
+    return $this->response->setContent(json_encode($data));
   }
 }

@@ -106,7 +106,7 @@ class ProfilesController extends ControllerBase
         $this->flash->success("Profile was created successfully");
       }
 
-      Tag::resetInput();
+      // Tag::resetInput();
     }
 
     $this->view->form = new ProfilesForm(null);
@@ -140,7 +140,7 @@ class ProfilesController extends ControllerBase
         $this->flash->success("Profile was updated successfully");
       }
 
-      Tag::resetInput();
+      // Tag::resetInput();
     }
 
     $this->view->form = new ProfilesForm($profile, [

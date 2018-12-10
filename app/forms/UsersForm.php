@@ -8,6 +8,8 @@ use Phalcon\Forms\Element\Select;
 use Phalcon\Validation\Validator\PresenceOf;
 use Phalcon\Validation\Validator\Email;
 use Jaspel\Models\Profiles;
+use Jaspel\Models\Pegawai;
+use Jaspel\Models\Ruangan;
 
 class UsersForm extends Form
 {
@@ -25,6 +27,28 @@ class UsersForm extends Form
         }
 
         $this->add($id);
+
+        $idPegawai = new Select('idPegawai', Pegawai::find(), [
+            'using' => ['idPegawai', 'namaPegawai'],
+            'useEmpty'   => true,
+            'emptyText'  => '-- Bukan Pegawai --',
+            'emptyValue' => '',
+            'placeholder' => 'Name Pegawai',
+            'class' => 'form-control'
+        ]);
+
+        $this->add($idPegawai);
+
+        $idRuangan = new Select('idRuangan', Ruangan::find(), [
+            'using' => ['id', 'namaRuang'],
+            'useEmpty'   => true,
+            'emptyText'  => '...',
+            'emptyValue' => '',
+            'placeholder' => 'Name Pegawai',
+            'class' => 'form-control'
+        ]);
+
+        $this->add($idRuangan);
 
         $name = new Text('name', [
             'placeholder' => 'Name',

@@ -1,18 +1,31 @@
 {{ content() }}
 
-<div class="text-center well">
+<div class="login-box">
+  <div class="login-logo">
+    <a href="{{url('session/login')}}"><strong>JASA PELAYANAN</strong></a>
+    <p>RS. MARDI WALUYO</p>
+  </div>
+  <!-- /.login-logo -->
+  <div class="login-box-body">
+    <p class="login-box-msg">Lupa password? <br /> Lengkapi form di bawah ini untuk mengatur ulang password Anda.</p>
 
-	{{ form('class': 'form-inline') }}
+    {{ form() }}
+      <div class="form-group has-feedback">
+				{{ form.render('email') }}
+        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+      </div>
+      <div class="row">
+        <!-- /.col -->
+        <div class="col-xs-4">
+          <button type="submit" class="btn btn-primary btn-block btn-flat">Send</button>
+        </div>
+        <!-- /.col -->
+      </div>
+    </form>
+    <hr>
+    Kembali ke halaman <a href="{{url('session/login')}}">Login</a>.<br>
 
-	<div class="text-left">
-		<h2>Forgot Password?</h2>
-	</div>
-
-		{{ form.render('email') }}
-		{{ form.render('Send') }}
-
-		<hr>
-
-	</form>
-
+  </div>
+  <!-- /.login-box-body -->
 </div>
+<!-- /.login-box -->

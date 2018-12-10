@@ -13,6 +13,7 @@ class RuanganJenisPelayanan extends Model
 	public $idJenisPelayanan;		
 	public $persentaseSarana;		
 	public $persentasePelayanan;	
+	public $persentaseDokter;
 	public $persentasePerawat;	
 	public $kategori;	
 	public $metode;		

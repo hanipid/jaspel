@@ -43,14 +43,6 @@
               <span class="input-group-addon">%</span>
             </div>
           </div>
-          
-          <div class="form-group col-md-6">
-            <label for="persentasePerawat">Perawat</label>
-            <div class="input-group">
-              {{ text_field("persentasePerawat", "class": "form-control", "value": rjp.persentasePerawat) }}
-              <span class="input-group-addon">%</span>
-            </div>
-          </div>
         </div>
 
           
