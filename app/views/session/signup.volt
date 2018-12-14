@@ -2,8 +2,8 @@
 
 <div class="login-box" style="margin: 2% auto;">
   <div class="login-logo">
-    <a href="{{url('session/login')}}"><strong>JASA PELAYANAN</strong></a>
-    <p>RS. MARDI WALUYO</p>
+    <a href="{{url('session/login')}}"><strong>SIPJASPEL</strong></a>
+    <p>RSUD MARDI WALUYO</p>
   </div>
   <!-- /.login-logo -->
   <div class="login-box-body">

@@ -2,8 +2,8 @@
 
 <div class="login-box">
   <div class="login-logo">
-    <a href="#"><strong>JASA PELAYANAN</strong></a>
-    <p>RS. MARDI WALUYO</p>
+    <a href="#"><strong>SIPJASPEL</strong></a>
+    <p>RSUD MARDI WALUYO</p>
   </div>
   <!-- /.login-logo -->
   <div class="login-box-body">
