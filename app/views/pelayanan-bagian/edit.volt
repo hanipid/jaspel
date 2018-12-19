@@ -74,6 +74,7 @@ $("#direct").hide();
 $("#split").hide();
 if ($("#kategori").val() == "direct") {
   $("#direct").show();
+  $("#split").hide();
 } else if ($("#kategori").val() == "split") {
   $("#direct").show();
   $("#split").show();

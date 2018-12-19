@@ -52,6 +52,6 @@
 
 <script>
 $(document).ready(function() {
-    $('#dataTable').dataTables();
+    $('#dataTable').dataTable();
 } );
 </script>
