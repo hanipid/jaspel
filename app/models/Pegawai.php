@@ -46,16 +46,16 @@ class Pegawai extends Model
   public $statusAktif;
   public $foto;
 
-  public function validation()
-  {
-    $validator = new Validation();
+  // public function validation()
+  // {
+  //   $validator = new Validation();
 
-    $validator->add('namaPegawai', new Uniqueness([
-      "message" => "Nama pegawai is already registered"
-    ]));
+  //   $validator->add('namaPegawai', new Uniqueness([
+  //     "message" => "Nama pegawai is already registered"
+  //   ]));
 
-    return $this->validate($validator);
-  }
+  //   return $this->validate($validator);
+  // }
 
   public function initialize()
   {

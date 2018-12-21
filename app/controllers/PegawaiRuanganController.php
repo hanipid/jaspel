@@ -31,8 +31,8 @@ class PegawaiRuanganController extends ControllerBase
 			]);
 			$this->view->jenisRuang = "bukankantor";
 		} else {
-			if ($this->request->isPost()) {
-				$idRuangan = $this->request->getPost('ruangan');
+			if ($this->request->isGet()) {
+				$idRuangan = $this->request->getQuery('ruangan');
 				if ($idRuangan > 0) {
 					$pegawaiRuangan = PegawaiRuangan::find([
 						'statusInOut = ?1 AND statusPosisi = ?2 AND statusAktif = ?3 AND idRuangan = ?4',
@@ -134,7 +134,7 @@ class PegawaiRuanganController extends ControllerBase
 					}
 				}
 			}
-			$this->response->redirect('pegawai-ruangan');
+			$this->response->redirect('pegawai-ruangan?ruangan='.$idRuangan);
 		}
 	}
 
@@ -158,7 +158,7 @@ class PegawaiRuanganController extends ControllerBase
 		$this->response->redirect('pegawai-ruangan');
 	}
 
-	public function deleteAction($id)
+	public function deleteAction($id, $idRuangan)
 	{
 		$getPR = PegawaiRuangan::findFirstById($id);
 		$pegawaiRuangan = new PegawaiRuangan();
@@ -183,6 +183,6 @@ class PegawaiRuanganController extends ControllerBase
 				$this->flashSession->error('Error 2 non-aktif. ' . $m2);
 			}
 		}
-		$this->response->redirect('pegawai-ruangan');
+		$this->response->redirect('pegawai-ruangan?ruangan='.$idRuangan);
 	}
 }

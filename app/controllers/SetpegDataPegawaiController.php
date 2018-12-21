@@ -5,6 +5,8 @@ use Jaspel\Models\Pegawai;
 use Jaspel\Models\BerkasPegawai;
 use Phalcon\Paginator\Adapter\Model as Paginator;
 use Jaspel\Forms\DataPegawaiForm;
+use Jaspel\Models\Ruangan;
+use Jaspel\Models\PegawaiRuangan;
 /**
  * Controller Data Pegawai
  */
@@ -20,25 +22,64 @@ class SetpegDataPegawaiController extends ControllerBase
 
 	public function indexAction()
 	{
+    $this->view->ruangan = Ruangan::find();
 		$this->persistent->conditions = null;
-		$pegawai = Pegawai::getData('all');
+		// $pegawai = Pegawai::getData('all');
+		$pegawai = Pegawai::find();
+		$pegawaiRuangan = "";
 		$numberPage = 1;
 		if ($this->request->isGet()) {
       $numberPage = $this->request->getQuery('page', 'int');
+			$filter 		= $this->request->getQuery('filter');
+			if ($filter == 'pns' or $filter == 'non pns') {
+				$pegawai = Pegawai::find([
+					'statusPns = ?1',
+					'bind' => ['1' => $filter]
+				]);
+			} elseif ($filter == 'dokter') {
+				$pegawai = Pegawai::find([
+					'posisiStatus = ?1',
+					'bind' => ['1' => $filter]
+				]);
+			} elseif ($filter == 'tidak aktif') {
+				$pegawai = Pegawai::find([
+					'statusAktif = ?1',
+					'bind' => ['1' => $filter]
+				]);
+			} elseif (is_numeric($filter)) {
+				$pegawaiRuangan = PegawaiRuangan::find([
+					'idRuangan = ?1 AND statusInOut = ?2 AND statusAktif = ?3',
+					'bind' => [
+						'1' => $filter,
+						'2' => 'in',
+						'3' => 1
+					]
+				]);
+			}
 		}
-    if (count($pegawai) == 0) {
+
+		if ($this->request->isPost() AND $this->request->isAjax()) {
+			$this->view->disable();
+			$id 				= $this->request->getPost('id');
+			$fieldName 	= $this->request->getPost('field');
+			$value 			= $this->request->getPost('value');
+			$arr = ['id' => $id, 'fieldName' => $fieldName, 'value' => $value, 'test' => 'ya'];
+			$pegawai = Pegawai::findFirstByIdPegawai($id);
+			$pegawai->$fieldName = $value;
+			if (!$pegawai->save()) {
+				return $this->response->setContent(json_encode($pegawai->getMessages()));
+			}
+			return $this->response->setContent(json_encode($pegawai->$fieldName));
+		}
+
+    if (count($pegawai) == 0 and count($pegawaiRuangan) == 0) {
 
       $this->flash->notice('The search did not find any pegawai');
 
     }
 
-    $paginator = new Paginator([
-      'data' => $pegawai,
-      'limit' => 10,
-      'page' => $numberPage
-    ]);
-
-    $this->view->page = $paginator->getPaginate();
+    $this->view->pegawais = $pegawai;
+    $this->view->pegawaiRuangan = $pegawaiRuangan;
 	}
 
 	public function createAction()

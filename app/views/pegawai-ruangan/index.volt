@@ -8,7 +8,7 @@
 <div class="col-md-12">
   <div class="box box-primary">
     <div class="box-body text-center">
-      <form method="post" action="" class="form-inline">
+      <form method="get" action="" class="form-inline">
         <select id="ruangan" name="ruangan" class="form-control">
           <option value="0">-- Semua Ruangan ---</option>
           {% for r in ruangan %}
@@ -58,7 +58,7 @@
             
             <td width="2%">
               {% if (auth.getIdentity()["profile"] == "Kepegawaian" and (pr.ruangan.jenisRuang == "kantor" or pr.pegawai.posisiStatus == "bukandokter")) or (auth.getIdentity()["profile"] == "Pelayanan") %}
-                {{ link_to("pegawai-ruangan/delete/" ~ pr.id, '<i class="glyphicon glyphicon-remove"></i> Non Aktif', "class": "btn btn-danger btn-sm", "onclick": "return confirm('Are you sure?')") }}
+                {{ link_to("pegawai-ruangan/delete/" ~ pr.id ~ "/" ~ idRuangan, '<i class="glyphicon glyphicon-remove"></i> Non Aktif', "class": "btn btn-danger btn-sm", "onclick": "return confirm('Are you sure?')") }}
               {% endif %}
             </td>
           </tr>
