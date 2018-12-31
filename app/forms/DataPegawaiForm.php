@@ -5,6 +5,7 @@ use Phalcon\Forms\Form;
 use Phalcon\Forms\Element\Text;
 use Phalcon\Forms\Element\TextArea;
 use Phalcon\Forms\Element\Select;
+use Phalcon\Forms\Element\Date;
 use Phalcon\Validation\Validator\PresenceOf;
 use Phalcon\Validation\Validator\Uniqueness;
 use Phalcon\Validation\Validator\Numericality;
@@ -98,7 +99,7 @@ class DataPegawaiForm extends Form
 		]);
 		$this->add($tempatLahir);
 		
-		$tanggalLahir = new Text('tanggalLahir', [
+		$tanggalLahir = new Date('tanggalLahir', [
 			'class' => 'form-control'
 		]);
 		$tanggalLahir->addValidators([
@@ -211,15 +212,15 @@ class DataPegawaiForm extends Form
 		]);
 		$this->add($statusPns);
 		
-		$tmpPns = new Text('tmpPns', [
+		$tmtPns = new Date('tmtPns', [
 			'class' => 'form-control'
 		]);
-		$tmpPns->addValidators([
+		$tmtPns->addValidators([
 			new PresenceOf([
-				'TMP PNS harus diisi'
+				'TMT PNS harus diisi'
 			])
 		]);
-		$this->add($tmpPns);
+		$this->add($tmtPns);
 
 		
 		// $golongan = Golongan::getData('all');
@@ -245,6 +246,9 @@ class DataPegawaiForm extends Form
 				'idPangkat',
 				'namaPangkat'
 			],		
+      'useEmpty'   => true,
+      'emptyText'  => '...',
+      'emptyValue' => '',
 			'class' => 'form-control'
 		]);
 		$idPangkat->addValidators([
@@ -270,7 +274,7 @@ class DataPegawaiForm extends Form
 		]);
 		$this->add($idGolonganRuang);
 		
-		$tmt = new Text('tmt', [
+		$tmt = new Date('tmt', [
 			'class' => 'form-control'
 		]);
 		$tmt->addValidators([
@@ -391,7 +395,7 @@ class DataPegawaiForm extends Form
 		]);
 		$this->add($statusAktif);
 		
-		$tmtcpns = new Text('tmtcpns', [
+		$tmtcpns = new Date('tmtcpns', [
 			'class' => 'form-control'
 		]);
 		// $tmtcpns->addValidators([
@@ -401,7 +405,7 @@ class DataPegawaiForm extends Form
 		// ]);
 		$this->add($tmtcpns);
 		
-		$tahunBekerja = new Text('tahunBekerja', [
+		$tahunBekerja = new Date('tahunBekerja', [
 			'class' => 'form-control'
 		]);
 		// $tahunBekerja->addValidators([

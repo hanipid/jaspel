@@ -7,6 +7,7 @@ use Phalcon\Paginator\Adapter\Model as Paginator;
 use Jaspel\Forms\DataPegawaiForm;
 use Jaspel\Models\Ruangan;
 use Jaspel\Models\PegawaiRuangan;
+use Jaspel\Models\Golongan;
 /**
  * Controller Data Pegawai
  */
@@ -120,6 +121,12 @@ class SetpegDataPegawaiController extends ControllerBase
 		}
 
 		$this->view->form = $form;
+		$golongan = Golongan::find();
+		$pajak = [];
+		foreach ($golongan as $g) {
+			array_push($pajak, ['idGolongan' => $g->idGolongan, 'pajak' => $g->pajak]);
+		}
+		$this->view->pajak = json_encode($pajak);
 	}
 
 	public function editAction($idPegawai)
@@ -134,8 +141,7 @@ class SetpegDataPegawaiController extends ControllerBase
 		if ($this->request->isPost()) {
 
 			$data = $this->request->getPost();
-			if ($this->request->hasFiles() == true) {
-
+			if ($this->request->hasFiles(true) == true) {
 	      foreach ($this->request->getUploadedFiles() as $file) {
 
 	      	if ($file->getExtension() == 'png' || $file->getExtension() == 'PNG' ||
@@ -159,18 +165,26 @@ class SetpegDataPegawaiController extends ControllerBase
 	      	} 
 	      }
 	      if (!$file->getName()) {
+	      	// var_dump();
+	      	die();
 	      	Pegawai::updateData($idPegawai, $data, $getPegawai->foto);
 	      }
 	    } else {
-				Pegawai::updateData($idPegawai, $data);
+				Pegawai::updateData($idPegawai, $data, $getPegawai->foto);
 	    }
-	    $this->response->redirect('setpeg-data-pegawai');
+	    $this->response->redirect('setpeg-data-pegawai/edit/' . $idPegawai);
 
 		}
 
 		$this->view->form = $form;
 		$this->view->pegawai = $getPegawai;
 		$this->view->berkasPegawai = $berkasPegawai;
+		$golongan = Golongan::find();
+		$pajak = [];
+		foreach ($golongan as $g) {
+			array_push($pajak, ['idGolongan' => $g->idGolongan, 'pajak' => $g->pajak]);
+		}
+		$this->view->pajak = json_encode($pajak);
 	}
 
 	public function deleteAction($id)

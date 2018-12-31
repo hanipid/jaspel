@@ -1,3 +1,10 @@
+<style type="text/css">
+#bank, 
+#noRekening {    
+  background: aliceblue !important;
+  border: 1px solid aqua !important;
+}
+</style>
 
 <form class="form" method="post" autocomplete="off" enctype="multipart/form-data">
 
@@ -161,28 +168,65 @@
             <label for="statusPns">Status PNS</label>
             {{ form.render("statusPns") }}
           </div>
+
+          <div class="form-group kolom-pns">
+            <label for="tmtcpns">TMT CPNS</label>
+            {{ form.render("tmtcpns") }}
+          </div>
           
-          <div class="form-group">
-            <label for="tmpPns">TMP PNS</label>
-            {{ form.render("tmpPns") }}
+          <div class="form-group kolom-pns">
+            <label for="tmtPns">TMT PNS</label>
+            {{ form.render("tmtPns") }}
           </div>
 
           <div class="form-group">
-            <label for="golongan">Golongan</label>
+            <label for="idGolongan">Golongan</label>
             {{ form.render("idGolongan") }}
           </div>
 
-          <div class="form-group">
-            <label for="pangkat">Pangkat</label>
-            {{ form.render("idPangkat") }}
-          </div>
+          <div id="demo"></div>
 
           <div class="form-group">
-            <label for="golonganRuang">Golongan Ruang</label>
+            <label for="idGolonganRuang">Golongan Ruang</label>
             {{ form.render("idGolonganRuang") }}
           </div>
 
-          <div class="form-group">
+          <div class="form-group kolom-pns">
+            <label for="idPangkat">Pangkat</label>
+            {{ form.render("idPangkat") }}
+          </div>
+
+          <div class="form-group kolom-non-pns">
+            <label for="noSuratStr">No. Surat Str.</label>
+            {{ form.render("noSuratStr") }}
+          </div>
+
+          <div class="form-group kolom-non-pns">
+            <label for="terbitStr">Terbit Str.</label>
+            {{ form.render("terbitStr") }}
+          </div>
+
+          <div class="form-group kolom-non-pns">
+            <label for="berlakuStr">Berlaku Str.</label>
+            {{ form.render("berlakuStr") }}
+          </div>
+
+          <div class="form-group kolom-non-pns">
+            <label for="noSuratSipp">No. Surat Sipp.</label>
+            {{ form.render("noSuratSipp") }}
+          </div>
+
+          <div class="form-group kolom-non-pns">
+            <label for="terbitSipp">Terbit Sipp.</label>
+            {{ form.render("terbitSipp") }}
+          </div>
+
+          <div class="form-group kolom-non-pns">
+            <label for="berlakuSipp">Berlaku Sipp.</label>
+            {{ form.render("berlakuSipp") }}
+          </div>
+
+          <div class="form-group kolom-pns">
             <label for="tmt">TMT</label>
             {{ form.render("tmt") }}
           </div>
@@ -198,22 +242,17 @@
           </div>
 
           <div class="form-group">
-            <label for="tmtcpns">TMTCPNS</label>
-            {{ form.render("tmtcpns") }}
-          </div>
-
-          <div class="form-group">
-            <label for="tahunBekerja">Tahun Bekerja</label>
-            {{ form.render("tahunBekerja") }}
-          </div>
-
-          <div class="form-group">
             <label for="keterangan">Keterangan</label>
             {{ form.render("keterangan") }}
           </div>
         </div> <!-- /.col-md-6 -->
 
         <div class="col-md-6">
+          <div class="form-group">
+            <label for="tahunBekerja">Tahun Bekerja</label>
+            {{ form.render("tahunBekerja") }}
+          </div>
+
           <div class="form-group">
             <label for="jenjang">Jenjang</label>
             {{ form.render("idJenjang") }}
@@ -250,36 +289,6 @@
               {{ text_field("pajak", "class": "form-control") }}
               <span class="input-group-addon">%</span>
             </div>
-          </div>
-
-          <div class="form-group">
-            <label for="noSuratStr">No. Surat Str.</label>
-            {{ form.render("noSuratStr") }}
-          </div>
-
-          <div class="form-group">
-            <label for="terbitStr">Terbit Str.</label>
-            {{ form.render("terbitStr") }}
-          </div>
-
-          <div class="form-group">
-            <label for="berlakuStr">Berlaku Str.</label>
-            {{ form.render("berlakuStr") }}
-          </div>
-
-          <div class="form-group">
-            <label for="noSuratSipp">No. Surat Sipp.</label>
-            {{ form.render("noSuratSipp") }}
-          </div>
-
-          <div class="form-group">
-            <label for="terbitSipp">Terbit Sipp.</label>
-            {{ form.render("terbitSipp") }}
-          </div>
-
-          <div class="form-group">
-            <label for="berlakuSipp">Berlaku Sipp.</label>
-            {{ form.render("berlakuSipp") }}
           </div>
 
           <div class="form-group">
@@ -373,4 +382,41 @@ $("body").on("keyup", () => {
   var skor = perform+IP+IE+IR+IK+IB+ST;
   $("#skor").val( skor );
 });
+$("body").ready(() => {
+  var perform = Number($("#indexPerform").val());
+  var IP = Number($("#indexIP").val());
+  var IE = Number($("#indexIE").val());
+  var IR = Number($("#indexIR").val());
+  var IK = Number($("#indexIK").val());
+  var IB = Number($("#indexIB").val());
+  var ST = Number($("#skorTambahan").val());
+  var skor = perform+IP+IE+IR+IK+IB+ST;
+  $("#skor").val( skor );
+});
+
+var showColumns = function() {
+  if ($("#statusPns").val() == "pns") {
+    $(".kolom-non-pns").hide();
+    $(".kolom-pns").show();
+  } else {
+    $(".kolom-non-pns").show();
+    $(".kolom-pns").hide();
+  }
+}
+
+$("#statusPns").on("change", showColumns);
+$("body").ready(showColumns);
+
+let loopingPajak = function () {
+  let pajak = {{pajak}};
+  $.each(pajak, function( key, value ) {
+    console.log('idGolongan: ' + value.idGolongan + ' | pajak: ' +value.pajak);
+    if (value.idGolongan == $("#idGolongan").val()) {
+      $("#pajak").val(value.pajak);
+    }
+  });
+}
+
+$("#idGolongan").on("change", loopingPajak);
+$("body").ready(loopingPajak);
 </script>

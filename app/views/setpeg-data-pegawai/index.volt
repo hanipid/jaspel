@@ -154,6 +154,7 @@ $(document).ready(function() {
    data: { field:field_name, value:value, id:edit_id },
    success:function(response){
     console.log("success"); 
+    console.log(response);
    }
   });
  
