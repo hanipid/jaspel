@@ -86,25 +86,28 @@ class PegawaiRuanganController extends ControllerBase
 		$ruangan = Ruangan::findFirstById($idRuangan);
 		if (($this->auth->getIdentity()['profile']) == 'Pelayanan') {
 			$pegawai = Pegawai::find([
-				'posisiStatus = ?2 AND idPegawai NOT IN (SELECT pr.idPegawai FROM Jaspel\Models\PegawaiRuangan pr WHERE pr.idRuangan = ?1)',
+				'posisiStatus = ?2 AND idPegawai NOT IN (SELECT pr.idPegawai FROM Jaspel\Models\PegawaiRuangan pr WHERE pr.idRuangan = ?1 AND pr.statusAktif = ?3)',
 				'bind' => [
 					'1' => $idRuangan,
-					'2' => 'dokter'
+					'2' => 'dokter',
+					'3' => 1
 				]
 			]);
 		} elseif (($this->auth->getIdentity()['profile']) == 'Kepegawaian' AND $ruangan->jenisRuang == 'pelayanan') {
 			$pegawai = Pegawai::find([
-				'posisiStatus = ?2 AND idPegawai NOT IN (SELECT pr.idPegawai FROM Jaspel\Models\PegawaiRuangan pr WHERE pr.idRuangan = ?1)',
+				'posisiStatus = ?2 AND idPegawai NOT IN (SELECT pr.idPegawai FROM Jaspel\Models\PegawaiRuangan pr WHERE pr.idRuangan = ?1 AND pr.statusAktif = ?3)',
 				'bind' => [
 					'1' => $idRuangan,
-					'2' => 'bukandokter'
+					'2' => 'bukandokter',
+					'3' => 1
 				]
 			]);
 		} elseif (($this->auth->getIdentity()['profile']) == 'Kepegawaian' AND $ruangan->jenisRuang == 'kantor') {
 			$pegawai = Pegawai::find([
-				'idPegawai NOT IN (SELECT pr.idPegawai FROM Jaspel\Models\PegawaiRuangan pr WHERE pr.idRuangan = ?1)',
+				'idPegawai NOT IN (SELECT pr.idPegawai FROM Jaspel\Models\PegawaiRuangan pr WHERE pr.idRuangan = ?1 AND pr.statusAktif = ?2)',
 				'bind' => [
-					'1' => $idRuangan
+					'1' => $idRuangan,
+					'2' => 1
 				]
 			]);
 		} else {

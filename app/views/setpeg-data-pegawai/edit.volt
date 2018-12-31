@@ -122,10 +122,12 @@
           <label for="indexPerform">Perform</label>
           {{ form.render("indexPerform") }}
         </div>
+        {% if auth.getIdentity()["profile"] == "Kepegawaian" or auth.getIdentity()["profile"] == "Tim Jaspel" %}
         <div class="form-group col-md-2">
           <label for="skorTambahan">Skor Tambahan</label>
           {{ form.render("skorTambahan") }}
         </div>
+        {% endif %}
         <div class="form-group col-md-2">
           <label for="skor">Skor</label>
           {% set skor = pegawai.indexIB + pegawai.indexIK + pegawai.indexIR + pegawai.indexIE + pegawai.indexIP + pegawai.indexPerform %}
@@ -196,6 +198,16 @@
           </div>
 
           <div class="form-group">
+            <label for="tmtcpns">TMTCPNS</label>
+            {{ form.render("tmtcpns") }}
+          </div>
+
+          <div class="form-group">
+            <label for="tahunBekerja">Tahun Bekerja</label>
+            {{ form.render("tahunBekerja") }}
+          </div>
+
+          <div class="form-group">
             <label for="keterangan">Keterangan</label>
             {{ form.render("keterangan") }}
           </div>
@@ -238,6 +250,36 @@
               {{ text_field("pajak", "class": "form-control") }}
               <span class="input-group-addon">%</span>
             </div>
+          </div>
+
+          <div class="form-group">
+            <label for="noSuratStr">No. Surat Str.</label>
+            {{ form.render("noSuratStr") }}
+          </div>
+
+          <div class="form-group">
+            <label for="terbitStr">Terbit Str.</label>
+            {{ form.render("terbitStr") }}
+          </div>
+
+          <div class="form-group">
+            <label for="berlakuStr">Berlaku Str.</label>
+            {{ form.render("berlakuStr") }}
+          </div>
+
+          <div class="form-group">
+            <label for="noSuratSipp">No. Surat Sipp.</label>
+            {{ form.render("noSuratSipp") }}
+          </div>
+
+          <div class="form-group">
+            <label for="terbitSipp">Terbit Sipp.</label>
+            {{ form.render("terbitSipp") }}
+          </div>
+
+          <div class="form-group">
+            <label for="berlakuSipp">Berlaku Sipp.</label>
+            {{ form.render("berlakuSipp") }}
           </div>
 
           <div class="form-group">

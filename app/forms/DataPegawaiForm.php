@@ -372,7 +372,8 @@ class DataPegawaiForm extends Form
 		$this->add($alamat);
 		
 		$keterangan = new TextArea('keterangan', [
-			'class' => 'form-control'
+			'class' => 'form-control',
+			'style' => 'height:255px'
 		]);
 		$this->add($keterangan);
 		
@@ -389,5 +390,85 @@ class DataPegawaiForm extends Form
 			])
 		]);
 		$this->add($statusAktif);
+		
+		$tmtcpns = new Text('tmtcpns', [
+			'class' => 'form-control'
+		]);
+		// $tmtcpns->addValidators([
+		// 	new PresenceOf([
+		// 		'Tmtcpns harus diisi'
+		// 	])
+		// ]);
+		$this->add($tmtcpns);
+		
+		$tahunBekerja = new Text('tahunBekerja', [
+			'class' => 'form-control'
+		]);
+		// $tahunBekerja->addValidators([
+		// 	new PresenceOf([
+		// 		'Tahun bekerja harus diisi'
+		// 	])
+		// ]);
+		$this->add($tahunBekerja);
+		
+		$noSuratStr = new Text('noSuratStr', [
+			'class' => 'form-control'
+		]);
+		// $noSuratStr->addValidators([
+		// 	new PresenceOf([
+		// 		'NoSuratStr harus diisi'
+		// 	])
+		// ]);
+		$this->add($noSuratStr);
+		
+		$terbitStr = new Text('terbitStr', [
+			'class' => 'form-control'
+		]);
+		// $terbitStr->addValidators([
+		// 	new PresenceOf([
+		// 		'TerbitStr harus diisi'
+		// 	])
+		// ]);
+		$this->add($terbitStr);
+		
+		$berlakuStr = new Text('berlakuStr', [
+			'class' => 'form-control'
+		]);
+		// $berlakuStr->addValidators([
+		// 	new PresenceOf([
+		// 		'BerlakuStr harus diisi'
+		// 	])
+		// ]);
+		$this->add($berlakuStr);
+		
+		$noSuratSipp = new Text('noSuratSipp', [
+			'class' => 'form-control'
+		]);
+		// $noSuratSipp->addValidators([
+		// 	new PresenceOf([
+		// 		'NoSuratSipp harus diisi'
+		// 	])
+		// ]);
+		$this->add($noSuratSipp);
+		
+		$terbitSipp = new Text('terbitSipp', [
+			'class' => 'form-control'
+		]);
+		// $terbitSipp->addValidators([
+		// 	new PresenceOf([
+		// 		'TerbitSipp harus diisi'
+		// 	])
+		// ]);
+		$this->add($terbitSipp);
+		
+		$berlakuSipp = new Text('berlakuSipp', [
+			'class' => 'form-control'
+		]);
+		// $berlakuSipp->addValidators([
+		// 	new PresenceOf([
+		// 		'BerlakuSipp harus diisi'
+		// 	])
+		// ]);
+		$this->add($berlakuSipp);
 	}
 }

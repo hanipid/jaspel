@@ -53,11 +53,16 @@
           <tr>
             <td class="text-center">{{loop.index}}</td>
             <td>{{pr.pegawai.gelarDepan}} {{pr.pegawai.namaPegawai|capitalize}} {{pr.pegawai.gelarBelakang}}</td>
-            <td>{{pr.ruangan.namaRuang|capitalize}}</td>
+            <td>{% if pr.ruangan.namaRuang is defined %} {{pr.ruangan.namaRuang|capitalize}} {% endif %}</td>
             {#<td width="2%">{{ link_to("pegawai-ruangan/edit/" ~ pr.id, '<i class="glyphicon glyphicon-pencil"></i> Edit', "class": "btn btn-primary btn-sm") }}</td>#}
             
             <td width="2%">
-              {% if (auth.getIdentity()["profile"] == "Kepegawaian" and (pr.ruangan.jenisRuang == "kantor" or pr.pegawai.posisiStatus == "bukandokter")) or (auth.getIdentity()["profile"] == "Pelayanan") %}
+              {% if pr.ruangan.jenisRuang is defined %}
+                {% set is_kantor = pr.ruangan.jenisRuang %}
+              {% else %}
+                {% set is_kantor = 0 %}
+              {% endif %}
+              {% if (auth.getIdentity()["profile"] == "Kepegawaian" and (is_kantor == "kantor" or pr.pegawai.posisiStatus == "bukandokter")) or (auth.getIdentity()["profile"] == "Pelayanan") %}
                 {{ link_to("pegawai-ruangan/delete/" ~ pr.id ~ "/" ~ idRuangan, '<i class="glyphicon glyphicon-remove"></i> Non Aktif', "class": "btn btn-danger btn-sm", "onclick": "return confirm('Are you sure?')") }}
               {% endif %}
             </td>
