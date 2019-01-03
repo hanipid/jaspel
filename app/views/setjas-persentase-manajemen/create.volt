@@ -1,3 +1,6 @@
+{{ stylesheet_link('vendor/almasaeed2010/adminlte/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css') }}
+{{ javascript_include('vendor/almasaeed2010/adminlte/bower_components/datatables.net/js/jquery.dataTables.min.js') }}
+{{ javascript_include('vendor/almasaeed2010/adminlte/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js') }}
 {{ content() }}
 
 <form method="post" action="">
@@ -23,37 +26,35 @@
           </div>
         </div>#}
 
-        <table class="table">
+        <table id="dataTable" class="table table-bordered table-striped" align="center">
           <thead>
             <tr>
-              <th width="2%">No.</th>
               <th>Nama Pegawai</th>
               <th></th>
             </tr>
           </thead>
 
           <tbody>
-            {% for p in page.items %}
+            {% for p in pegawai %}
             <tr>
-              <td>1</td>
-              <td>{{p.namaPegawai|capitalize}}</td>
+              <td>{{p.gelarDepan}} {{p.namaPegawai|capitalize}} {{p.gelarBelakang}}</td>
               <td>{{ check_field("pegawai", "value": p.idPegawai, "id":"p"~p.idPegawai, "name": "pegawai[]") }}</td>
             </tr>
             {% endfor %}
           </tbody>
-          <tfoot>
+          {#<tfoot>
             <tr>
               <td colspan="10" align="right">
                 <ul class="pagination pagination-sm no-margin pull-right">
-                  <li>{{ link_to("setpeg-persentase-manajemen/", '<i class="glyphicon glyphicon-fast-backward"></i> First') }}</li>
-                  <li>{{ link_to("setpeg-persentase-manajemen/?page=" ~ page.before, '<i class="glyphicon glyphicon-step-backward"></i> Previous') }}</li>
-                  <li>{{ link_to("setpeg-persentase-manajemen/?page=" ~ page.next, '<i class="glyphicon glyphicon-step-forward"></i> Next') }}</li>
-                  <li>{{ link_to("setpeg-persentase-manajemen/?page=" ~ page.last, '<i class="glyphicon glyphicon-fast-forward"></i> Last') }}</li>
+                  <li>{{ link_to("setjas-persentase-manajemen/create/", '<i class="glyphicon glyphicon-fast-backward"></i> First') }}</li>
+                  <li>{{ link_to("setjas-persentase-manajemen/create/?page=" ~ page.before, '<i class="glyphicon glyphicon-step-backward"></i> Previous') }}</li>
+                  <li>{{ link_to("setjas-persentase-manajemen/create/?page=" ~ page.next, '<i class="glyphicon glyphicon-step-forward"></i> Next') }}</li>
+                  <li>{{ link_to("setjas-persentase-manajemen/create/?page=" ~ page.last, '<i class="glyphicon glyphicon-fast-forward"></i> Last') }}</li>
                   <li><span class="help-inline">{{ page.current }}/{{ page.total_pages }}</span></li>
                 </ul>
               </td>
             </tr>
-          </tfoot>
+          </tfoot>#}
         </table>
 
       </div>
@@ -95,3 +96,9 @@
   </div>
   <!-- /.col-md-12 -->
 </form>
+
+<script>
+$(document).ready(function() {
+  let table = $('#dataTable').dataTable();
+});
+</script>

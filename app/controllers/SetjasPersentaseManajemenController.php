@@ -33,7 +33,13 @@ class SetjasPersentaseManajemenController extends ControllerBase
 
 	public function createAction()
 	{
-		$pegawai = Pegawai::find();
+		$pegawai = Pegawai::find([
+			'idPegawai NOT IN (SELECT dm.idPegawai FROM Jaspel\Models\DireksiManajemen dm WHERE dm.statusAktif = ?1 AND dm.statusPosisi = ?2)',
+			'bind' => [
+				'1' => 1,
+				'2' => 3
+			]
+		]);
 		if (count($pegawai) == 0) {
 
       $this->flash->notice('The search did not find any pegawai');
@@ -43,13 +49,7 @@ class SetjasPersentaseManajemenController extends ControllerBase
       ]);
     }
 
-    $paginator = new Paginator([
-      'data' => $pegawai,
-      'limit' => 10,
-      'page' => 1
-    ]);
-
-    $this->view->page = $paginator->getPaginate();
+    $this->view->pegawai = $pegawai;
 
 		if ($this->request->isPost()) {
 			foreach ($this->request->getPost('pegawai') as $pegawai) {

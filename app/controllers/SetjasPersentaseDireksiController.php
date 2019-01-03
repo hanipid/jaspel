@@ -75,7 +75,13 @@ class SetjasPersentaseDireksiController extends ControllerBase
 
 	public function createAction($statusPosisi = null)
 	{
-		$pegawai = Pegawai::find();
+		$pegawai = Pegawai::find([
+			'idPegawai NOT IN (SELECT dm.idPegawai FROM Jaspel\Models\DireksiManajemen dm WHERE dm.statusAktif = ?1 AND dm.statusPosisi = ?2)',
+			'bind' => [
+				'1' => 1,
+				'2' => $statusPosisi
+			]
+		]);
 		if (count($pegawai) == 0) {
 
       $this->flash->notice('The search did not find any pegawai');
@@ -85,13 +91,8 @@ class SetjasPersentaseDireksiController extends ControllerBase
       ]);
     }
 
-    $paginator = new Paginator([
-      'data' => $pegawai,
-      'limit' => 10,
-      'page' => 1
-    ]);
-
-    $this->view->page = $paginator->getPaginate();
+    $this->view->pegawai = $pegawai;
+    $this->view->statusPosisi = $statusPosisi;
     if ($statusPosisi == null or $statusPosisi < 1 or $statusPosisi > 3) {
   		$this->flashSession->warning('Wrong parameter');
     	$this->response->redirect('setjas-persentase-direksi');
