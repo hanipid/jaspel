@@ -62,7 +62,7 @@
               {% else %}
                 {% set is_kantor = 0 %}
               {% endif %}
-              {% if (auth.getIdentity()["profile"] == "Kepegawaian" and (is_kantor == "kantor" or pr.pegawai.posisiStatus == "bukandokter")) or (auth.getIdentity()["profile"] == "Pelayanan") %}
+              {% if (auth.getIdentity()["profile"] == "Kepegawaian" and (is_kantor == "kantor" or pr.pegawai.posisiStatus == "bukandokter")) or (auth.getIdentity()["profile"] == "Pelayanan" and pr.pegawai.posisiStatus == "dokter") %}
                 {{ link_to("pegawai-ruangan/delete/" ~ pr.id ~ "/" ~ idRuangan, '<i class="glyphicon glyphicon-remove"></i> Non Aktif', "class": "btn btn-danger btn-sm", "onclick": "return confirm('Are you sure?')") }}
               {% endif %}
             </td>

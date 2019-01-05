@@ -32,6 +32,7 @@ class SetpegDataPegawaiController extends ControllerBase
 		if ($this->request->isGet()) {
       $numberPage = $this->request->getQuery('page', 'int');
 			$filter 		= $this->request->getQuery('filter');
+			
 			if ($filter == 'pns' or $filter == 'non pns') {
 				$pegawai = Pegawai::find([
 					'statusPns = ?1',
@@ -52,6 +53,15 @@ class SetpegDataPegawaiController extends ControllerBase
 					'idRuangan = ?1 AND statusInOut = ?2 AND statusAktif = ?3',
 					'bind' => [
 						'1' => $filter,
+						'2' => 'in',
+						'3' => 1
+					]
+				]);
+			} elseif ($this->auth->getIdentity()['profile'] == 'Pelayanan') {
+				$pegawaiRuangan = PegawaiRuangan::find([
+					'idRuangan = ?1 AND statusInOut = ?2 AND statusAktif = ?3',
+					'bind' => [
+						'1' => $this->auth->getIdentity()['idRuangan'],
 						'2' => 'in',
 						'3' => 1
 					]
@@ -135,7 +145,12 @@ class SetpegDataPegawaiController extends ControllerBase
 		// var_dump($getPegawai);
 		$getPegawai = Pegawai::findFirstByIdPegawai($idPegawai);
 		$berkasPegawai = BerkasPegawai::findByIdPegawai($idPegawai);
-		$form = new DataPegawaiForm($getPegawai);
+		if ($this->auth->getIdentity()['profile'] == 'Pelayanan') {
+			$form = new DataPegawaiForm($getPegawai, ['detail' => true]);
+		} else {
+			$form = new DataPegawaiForm($getPegawai);
+		}
+		
 		$random = new \Phalcon\Security\Random();
 
 		if ($this->request->isPost()) {

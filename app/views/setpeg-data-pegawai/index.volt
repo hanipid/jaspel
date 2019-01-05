@@ -27,6 +27,7 @@
         </form>   #} 
         <form method="get" action="" class="inline-form">
           <div class="input-group input-group-md">
+            {% if auth.getIdentity()["profile"] != "Pelayanan" %}
             <select id="filter" name="filter" class="form-control">
               <option value="all">Semua Pegawai</option>
               <option value="pns">Pegawai PNS</option>
@@ -41,6 +42,7 @@
               <input type="submit" name="submit" value="Filter" class="btn btn-default">
               {{ link_to("setpeg-data-pegawai/create", "<i class='glyphicon glyphicon-plus'></i> Tambah Pegawai", "class": "btn btn-primary") }}
             </span>
+            {% endif %}
           </div>
         </form>    
         
@@ -79,7 +81,13 @@
               {% set skor = pr.pegawai.indexIB + pr.pegawai.indexIK + pr.pegawai.indexIR + pr.pegawai.indexIE + pr.pegawai.indexIP + pr.pegawai.indexPerform + pr.pegawai.skorTambahan %}
               <th id="skor_{{pr.pegawai.idPegawai}}">{{skor}}</th>
               <th class="edit" contenteditable="true" id="gajiPokok_{{pr.pegawai.idPegawai}}">{{pr.pegawai.gajiPokok}}</td>
-              <td width="2%">{{ link_to("setpeg-data-pegawai/edit/" ~ pr.pegawai.idPegawai, '<i class="glyphicon glyphicon-pencil"></i> Edit', "class": "btn btn-primary btn-sm") }}</td>
+              <td width="2%">
+                {% if auth.getIdentity()["profile"] == "Pelayanan" %}
+                {{ link_to("setpeg-data-pegawai/edit/" ~ pr.pegawai.idPegawai, '<i class="glyphicon glyphicon-pencil"></i> Detail', "class": "btn btn-primary btn-sm") }}
+                {% else %}
+                {{ link_to("setpeg-data-pegawai/edit/" ~ pr.pegawai.idPegawai, '<i class="glyphicon glyphicon-pencil"></i> Edit', "class": "btn btn-primary btn-sm") }}
+                {% endif %}
+              </td>
               <td width="2%">{{ link_to("setpeg-data-pegawai/delete/" ~ pr.pegawai.idPegawai, '<i class="glyphicon glyphicon-remove"></i> Delete', "class": "btn btn-danger btn-sm", "onclick": "return confirm('Are you sure?')") }}</td>
             </tr>
             {% endfor %}

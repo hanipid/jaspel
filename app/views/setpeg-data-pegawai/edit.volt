@@ -137,8 +137,14 @@
         {#% endif %#}
         <div class="form-group col-md-2">
           <label for="skor">Skor</label>
-          {% set skor = pegawai.indexIB + pegawai.indexIK + pegawai.indexIR + pegawai.indexIE + pegawai.indexIP + pegawai.indexPerform %}
-          {{ text_field("skor", "class": "form-control", "value": skor) }}
+          {% if auth.getIdentity()['profile'] == "Pelayanan" %}
+            {% set skor = pegawai.indexIB + pegawai.indexIK + pegawai.indexIR + pegawai.indexIE + pegawai.indexIP + pegawai.indexPerform %}
+            {{ text_field("skor", "class": "form-control", "value": skor, "disabled": true) }}
+          {% else %}
+            {% set skor = pegawai.indexIB + pegawai.indexIK + pegawai.indexIR + pegawai.indexIE + pegawai.indexIP + pegawai.indexPerform %}
+            {{ text_field("skor", "class": "form-control", "value": skor) }}
+          {% endif %}
+            
         </div>
         <div class="form-group col-md-2">
           <label for="gajiPokok">Gaji Pokok</label>
@@ -286,7 +292,11 @@
           <div class="form-group">
             <label for="pajak">Pajak</label>
             <div class="input-group">
-              {{ text_field("pajak", "class": "form-control") }}
+              {% if auth.getIdentity()['profile'] == "Pelayanan" %}
+                {{ text_field("pajak", "class": "form-control", "disabled": true) }}
+              {% else %}
+                {{ text_field("pajak", "class": "form-control") }}
+              {% endif %}
               <span class="input-group-addon">%</span>
             </div>
           </div>
