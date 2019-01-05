@@ -207,15 +207,15 @@ class RuanganController extends ControllerBase
 			}
 		}
 
-		$rJenisPelayanan = RuanganJenisPelayanan::findByIdJenisPelayanan($ruanganJenisPelayanan->idJenisPelayanan);
-		if (!$rJenisPelayanan) {
-			$jenisPelayanan = JenisPelayanan::findFirstById($ruanganJenisPelayanan->idJenisPelayanan);
-			if (!$jenisPelayanan->delete()) {
-				foreach ($jenisPelayanan->getMessages() as $m) {
-					$this->flashSession->error('Error delete jenisPelayanan. ' . $m);
-				}
-			}
-		}
+		// $rJenisPelayanan = RuanganJenisPelayanan::findByIdJenisPelayanan($ruanganJenisPelayanan->idJenisPelayanan);
+		// if (!$rJenisPelayanan) {
+		// 	$jenisPelayanan = JenisPelayanan::findFirstById($ruanganJenisPelayanan->idJenisPelayanan);
+		// 	if (!$jenisPelayanan->delete()) {
+		// 		foreach ($jenisPelayanan->getMessages() as $m) {
+		// 			$this->flashSession->error('Error delete jenisPelayanan. ' . $m);
+		// 		}
+		// 	}
+		// }
 		$this->response->redirect("ruangan/edit/" . $ruanganJenisPelayanan->idRuangan);
 	}
 

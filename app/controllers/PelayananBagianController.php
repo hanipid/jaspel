@@ -21,8 +21,21 @@ class PelayananBagianController extends ControllerBase
 	public function indexAction()
 	{
 		$idRuangan = $this->auth->getIdentity()['idRuangan'];
-		$ruangan = Ruangan::findFirstById($idRuangan);
-		$jenisPelayanan = RuanganJenisPelayanan::findByIdRuangan($idRuangan);
+		$getIdRuangan = $this->request->getQuery('idRuangan');
+		$ruangan = Ruangan::findByJenisRuang("pelayanan");
+		if (isset($getIdRuangan)) {
+			$idRuangan = $getIdRuangan;
+			if ($idRuangan == 'selectAll') {
+				$jenisPelayanan = RuanganJenisPelayanan::find();
+			} else {
+				$jenisPelayanan = RuanganJenisPelayanan::findByIdRuangan($idRuangan);
+			}
+			
+		} else {
+			$jenisPelayanan = RuanganJenisPelayanan::findByIdRuangan($idRuangan);
+		}
+		
+		
 		$this->view->setVars([
 			'ruangan'					=> $ruangan,
 			'jenisPelayanan' 	=> $jenisPelayanan
