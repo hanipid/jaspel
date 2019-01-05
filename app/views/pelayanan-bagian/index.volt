@@ -3,7 +3,7 @@
 <div class="col-md-12">
   <div class="box box-primary">
     <div class="box-header with-border">
-      <h3 class="box-title">Pelayanan {% if auth.getIdentity()["profile"] == "Pelayanan" %} {{jenisPelayanan[0].ruangan.namaRuang}} {% endif %}</h3>
+      <h3 class="box-title">Pelayanan {% if auth.getIdentity()["profile"] == "Pelayanan" and namaRuangan is defined %} {{namaRuangan.namaRuang}} {% endif %}</h3>
       <div class="box-tools pull-right">
         {% if auth.getIdentity()["profile"] != "Pelayanan" %}
         <form class="inline-form" method="get" action="" autocomplete="off">

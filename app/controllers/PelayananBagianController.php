@@ -36,9 +36,11 @@ class PelayananBagianController extends ControllerBase
 		}
 		
 		
+		$namaRuangan = Ruangan::findFirstById($idRuangan);
 		$this->view->setVars([
 			'ruangan'					=> $ruangan,
-			'jenisPelayanan' 	=> $jenisPelayanan
+			'jenisPelayanan' 	=> $jenisPelayanan,
+			'namaRuangan'     => $namaRuangan
 		]);
 	}
 
