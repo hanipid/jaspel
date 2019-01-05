@@ -129,12 +129,12 @@
           <label for="indexPerform">Perform</label>
           {{ form.render("indexPerform") }}
         </div>
-        {% if auth.getIdentity()["profile"] == "Kepegawaian" or auth.getIdentity()["profile"] == "Tim Jaspel" %}
-        <div class="form-group col-md-2">
+        {#% if auth.getIdentity()["profile"] == "Kepegawaian" or auth.getIdentity()["profile"] == "Tim Jaspel" %#}
+        <div class="form-group col-md-2" id="frmSkorTambahan">
           <label for="skorTambahan">Skor Tambahan</label>
           {{ form.render("skorTambahan") }}
         </div>
-        {% endif %}
+        {#% endif %#}
         <div class="form-group col-md-2">
           <label for="skor">Skor</label>
           {% set skor = pegawai.indexIB + pegawai.indexIK + pegawai.indexIR + pegawai.indexIE + pegawai.indexIP + pegawai.indexPerform %}
@@ -371,6 +371,10 @@
 </div>
 
 <script>
+$("#frmSkorTambahan").hide();
+{% if auth.getIdentity()["profile"] == "Kepegawaian" or auth.getIdentity()["profile"] == "Tim Jaspel" %}
+$("#frmSkorTambahan").show();
+{% endif %}
 $("body").on("keyup", () => {
   var perform = Number($("#indexPerform").val());
   var IP = Number($("#indexIP").val());
