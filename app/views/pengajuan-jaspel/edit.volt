@@ -19,18 +19,18 @@
 		  <div class="box-body">
 
 		  	<div class="form-group">
-		  		<label for="jenis">Jenis</label>
-		  		{{ select_static("jenis", ["1": "Umum", "2": "BPJS"], "class": "form-control") }}
+		  		<label for="idJaspel">Jenis</label>
+		  		{{ form.render("idJaspel") }}
 		  	</div>
 
 		  	<div class="form-group col-md-6">
-		  		<label for="periodeStart">Periode Start</label>
-		  		{{ text_field("periodeStart", "class": "form-control") }}
+		  		<label for="startPeriode">Start Periode</label>
+		  		{{ form.render("startPeriode") }}
 		  	</div>
 
 		  	<div class="form-group col-md-6">
-		  		<label for="periodeEnd">Periode End</label>
-		  		{{ text_field("periodeStart", "class": "form-control") }}
+		  		<label for="endPeriode">End Periode</label>
+		  		{{ form.render("endPeriode") }}
 		  	</div>
 
 		  </div>

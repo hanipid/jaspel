@@ -135,6 +135,7 @@ return new Config([
       'delete',
       'createKlaim',
       'createPesan',
+      'pendapatanPelayanan',
     ],
     
     'pegawai-ruangan' => [
@@ -145,7 +146,7 @@ return new Config([
     ],
     
 //     DASHBOARD
-    'dashboard-instalasi' => [
+    'dashboard' => [
       'index'
     ]
   ]

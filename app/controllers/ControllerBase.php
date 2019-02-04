@@ -7,6 +7,7 @@ use Jaspel\Models\Menus;
 use Jaspel\Models\Permissions;
 use Jaspel\Models\Profiles;
 use Jaspel\Models\ProfilesMenus;
+use Jaspel\Models\PeriodeJaspel;
 
 /**
  * ControllerBase
@@ -29,11 +30,13 @@ class ControllerBase extends Controller
       "parent = 0",
       "order" => "sort"
     ]);
+
     $this->view->checkPermissions = Permissions::find([
       "profilesId = ?1",
       "bind" => [1 => $this->auth->getIdentity()['profilesId']],
       "group" => "resource"
     ]);
+
     $this->view->profilesMenus = $this->modelsManager->createBuilder()
     ->from("Jaspel\Models\ProfilesMenus")
     ->columns([
@@ -45,6 +48,12 @@ class ControllerBase extends Controller
     ->where("parent = 0 and profilesId = 2")
     ->getQuery()
     ->execute();
+
+    $statusPeriodeJaspel = PeriodeJaspel::findByStatusPeriode(0);
+    if (count($statusPeriodeJaspel) > 0) {
+      $this->flashSession->warning("Waktunya memeriksa Pengjuan Jaspel");
+    }
+
     $controllerName = $dispatcher->getControllerName();
 
     // Only check permissions on private controllers

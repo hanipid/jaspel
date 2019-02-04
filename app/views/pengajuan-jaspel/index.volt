@@ -1,63 +1,58 @@
+{{ stylesheet_link('vendor/almasaeed2010/adminlte/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css') }}
+{{ javascript_include('vendor/almasaeed2010/adminlte/bower_components/datatables.net/js/jquery.dataTables.min.js') }}
+{{ javascript_include('vendor/almasaeed2010/adminlte/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js') }}
+
 {{ content() }}
 
-<div class="col-md-6">
+<div class="col-md-8">
 
   <div class="box box-primary">
     <div class="box-header with-border">
       <h3 class="box-title">Periode Pengajuan Jaspel</h3>
       <div class="box-tools pull-right">
-        {{ link_to("pengajuan-jaspel/create", "<i class='icon-plus-sign'></i> Tambah Periode", "class": "btn btn-primary") }}
+        {% if auth.getIdentity()["profile"] == "Super User" or auth.getIdentity()["profile"] == "Tim Jaspel" %}
+          {{ link_to("pengajuan-jaspel/create", "<i class='icon-plus-sign'></i> Tambah Periode", "class": "btn btn-primary") }}
+        {% endif %}
       </div>
     </div>
     <!-- /.box-header -->
 
     <div class="box-body">
 
-      <table class="table table-hover table-striped">
+      <table id="dataTable" class="table table-hover table-striped">
         <thead>
           <tr>
-            <th>No.</th>
             <th>Periode</th>
             <th></th>
             <th></th>
           </tr>
         </thead>
         <tbody>
+          {% for pj in periodeJaspel %}
           <tr>
-            <td width="2%">1.</td>
-            <td>April 2018</td>
-            <td><span class="label label-info">Umum</span> <span class="label label-warning">Not Completed</span></td>
+            <td>{{pj.startPeriode}}</td>
+            <td>
+              <h4><span class="label label-info">{{pj.jenisJaspel.namaJaspel}}</span> 
+              {% if pj.statusPeriode == 0 %}
+                <span class="label label-warning">Not Completed</span>
+              {% else %}
+                <span class="label label-success">Completed</span>
+              {% endif %}
+              </h4>
+            </td>
             <td width="2%">
-              {{ link_to("pengajuan-jaspel/edit/" ~ profile.id, '<i class="glyphicon glyphicon-pencil"></i> Detail', "class": "btn btn-primary") }}
+              
+              {% if auth.getIdentity()["profile"] == "Pelayanan" %}
+                {{ link_to("pengajuan-jaspel/pendapatanPelayanan/" ~ pj.idPeriode, '<i class="glyphicon glyphicon-pencil"></i> Detail', "class": "btn btn-info") }}
+              {% else %}
+                {{ link_to("pengajuan-jaspel/edit/" ~ pj.idPeriode, '<i class="glyphicon glyphicon-pencil"></i> Detail', "class": "btn btn-primary") }}
+              {% endif %}
             </td>
           </tr>
-          <tr>
-            <td width="2%">2.</td>
-            <td>April 2018</td>
-            <td><span class="label label-info">BPJS</span> <span class="label label-success">Completed</span></td>
-            <td width="2%">
-              {{ link_to("pengajuan-jaspel/edit/" ~ profile.id, '<i class="glyphicon glyphicon-pencil"></i> Detail', "class": "btn btn-primary") }}
-            </td>
-          </tr>
-          <tr>
-            <td width="2%">3.</td>
-            <td>Maret 2018</td>
-            <td><span class="label label-info">Umum</span> <span class="label label-success">Completed</span></td>
-            <td width="2%">
-              {{ link_to("pengajuan-jaspel/edit/" ~ profile.id, '<i class="glyphicon glyphicon-pencil"></i> Detail', "class": "btn btn-primary") }}
-            </td>
-          </tr>
-          <tr>
-            <td width="2%">4.</td>
-            <td>Maret 2018</td>
-            <td><span class="label label-info">BPJS</span> <span class="label label-success">Completed</span></td>
-            <td width="2%">
-              {{ link_to("pengajuan-jaspel/edit/" ~ profile.id, '<i class="glyphicon glyphicon-pencil"></i> Detail', "class": "btn btn-primary") }}
-            </td>
-          </tr>
+          {% endfor %}
         </tbody>
 
-        <tfoot>
+        {#<tfoot>
           <tr>
             <td colspan="10" align="right">
               <ul class="pagination pagination-sm no-margin pull-right">
@@ -69,7 +64,7 @@
               </ul>
             </td>
           </tr>
-        </tfoot>
+        </tfoot>#}
       </table>
 
     </div>
@@ -84,3 +79,10 @@
 
 </div>
 <!-- col-md-12 -->
+
+
+<script>
+$(document).ready(function() {
+    $('#dataTable').dataTable();
+} );
+</script>

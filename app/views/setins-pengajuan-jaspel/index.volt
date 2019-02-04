@@ -21,67 +21,24 @@
             <th>Sarana</th>
             <th>Pelayanan</th>
             <th></th>
-            <th></th>
+            {#<th></th>#}
           </tr>
         </thead>
         <tbody>
       
+          {% for pj in periodeJaspel %}
           <tr>
-            <td>Karcis</td>
-            <td>Rp. xxx.xxx.xxx</td>
+            <td>{{pj.jenisJaspel.namaJaspel}}</td>
+            <td class="edit" contenteditable="true" data-periode="{{pj.idPeriode}}">Rp. xxx.xxx.xxx</td>
             <td>Rp. xx.xxx.xxx</td>
             <td>Rp. xx.xxx.xxx</td>
-            <td width="2%">{{ link_to("setins-pengajuan-jaspel/edit/" ~ profile.id, '<i class="glyphicon glyphicon-pencil"></i> Detail', "class": "btn btn-primary") }}</td>
-            <td width="2%">{{ link_to("setins-pengajuan-jaspel/delete/" ~ profile.id, '<i class="glyphicon glyphicon-remove"></i> Delete', "class": "btn btn-danger", "onclick": "return confirm('Are you sure?')") }}</td>
+            <td width="2%">{{ link_to("setins-pengajuan-jaspel/edit/" ~ pj.idPeriode, '<i class="glyphicon glyphicon-pencil"></i> Detail', "class": "btn btn-primary") }}</td>
+            {#<td width="2%">{{ link_to("setins-pengajuan-jaspel/delete/" ~ pj.idPeriode, '<i class="glyphicon glyphicon-remove"></i> Delete', "class": "btn btn-danger", "onclick": "return confirm('Are you sure?')") }}</td>#}
           </tr>
-      
-          <tr>
-            <td>Karcis</td>
-            <td>Rp. xxx.xxx.xxx</td>
-            <td>Rp. xx.xxx.xxx</td>
-            <td>Rp. xx.xxx.xxx</td>
-            <td width="2%">{{ link_to("setins-pengajuan-jaspel/edit/" ~ profile.id, '<i class="glyphicon glyphicon-pencil"></i> Detail', "class": "btn btn-primary") }}</td>
-            <td width="2%">{{ link_to("setins-pengajuan-jaspel/delete/" ~ profile.id, '<i class="glyphicon glyphicon-remove"></i> Delete', "class": "btn btn-danger", "onclick": "return confirm('Are you sure?')") }}</td>
-          </tr>
-      
-          <tr>
-            <td>Karcis</td>
-            <td>Rp. xxx.xxx.xxx</td>
-            <td>Rp. xx.xxx.xxx</td>
-            <td>Rp. xx.xxx.xxx</td>
-            <td width="2%">{{ link_to("setins-pengajuan-jaspel/edit/" ~ profile.id, '<i class="glyphicon glyphicon-pencil"></i> Detail', "class": "btn btn-primary") }}</td>
-            <td width="2%">{{ link_to("setins-pengajuan-jaspel/delete/" ~ profile.id, '<i class="glyphicon glyphicon-remove"></i> Delete', "class": "btn btn-danger", "onclick": "return confirm('Are you sure?')") }}</td>
-          </tr>
-      
-          <tr>
-            <td>Karcis</td>
-            <td>Rp. xxx.xxx.xxx</td>
-            <td>Rp. xx.xxx.xxx</td>
-            <td>Rp. xx.xxx.xxx</td>
-            <td width="2%">{{ link_to("setins-pengajuan-jaspel/edit/" ~ profile.id, '<i class="glyphicon glyphicon-pencil"></i> Detail', "class": "btn btn-primary") }}</td>
-            <td width="2%">{{ link_to("setins-pengajuan-jaspel/delete/" ~ profile.id, '<i class="glyphicon glyphicon-remove"></i> Delete', "class": "btn btn-danger", "onclick": "return confirm('Are you sure?')") }}</td>
-          </tr>
-      
-          <tr>
-            <td>Karcis</td>
-            <td>Rp. xxx.xxx.xxx</td>
-            <td>Rp. xx.xxx.xxx</td>
-            <td>Rp. xx.xxx.xxx</td>
-            <td width="2%">{{ link_to("setins-pengajuan-jaspel/edit/" ~ profile.id, '<i class="glyphicon glyphicon-pencil"></i> Detail', "class": "btn btn-primary") }}</td>
-            <td width="2%">{{ link_to("setins-pengajuan-jaspel/delete/" ~ profile.id, '<i class="glyphicon glyphicon-remove"></i> Delete', "class": "btn btn-danger", "onclick": "return confirm('Are you sure?')") }}</td>
-          </tr>
-      
-          <tr>
-            <td>Karcis</td>
-            <td>Rp. xxx.xxx.xxx</td>
-            <td>Rp. xx.xxx.xxx</td>
-            <td>Rp. xx.xxx.xxx</td>
-            <td width="2%">{{ link_to("setins-pengajuan-jaspel/edit/" ~ profile.id, '<i class="glyphicon glyphicon-pencil"></i> Detail', "class": "btn btn-primary") }}</td>
-            <td width="2%">{{ link_to("setins-pengajuan-jaspel/delete/" ~ profile.id, '<i class="glyphicon glyphicon-remove"></i> Delete', "class": "btn btn-danger", "onclick": "return confirm('Are you sure?')") }}</td>
-          </tr>
+          {% endfor %}
 
         </tbody>
-        <tfoot>
+        {#<tfoot>
           <tr>
             <td colspan="10" align="right">
               <ul class="pagination pagination-sm no-margin pull-right">
@@ -93,7 +50,7 @@
               </ul>
             </td>
           </tr>
-        </tfoot>
+        </tfoot>#}
       </table>
 
     </div>
@@ -103,3 +60,33 @@
   <!-- /.box -->
 </div>
 <!-- /.col-md-12 -->
+
+
+<script>
+$(document).ready(function() {
+  // Add Class
+  $('.edit').click(function(){
+    $(this).addClass('editMode');
+  });
+
+  // Save data
+  $("td.edit").focusout(function(){
+    $(this).removeClass("editMode");
+    let idPeriode = this.dataset.periode;
+    let idRuanganJenisPelayanan
+    var value = $(this).text();
+    alert(idPeriode + value);
+
+    // $.ajax({
+    //  url: '{{url("setins-pengajuan-jaspel")}}',
+    //  type: 'post',
+    //  data: { field:field_name, value:value, id:edit_id },
+    //  success:function(response){
+    //   console.log("success"); 
+    //   console.log(response);
+    //  }
+    // });
+   
+  });
+});
+</script>

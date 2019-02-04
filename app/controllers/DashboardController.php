@@ -2,9 +2,9 @@
 namespace Jaspel\Controllers;
 
 /**
- * Controller Dashboard Instalasi
+ * Controller Dashboard
  */
-class DashboardInstalasiController extends ControllerBase
+class DashboardController extends ControllerBase
 {
 	
 	public function initialize()

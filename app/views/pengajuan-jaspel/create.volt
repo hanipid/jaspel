@@ -2,7 +2,7 @@
 
 {{ content() }}
 
-<form>
+<form action="" method="post">
 
 	<div class="col-md-6">
 
@@ -10,7 +10,7 @@
 		  <div class="box-header with-border">
 		    <h3 class="box-title">Periode Pengajuan Jaspel</h3>
 		    <div class="box-tools pull-right">
-		      {{ link_to("pengajuan-jaspel/createKlaim", "Klaim", "class": "btn btn-success") }}
+		      {#{ link_to("pengajuan-jaspel/createKlaim", "Klaim", "class": "btn btn-success") }#}
 		      {{ link_to("pengajuan-jaspel", "<i class='fa fa-times'></i>", "class": "btn btn-box-tool") }}
 		    </div>
 		  </div>
@@ -19,18 +19,13 @@
 		  <div class="box-body">
 
 		  	<div class="form-group">
-		  		<label for="jenis">Jenis</label>
-		  		{{ select_static("jenis", ["1": "Umum", "2": "BPJS"], "class": "form-control") }}
+		  		<label for="idJaspel">Jenis</label>
+		  		{{ form.render("idJaspel") }}
 		  	</div>
 
 		  	<div class="form-group col-md-6">
-		  		<label for="periodeStart">Periode Start</label>
-		  		{{ text_field("periodeStart", "class": "form-control") }}
-		  	</div>
-
-		  	<div class="form-group col-md-6">
-		  		<label for="periodeEnd">Periode End</label>
-		  		{{ text_field("periodeStart", "class": "form-control") }}
+		  		<label for="startPeriode">Start Periode</label>
+		  		{{ form.render("startPeriode") }}
 		  	</div>
 
 		  </div>
@@ -47,7 +42,7 @@
 	<!-- /.col-md-6 -->
 </form>
 
-<div class="col-md-12">
+{#<div class="col-md-12">
 
 	<div class="box box-primary">
 	  <div class="box-header with-border">
@@ -106,7 +101,7 @@
 
 	</div>
 	<!-- /.box -->
-</div>
+</div>#}
 <!-- /.col-md-6 -->
 
 <form method="post" action="{{url('pengajuan-jaspel/createPesan')}}">
