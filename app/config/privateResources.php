@@ -136,6 +136,7 @@ return new Config([
       'createKlaim',
       'createPesan',
       'pendapatanPelayanan',
+      'detailPendapatan'
     ],
     
     'pegawai-ruangan' => [

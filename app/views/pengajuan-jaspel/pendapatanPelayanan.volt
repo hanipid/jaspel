@@ -5,6 +5,14 @@
     <div class="box-header with-border">
       <h3 class="box-title">Pendapatan Pelayanan {% if auth.getIdentity()["profile"] == "Pelayanan" and namaRuangan is defined %} {{namaRuangan.namaRuang}} {% endif %}</h3>
       <div class="box-tools pull-right">
+        {% set cek = 0 %}
+        {% for i in pendapatanPelayanan if i.statusJplPendapatan == 0 %}
+          {% set cek += 1 %}
+        {% endfor %}
+        {% if cek == 0 %}
+          <a href="" class="btn btn-primary">Ajukan</a>
+        {% endif %}
+        <a href="{{url('pengajuan-jaspel')}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
 
       </div>
     </div>
@@ -15,26 +23,26 @@
         <thead>
           <tr>
             <th></th>
-            <th>Dokter</th>
-            <th>Perawat</th>
-            <th>Admin</th>
+            <th>Sarana</th>
+            <th>Pelayanan</th>
+            <th>Konversi</th>
             <th>Total</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
       
-          {% for rjp in ruanganJenisPelayanan %}
+          {% for pp in pendapatanPelayanan %}
           <tr>
-            <td>{{rjp.jenisPelayanan.namaPelayanan}}</td>
-            <td>{{rjp.persentaseDokter}} %</td>
-            <td>{{rjp.persentasePerawat}} %</td>
-            <td>{{persentaseJaspel.admin}} %</td>
-            <td class="edit" contenteditable="true" data-id-rjp="{{rjp.id}}">
-              
+            <td>{{pp.namaPelayanan}}</td>
+            <td>{{pp.persentaseSarana}} %</td>
+            <td>{{pp.persentasePelayanan}} %</td>
+            <td>{{jenisJaspel.konversiJaspel}} %</td>
+            <td class="edit" contenteditable="true" data-id-rjp="{{pp.idRjp}}">
+              {{pp.totalPengajuan}}
             </td>
-            <td width="2%">{{ link_to("setins-pengajuan-jaspel/edit/" ~ rjp.idPeriode, '<i class="glyphicon glyphicon-pencil"></i> Detail', "class": "btn btn-primary") }}</td>
-            {#<td width="2%">{{ link_to("setins-pengajuan-jaspel/delete/" ~ rjp.idPeriode, '<i class="glyphicon glyphicon-remove"></i> Delete', "class": "btn btn-danger", "onclick": "return confirm('Are you sure?')") }}</td>#}
+            <td width="2%">{{ link_to("pengajuan-jaspel/detailPendapatan/" ~ pp.idJplPendapatan ~ "/" ~ pp.idRjp, '<i class="glyphicon glyphicon-pencil"></i> Detail', "class": "btn btn-primary") }}</td>
+            {#<td width="2%">{{ link_to("pengajuan-jaspel/delete/" ~ pp.idPeriode, '<i class="glyphicon glyphicon-remove"></i> Delete', "class": "btn btn-danger", "onclick": "return confirm('Are you sure?')") }}</td>#}
           </tr>
           {% endfor %}
 
@@ -62,7 +70,7 @@ $(document).ready(function() {
     $(this).removeClass("editMode");
     let idRjp = this.dataset.idRjp;
     var value = $(this).text();
-    alert(idRjp + value);
+    // alert(idRjp + value);
 
     $.ajax({
      url: '{{url("pengajuan-jaspel/pendapatanPelayanan/"~idPeriode)}}',

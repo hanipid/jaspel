@@ -61,6 +61,10 @@ $di->set('view', function () {
                 'compiledSeparator' => '_'
             ]);
 
+            // // add native php function
+            // $compiler = $volt->getCompiler();
+            // $compiler->addFunction('bcadd', 'bcadd');
+
             return $volt;
         }
     ]);

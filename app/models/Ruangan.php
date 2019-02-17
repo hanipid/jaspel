@@ -11,5 +11,6 @@ class Ruangan extends Model
 	public function initialize()
 	{
 		$this->hasMany('id', __NAMESPACE__ . '\RuanganJenisPelayanan', 'idRuangan', ['alias' => 'ruanganJenisPelayanan']);
+		$this->hasMany('id', __NAMESPACE__ . '\JplRuang', 'idRuangan', ['alias' => 'jplRuang']);
 	}
 }

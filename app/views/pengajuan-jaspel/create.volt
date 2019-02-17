@@ -28,6 +28,11 @@
 		  		{{ form.render("startPeriode") }}
 		  	</div>
 
+		  	<div class="form-group col-md-6">
+		  		<label for="endPeriode">End Periode</label>
+		  		{{ form.render("endPeriode") }}
+		  	</div>
+
 		  </div>
 		  <!-- /.box-body -->
 

@@ -2,9 +2,9 @@
 
 {{ content() }}
 
-<form>
+<form method="post" action="">
 
-	<div class="col-md-6">
+	<div class="col-md-6 col-md-offset-3">
 
 		<div class="box box-primary">
 		  <div class="box-header with-border">
@@ -47,11 +47,11 @@
 	<!-- /.col-md-6 -->
 </form>
 
-<div class="col-md-12">
+<div class="col-md-6">
 
 	<div class="box box-primary">
 	  <div class="box-header with-border">
-	    <h3 class="box-title">List Pengajuan</h3>
+	    <h3 class="box-title">Daftar Pengajuan Komplit</h3>
 	    <div class="box-tools pull-right">
 	    </div>
 	  </div>
@@ -62,42 +62,63 @@
 	  	<table id="example1" class="table dataTable">
 	  		<thead>
 	  			<tr>
-	  				<th class="text-center" width="50%">Completed <span class="label label-success">2</span></th>
-	  				<th class="text-center">Not Completed <span class="label label-danger">2</span></th>
+	  				<th class="text-center"><span class="label label-success">{{jplRuang1|length}}</span> Ruangan</th>
 	  			</tr>
 	  		</thead>
 
 	  		<tbody>
+	  			{% for jr1 in jplRuang1 %}
 	  			<tr>
 	  				<td>
-	  					Poli Anak
+	  					{{jr1.ruangan.namaRuang}}
 	  					<span class="pull-right">
 	  						{{ link_to("#", "Reset", "class": "btn btn-primary btn-sm") }}
 	  						{{ link_to("#", "<i class='fa fa-envelope-o'></i>", "class": "btn btn-warning btn-sm", "data-toggle": "modal", "data-target": "#modalPesan") }}
 	  					</span>
 	  				</td>
-	  				<td>
-	  					Poli Kulit & Kelamin
-	  					<span class="pull-right">
-	  						{{ link_to("#", "<i class='fa fa-envelope-o'></i>", "class": "btn btn-warning btn-sm", "data-toggle": "modal", "data-target": "#modalPesan") }}
-	  					</span>
-	  				</td>
 	  			</tr>
+	  			{% endfor %}
+	  		</tbody>
+	  	</table>
+
+	  </div>
+	  <!-- /.box-body -->
+
+	</div>
+	<!-- /.box -->
+</div>
+<!-- /.col-md-6 -->
+
+<div class="col-md-6">
+
+	<div class="box box-primary">
+	  <div class="box-header with-border">
+	    <h3 class="box-title">Daftar Pengajuan Belum Komplit</h3>
+	    <div class="box-tools pull-right">
+	    </div>
+	  </div>
+	  <!-- /.box-header -->
+
+	  <div class="box-body">
+
+	  	<table id="example2" class="table dataTable">
+	  		<thead>
+	  			<tr>
+	  				<th class="text-center"><span class="label label-danger">{{jplRuang0|length}}</span> Ruangan</th>
+	  			</tr>
+	  		</thead>
+
+	  		<tbody>
+	  			{% for jr0 in jplRuang0 %}
 	  			<tr>
 	  				<td>
-	  					Poli Gigi
-	  					<span class="pull-right">
-	  						{{ link_to("#", "Reset", "class": "btn btn-primary btn-sm") }}
-	  						{{ link_to("#", "<i class='fa fa-envelope-o'></i>", "class": "btn btn-warning btn-sm", "data-toggle": "modal", "data-target": "#modalPesan") }}
-	  					</span>
-	  				</td>
-	  				<td>
-	  					Poli Penyakit Dalam
+	  					{{jr0.ruangan.namaRuang}}
 	  					<span class="pull-right">
 	  						{{ link_to("#", "<i class='fa fa-envelope-o'></i>", "class": "btn btn-warning btn-sm", "data-toggle": "modal", "data-target": "#modalPesan") }}
 	  					</span>
 	  				</td>
 	  			</tr>
+	  			{% endfor %}
 	  		</tbody>
 	  	</table>
 
@@ -144,5 +165,6 @@
 <script>
 $(document).ready(function() {
 	$('#example1').DataTable();
+	$('#example2').DataTable();
 });
 </script>

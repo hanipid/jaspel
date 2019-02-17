@@ -12,5 +12,9 @@ class PeriodeJaspel extends \Phalcon\Mvc\Model
 			'alias' => 'jenisJaspel',
       'reusable' => true
     ]);
+		$this->hasMany('idPeriode', __NAMESPACE__ . '\JplRuang', 'idPeriode', [
+			'alias' => 'jplRuang',
+      'reusable' => true
+    ]);
 	}
 }

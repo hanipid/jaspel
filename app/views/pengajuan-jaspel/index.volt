@@ -30,7 +30,7 @@
         <tbody>
           {% for pj in periodeJaspel %}
           <tr>
-            <td>{{pj.startPeriode}}</td>
+            <td>{{pj.startPeriode}} - {{pj.endPeriode}}</td>
             <td>
               <h4><span class="label label-info">{{pj.jenisJaspel.namaJaspel}}</span> 
               {% if pj.statusPeriode == 0 %}

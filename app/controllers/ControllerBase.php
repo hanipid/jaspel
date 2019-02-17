@@ -51,7 +51,7 @@ class ControllerBase extends Controller
 
     $statusPeriodeJaspel = PeriodeJaspel::findByStatusPeriode(0);
     if (count($statusPeriodeJaspel) > 0) {
-      $this->flashSession->warning("Waktunya memeriksa Pengjuan Jaspel");
+      $this->flash->warning("Waktunya memeriksa Pengjuan Jaspel");
     }
 
     $controllerName = $dispatcher->getControllerName();

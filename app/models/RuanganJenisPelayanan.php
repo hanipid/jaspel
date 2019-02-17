@@ -22,5 +22,8 @@ class RuanganJenisPelayanan extends Model
 	{
 		$this->belongsTo('idJenisPelayanan', __NAMESPACE__ . '\JenisPelayanan', 'id', ['alias' => 'jenisPelayanan']);
 		$this->belongsTo('idRuangan', __NAMESPACE__ . '\Ruangan', 'id', ['alias' => 'ruangan']);
+    $this->hasMany('id', __NAMESPACE__ . '\JplPendapatan', 'idRuanganJenisPelayanan', [
+      'alias' => 'jplPendapatan'
+    ]);
 	}
 }
