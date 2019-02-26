@@ -161,7 +161,7 @@ class PengajuanJaspelController extends ControllerBase
 		if ($this->request->isPost() && $this->request->isAjax()) {
 			$this->view->disable();
 			$idRjp					= $this->request->getPost('idRjp');
-			$totalPengajuan	= $this->request->getPost('value');
+			$totalPengajuan	= $this->request->getPost('value', 'float');
 			
 			$cJplPendapatan = JplPendapatan::count([
 				'idPeriode = ?1 AND idRuanganJenisPelayanan = ?2',
@@ -225,7 +225,7 @@ class PengajuanJaspelController extends ControllerBase
 		if ($this->request->isPost() && $this->request->isAjax()) {
 			$idJplPegawai = $this->request->getPost('idJplPegawai');
 			$updateJplPegawai = JplPegawai::findFirstById($idJplPegawai);
-			$updateJplPegawai->nilaiPendapatan = $this->request->getPost('value', 'int');
+			$updateJplPegawai->nilaiPendapatan = $this->request->getPost('value', 'float');
 			if ($updateJplPegawai->nilaiPendapatan > 0) {
 				$updateJplPegawai->status = 1;
 			} else {

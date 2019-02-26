@@ -1,4 +1,6 @@
 
+{{ javascript_include("js/jquery.maskMoney.311.min.js") }}
+{#{ javascript_include("js/jquery.maskMoney.302.min.js") }#}
 {{content()}}
 
 
@@ -20,8 +22,10 @@
       <!-- /.box-header -->
 
       <div class="box-body">
-
-        <span>Total Pengajuan: <strong>{{jplPendapatan.totalPengajuan}}</strong></span>
+        {% set totalPengajuan = jplPendapatan.totalPengajuan*rjp.persentasePelayanan/100 %}
+        <?php $totalPengajuan = number_format((float)$totalPengajuan, 2, '.', '') ?>
+        <span>Total Pengajuan: Rp. 
+        {{ text_field("totalPengajuan", "value": totalPengajuan, "class": "rupiah", "style": "width:120px; font-weight: 700; border: 0px; text-align: center;", "disabled": "disabled") }}</span>
         {% if rjp.metode == "index" %}
           <span class="pull-right">Total Index: <strong id="totalIndex">{{totalIndex}}</strong></span>
         {% elseif rjp.metode == "persentase" %}
@@ -50,7 +54,8 @@
               <td>{{ jp.pegawai.gelarDepan }} {{jp.pegawai.namaPegawai}} {{ jp.pegawai.gelarBelakang }}</td>
               {% if rjp.metode != "manual" %}
               <td>
-                <span class="edit" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}">{{jp.nilaiPendapatan}}</span>
+                {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit", "data-id-jpl-pegawai": jp.id, "style": "width:30px; text-align: center;") }}
+                <!-- <span class="edit" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}">{{jp.nilaiPendapatan}}</span> -->
                 {% if rjp.metode == "persentase" %}
                 %
                 {% endif %}
@@ -58,15 +63,24 @@
               {% endif %}
               <td>Rp. 
                 {% if rjp.metode == "persentase" %}
-                  <span id="nominal{{jp.id}}" class="nominal">{% set nom = jp.nilaiPendapatan / 100 * jplPendapatan.totalPengajuan %}
+                  {% set nominalPersentase = jp.nilaiPendapatan / 100 * jplPendapatan.totalPengajuan * rjp.persentasePelayanan / 100 %}
+                  <?php $nominalPersentase = number_format((float)$nominalPersentase, 2, '.', '') ?>
+                  {{ text_field("nominal"~jp.id, "value": nominalPersentase, "class": "nominal rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
+
+                  <!-- <span id="nominal{{jp.id}}" class="nominal">{% set nom = jp.nilaiPendapatan / 100 * jplPendapatan.totalPengajuan %}
                   <?php echo bcadd($nom, 0, 2); ?>
-                  </span>
+                  </span> -->
                 {% elseif rjp.metode == "index" %}
-                  <span id="nominal{{jp.id}}" class="nominal">{% set nom = jp.nilaiPendapatan / totalIndex * jplPendapatan.totalPengajuan %}
+                  {% set nominalIndex = jp.nilaiPendapatan / totalIndex * jplPendapatan.totalPengajuan * rjp.persentasePelayanan / 100 %}
+                  <?php $nominalIndex = number_format((float)$nominalIndex, 2, '.', '') ?>
+                  {{ text_field("nominal"~jp.id, "value": nominalIndex, "class": "nominal rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
+
+                  <!-- <span id="nominal{{jp.id}}" class="nominal">{% set nom = jp.nilaiPendapatan / totalIndex * jplPendapatan.totalPengajuan %}
                   <?php echo bcadd($nom, 0, 2); ?>
-                  </span>
+                  </span> -->
                 {% else %}
-                  <span id="nominal{{jp.id}}" class="edit nominal" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}">{{jp.nilaiPendapatan}}</span>
+                  {{ text_field("nominal"~jp.id, "value": jp.nilaiPendapatan, "class": "edit nominal rupiah", "data-id-jpl-pegawai": jp.id, "style": "width:110px; text-align: center;") }}
+                  <!-- <span id="nominal{{jp.id}}" class="edit nominal" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}">{{jp.nilaiPendapatan}}</span> -->
                 {% endif %}
               </td>
             </tr>
@@ -80,7 +94,8 @@
               {% if rjp.metode != "manual" %}
               <th></th>
               {% endif %}
-              <th>Rp. <span id="total"></span></th>
+              <th>Rp. {{ text_field("total", "class": "rupiah", "disabled": "disabled", "style": "width:120px; text-align: center; font-weight: 700;") }}
+                <!-- Rp. <span id="total"></span> --></th>
             </tr>
           </tfoot>
         </table>
@@ -102,19 +117,35 @@
 <script>
 $(document).ready(function() {
 
+  function isInt(n) {
+    return n % 1 === 0;
+  }
+
+  $('.rupiah').maskMoney({thousand: ',', decimal: '.', precision: 2});
+  $('.rupiah').each(function(){ // function to apply mask on load!
+    let v = $(this).val();
+    $(this).val(v)
+    $(this).maskMoney('mask')
+    $(this).focus()
+  })
+
   function nominal(idJplPegawai, totalIndex, nilaiPendapatan, totalPengajuan) {
-    $("#nominal" + idJplPegawai).text((Number(nilaiPendapatan) / totalIndex * Number(totalPengajuan)).toFixed(2))
+    let value = (Number(nilaiPendapatan) / totalIndex * Number(totalPengajuan)) * "{{rjp.persentasePelayanan}}" / 100
+    $("#nominal" + idJplPegawai).maskMoney('mask', Number(value.toFixed(2)))
   }
 
   function totalNominal() {
-    let tot = 0;
+    let v = 0
+    let tot = 0
     $(".nominal").each(function(){
-      tot += Number($(this).html())
+      $(this).maskMoney();
+      v = $(this).maskMoney("unmasked")[0];
+      tot += Number(v);
     })
-    return (tot).toFixed(2)
     console.log((tot).toFixed(2))
+    return (tot)
   }
-  $("#total").text(totalNominal())
+  $("#total").maskMoney('mask', totalNominal())
 
   // Add Class
   $('.edit').click(function(){
@@ -125,11 +156,19 @@ $(document).ready(function() {
   $(".edit").focusout(function(){
     $(this).removeClass("editMode");
     let idJplPegawai = this.dataset.idJplPegawai;
-    let value = $(this).text();
     // let param = "{{rjp.metode}}"
     let total = "{{jplPendapatan.totalPengajuan}}"
     let jp = '{{ jplPegawai|json_encode }}'
-    console.log(idJplPegawai + value);
+    
+    let value = $(this).maskMoney("unmasked")[0];
+    if ($(this).attr("name") == "nilaiPendapatan") {
+      value = $(this).val();
+    } else {
+      if (isInt(value)) {
+        value = String(value) + ".00"
+      }
+    }    
+    console.log(idJplPegawai + '|' + value );
 
     $.ajax({
      url: '{{url("pengajuan-jaspel/detailPendapatan/"~idJplPendapatan~"/"~idRuanganJenisPelayanan)}}',
@@ -154,12 +193,14 @@ $(document).ready(function() {
       } else if (metode == "persentase") {
         $("#totalIndex").text(100 - res.totalIndex)
       } 
-      $("#total").text(totalNominal())
+      // $("#total").val(totalNominal())
+      $("#total").maskMoney('mask', totalNominal())
       // $(".nominal" + idJplPegawai).text(Number(value) / response * Number(total))
      }
     });
    
   });
+
 });
 </script>
 {% endif %}
@@ -176,14 +217,16 @@ $(document).ready(function() {
       <div class="box-header with-border">
         <h3 class="box-title">Pengajuan Detail {{rjp.jenisPelayanan.namaPelayanan}} | April 2018</h3>
         <div class="box-tools pull-right">
+          <a href="{{url('pengajuan-jaspel/pendapatanPelayanan/'~jplPendapatan.idPeriode)}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
         </div>
       </div>
       <!-- /.box-header -->
 
       <div class="box-body">
-
-        <p>Jumlah: <strong>Rp. {{jplPendapatan.totalPengajuan}}</strong></p>
-        <p>Jumlah Diterima: <strong>Rp. x.xxx.xxx</strong></p>
+        {% set totalPengajuan = jplPendapatan.totalPengajuan*rjp.persentasePelayanan/100 %}
+        <?php $totalPengajuan = number_format((float)$totalPengajuan, 2, '.', '') ?>
+        <p>Jumlah: <strong>Rp.</strong> {{ text_field("totalPengajuan", "value": totalPengajuan, "class": "rupiah", "disabled": "disabled", "style": "width:120px; text-align: center; font-weight: 700;") }}</p>
+        <!-- <p>Jumlah Diterima: <strong>Rp. x.xxx.xxx</strong></p> -->
 
       </div>
       <!-- /.box-body -->
@@ -205,7 +248,9 @@ $(document).ready(function() {
 
       <div class="box-body">
 
-        <p>Jumlah Diterima: <strong>Rp. {{ rjp.persentaseDokter / 100 * jplPendapatan.totalPengajuan}}</strong></p>
+        {% set jatahDokter = jplPendapatan.totalPengajuan*rjp.persentasePelayanan/100*rjp.persentaseDokter/100 %}
+        <?php $jatahDokter = number_format((float)$jatahDokter, 2, '.', '') ?>
+        <p>Jumlah Diterima: <strong>Rp.</strong> {{ text_field("jatahDokter", "value": jatahDokter, "class": "rupiah", "disabled": "disabled", "style": "width:120px; text-align: center; font-weight: 700;") }}</p>
         <p>
           {% if rjp.metode == "index" %}
             <span>Total Index: <strong id="totalIndexDokter"></strong></span>
@@ -237,7 +282,8 @@ $(document).ready(function() {
               <td>{{ jp.pegawai.gelarDepan }} {{jp.pegawai.namaPegawai}} {{ jp.pegawai.gelarBelakang }}</td>
               {% if rjp.metode != "manual" %}
               <td>
-                <span class="edit indexDokter" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}" data-status-pegawai="dokter" data-persentase-pegawai="{{rjp.persentaseDokter}}">{{jp.nilaiPendapatan}}</span>
+                {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit indexDokter", "data-id-jpl-pegawai": jp.id, "data-status-pegawai": "dokter", "data-persentase-pegawai": rjp.persentaseDokter, "style": "width:30px; text-align: center;") }}
+                <!-- <span class="edit indexDokter" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}" data-status-pegawai="dokter" data-persentase-pegawai="{{rjp.persentaseDokter}}">{{jp.nilaiPendapatan}}</span> -->
                 {% if rjp.metode == "persentase" %}
                 %
                 {% endif %}
@@ -245,15 +291,24 @@ $(document).ready(function() {
               {% endif %}
               <td>Rp. 
                 {% if rjp.metode == "persentase" %}
-                  <span id="dNominal{{jp.id}}" class="nominalDokter">{% set nom = jp.nilaiPendapatan / 100 * jplPendapatan.totalPengajuan * rjp.persentaseDokter / 100 %}
+                  {% set dNominal = jp.nilaiPendapatan / 100 * jplPendapatan.totalPengajuan * rjp.persentasePelayanan / 100 * rjp.persentaseDokter / 100 %}
+                  <?php $dNominal = number_format((float)$dNominal, 2, '.', '') ?>
+                  {{ text_field("dNominal"~jp.id, "value": dNominal, "class": "nominalDokter rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
+
+                  <!-- <span id="dNominal{{jp.id}}" class="nominalDokter">{% set nom = jp.nilaiPendapatan / 100 * jplPendapatan.totalPengajuan * rjp.persentaseDokter / 100 %}
                   <?php echo bcadd($nom, 0, 2); ?>
-                  </span>
+                  </span> -->
                 {% elseif rjp.metode == "index" %}
-                  <span id="dNominal{{jp.id}}" class="nominalDokter">{% set nom = jp.nilaiPendapatan / totalIndexDokter * jplPendapatan.totalPengajuan * rjp.persentaseDokter / 100 %}
+                  {% set dNominal = jp.nilaiPendapatan / totalIndexDokter * jplPendapatan.totalPengajuan * rjp.persentasePelayanan / 100 * rjp.persentaseDokter / 100 %}
+                  <?php $dNominal = number_format((float)$dNominal, 2, '.', '') ?>
+                  {{ text_field("dNominal"~jp.id, "value": dNominal, "class": "nominalDokter rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
+
+                  <!-- <span id="dNominal{{jp.id}}" class="nominalDokter">{% set nom = jp.nilaiPendapatan / totalIndexDokter * jplPendapatan.totalPengajuan * rjp.persentaseDokter / 100 %}
                   <?php echo bcadd($nom, 0, 2); ?>
-                  </span>
+                  </span> -->
                 {% else %}
-                  <span id="dNominal{{jp.id}}" class="edit nominalDokter" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}" data-status-pegawai="dokter" data-persentase-pegawai="{{rjp.persentaseDokter}}">{{jp.nilaiPendapatan}}</span>
+                  {{ text_field("dNominal"~jp.id, "value": jp.nilaiPendapatan, "class": "edit nominalDokter rupiah", "data-id-jpl-pegawai": jp.id, "data-status-pegawai":"dokter", "data-persentase-pegawai": rjp.persentaseDokter, "style": "width:110px; text-align: center;") }}
+                  <!-- <span id="dNominal{{jp.id}}" class="edit nominalDokter" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}" data-status-pegawai="dokter" data-persentase-pegawai="{{rjp.persentaseDokter}}">{{jp.nilaiPendapatan}}</span> -->
                 {% endif %}
               </td>
             </tr>
@@ -267,7 +322,7 @@ $(document).ready(function() {
               {% if rjp.metode != "manual" %}
               <th></th>
               {% endif %}
-              <th>Rp. <span id="totalDokter"></span></th>
+              <th>Rp. {{ text_field("totalDokter", "class": "rupiah", "disabled": "disabled", "style": "width:120px; text-align: center; font-weight: 700;") }}</th>
             </tr>
           </tfoot>
         </table>
@@ -295,7 +350,9 @@ $(document).ready(function() {
 
       <div class="box-body">
 
-        <p>Jumlah Diterima: <strong>Rp. {{ rjp.persentasePerawat / 100 * jplPendapatan.totalPengajuan}}</strong></p>
+        {% set jatahPerawat = jplPendapatan.totalPengajuan*rjp.persentasePelayanan/100*rjp.persentasePerawat/100 %}
+        <?php $jatahPerawat = number_format((float)$jatahPerawat, 2, '.', '') ?>
+        <p>Jumlah Diterima: <strong>Rp.</strong> {{ text_field("jatahPerawat", "value": jatahPerawat, "class": "rupiah", "disabled": "disabled", "style": "width:120px; text-align: center; font-weight: 700;") }}</p>
         <p>
           {% if rjp.metode == "index" %}
             <span>Total Index: <strong id="totalIndexPerawat"></strong></span>
@@ -327,7 +384,8 @@ $(document).ready(function() {
               <td>{{ jp.pegawai.gelarDepan }} {{jp.pegawai.namaPegawai}} {{ jp.pegawai.gelarBelakang }}</td>
               {% if rjp.metode != "manual" %}
               <td>
-                <span class="edit indexPerawat" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}" data-status-pegawai="bukandokter" data-persentase-pegawai="{{rjp.persentasePerawat}}">{{jp.nilaiPendapatan}}</span>
+                {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit indexPerawat", "data-id-jpl-pegawai": jp.id, "data-status-pegawai": "bukandokter", "data-persentase-pegawai": rjp.persentasePerawat, "style": "width:30px; text-align: center;") }}
+                <!-- <span class="edit indexPerawat" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}" data-status-pegawai="bukandokter" data-persentase-pegawai="{{rjp.persentasePerawat}}">{{jp.nilaiPendapatan}}</span> -->
                 {% if rjp.metode == "persentase" %}
                 %
                 {% endif %}
@@ -335,15 +393,24 @@ $(document).ready(function() {
               {% endif %}
               <td>Rp. 
                 {% if rjp.metode == "persentase" %}
-                  <span id="bdNominal{{jp.id}}" class="nominalPerawat">{% set nom = jp.nilaiPendapatan / 100 * jplPendapatan.totalPengajuan * rjp.persentasePerawat / 100 %}
+                  {% set bdNominal = jp.nilaiPendapatan / 100 * jplPendapatan.totalPengajuan * rjp.persentasePelayanan / 100 * rjp.persentasePerawat / 100 %}
+                  <?php $bdNominal = number_format((float)$bdNominal, 2, '.', '') ?>
+                  {{ text_field("bdNominal"~jp.id, "value": bdNominal, "class": "nominalPerawat rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
+                  
+                  <!-- <span id="bdNominal{{jp.id}}" class="nominalPerawat">{% set nom = jp.nilaiPendapatan / 100 * jplPendapatan.totalPengajuan * rjp.persentasePerawat / 100 %}
                   <?php echo bcadd($nom, 0, 2); ?>
-                  </span>
+                  </span> -->
                 {% elseif rjp.metode == "index" %}
-                  <span id="bdNominal{{jp.id}}" class="nominalPerawat">{% set nom = jp.nilaiPendapatan / totalIndexPerawat * jplPendapatan.totalPengajuan * rjp.persentasePerawat / 100 %}
+                  {% set bdNominal = jp.nilaiPendapatan / totalIndexDokter * jplPendapatan.totalPengajuan * rjp.persentasePelayanan / 100 * rjp.persentaseDokter / 100 %}
+                  <?php $bdNominal = number_format((float)$bdNominal, 2, '.', '') ?>
+                  {{ text_field("bdNominal"~jp.id, "value": bdNominal, "class": "nominalPerawat rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
+
+                  <!-- <span id="bdNominal{{jp.id}}" class="nominalPerawat">{% set nom = jp.nilaiPendapatan / totalIndexPerawat * jplPendapatan.totalPengajuan * rjp.persentasePerawat / 100 %}
                   <?php echo bcadd($nom, 0, 2); ?>
-                  </span>
+                  </span> -->
                 {% else %}
-                  <span id="bdNominal{{jp.id}}" class="edit nominalPerawat" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}" data-status-pegawai="bukandokter" data-persentase-pegawai="{{rjp.persentasePerawat}}">{{jp.nilaiPendapatan}}</span>
+                  {{ text_field("bdNominal"~jp.id, "value": jp.nilaiPendapatan, "class": "edit nominalPerawat rupiah", "data-id-jpl-pegawai": jp.id, "data-status-pegawai":"bukandokter", "data-persentase-pegawai": rjp.persentasePerawat, "style": "width:110px; text-align: center;") }}
+                  <!-- <span id="bdNominal{{jp.id}}" class="edit nominalPerawat" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}" data-status-pegawai="bukandokter" data-persentase-pegawai="{{rjp.persentasePerawat}}">{{jp.nilaiPendapatan}}</span> -->
                 {% endif %}
               </td>
             </tr>
@@ -357,7 +424,7 @@ $(document).ready(function() {
               {% if rjp.metode != "manual" %}
               <th></th>
               {% endif %}
-              <th>Rp. <span id="totalPerawat"></span></th>
+              <th>{{ text_field("totalPerawat", "class": "rupiah", "disabled": "disabled", "style": "width:120px; text-align: center; font-weight: 700;") }}</th>
             </tr>
           </tfoot>
         </table>
@@ -381,64 +448,102 @@ $(document).ready(function() {
 
 $(document).ready(function() {
 
+  $('.rupiah').maskMoney({thousand: ',', decimal: '.', precision: 2});
+  $('.rupiah').each(function(){ // function to apply mask on load!
+    let v = $(this).val();
+    $(this).val(v)
+    $(this).maskMoney('mask')
+    $(this).focus()
+  })
+
+  function isInt(n) {
+    return n % 1 === 0;
+  }
+
   function nominal(idJplPegawai, totalIndex, nilaiPendapatan, totalPengajuan, statusPegawai, persentasePegawai) {
+    // let value = (Number(nilaiPendapatan) / totalIndex * Number(totalPengajuan)) * "{{rjp.persentasePelayanan}}" / 100
+    // $("#nominal" + idJplPegawai).maskMoney('mask', Number(value.toFixed(2)))
+
     if (statusPegawai == "dokter") {
-      $("#dNominal" + idJplPegawai).text((Number(nilaiPendapatan) / totalIndex * Number(totalPengajuan)).toFixed(2) * persentasePegawai / 100)
+      let value = (Number(nilaiPendapatan) / totalIndex * Number(totalPengajuan)) * persentasePegawai / 100 * "{{rjp.persentasePelayanan}}" / 100
+      $("#dNominal" + idJplPegawai).maskMoney('mask', Number(value.toFixed(2)))
+      // let r = Math.round(v * 100) / 100
+      // let z = String(r).replace('.',',')
+      // $("#dNominal" + idJplPegawai).val(z)
+      // $("#dNominal" + idJplPegawai).maskMoney('mask')
+      // console.log(Number(value.toFixed(2)))
     } else {
-      $("#bdNominal" + idJplPegawai).text((Number(nilaiPendapatan) / totalIndex * Number(totalPengajuan)).toFixed(2) * persentasePegawai / 100)
+      let value = (Number(nilaiPendapatan) / totalIndex * Number(totalPengajuan)) * persentasePegawai / 100 * "{{rjp.persentasePelayanan}}" / 100
+      $("#bdNominal" + idJplPegawai).maskMoney('mask', Number(value.toFixed(2)))
+      // $("#bdNominal" + idJplPegawai).maskMoney('mask', (Number(nilaiPendapatan) / totalIndex * Number(totalPengajuan)).toFixed(2) * persentasePegawai / 100 * "{{rjp.persentasePerawat}}" / 100)
+      console.log(totalPengajuan)
     }
     
   }
 
+
   function totalNominal() {
-    let tot = 0;
+    let v = 0
+    let tot = 0
     $(".nominal").each(function(){
-      tot += Number($(this).html())
+      v = $(this).val()
+      tot += Number(v.replace(/[^0-9\s]/gi, ""));
     })
-    return (tot).toFixed(2)
+    return (tot)
     console.log((tot).toFixed(2))
   }
-  $("#total").text(totalNominal())
+  $("#total").maskMoney('mask', totalNominal())
+
+
 
   function totalNominalDokter() {
-    let tot = 0;
+    let v = 0
+    let tot = 0
     $(".nominalDokter").each(function(){
-      tot += Number($(this).html())
+      $(this).maskMoney();
+      v = $(this).maskMoney("unmasked")[0];
+      tot += Number(v);
     })
-    return (tot).toFixed(2)
-    console.log((tot).toFixed(2))
+    console.log("totnomdok : " + (tot))
+    return (tot)
   }
-  $("#totalDokter").text(totalNominalDokter())
+  $("#totalDokter").maskMoney('mask', totalNominalDokter())
 
   function totalNominalPerawat() {
     let tot = 0;
+    let v = 0
     $(".nominalPerawat").each(function(){
-      tot += Number($(this).html())
+      $(this).maskMoney();
+      v = $(this).maskMoney("unmasked")[0];
+      tot += Number(v);
     })
-    return (tot).toFixed(2)
-    console.log((tot).toFixed(2))
+    console.log("totnomper : " + (tot))
+    return (tot)
   }
-  $("#totalPerawat").text(totalNominalPerawat())
+  $("#totalPerawat").maskMoney('mask', totalNominalPerawat())
 
 
 
   function totalIndexDokter() {
     let tot = 0;
+    let v = 0;
     $(".indexDokter").each(function(){
-      tot += Number($(this).html())
+      v = $(this).val()
+      tot += Number(v.replace(/[^0-9\s]/gi, ""));
     })
     return tot
   }
-  $("#totalIndexDokter").text(totalIndexDokter())
+  $("#totalIndexDokter").html(totalIndexDokter())
 
   function totalIndexPerawat() {
     let tot = 0;
     $(".indexPerawat").each(function(){
-      tot += Number($(this).html())
+      v = $(this).val()
+      tot += Number(v.replace(/[^0-9\s]/gi, ""));
     })
     return tot
   }
-  $("#totalIndexPerawat").text(totalIndexPerawat())
+  $("#totalIndexPerawat").html(totalIndexPerawat())
 
 
   // Add Class
@@ -450,14 +555,20 @@ $(document).ready(function() {
 
   // Save data
   $(".edit.indexDokter").focusout(function(){
-    $(this).removeClass("editMode");
     let idJplPegawai = this.dataset.idJplPegawai;
     let statusPegawai = this.dataset.statusPegawai;
     let persentasePegawai = this.dataset.persentasePegawai;
-    let value = $(this).text();
     // let param = "{{rjp.metode}}"
     let total = "{{jplPendapatan.totalPengajuan}}"
     let jp = '{{ jplPegawai|json_encode }}'
+    let value = $(this).maskMoney("unmasked")[0];
+    if ($(this).attr("name") == "nilaiPendapatan") {
+      value = $(this).val();
+    } else {
+      if (isInt(value)) {
+        value = String(value) + ".00"
+      }
+    }    
     console.log(idJplPegawai + value + statusPegawai);
 
     $.ajax({
@@ -483,7 +594,8 @@ $(document).ready(function() {
       } else if (metode == "persentase") {
         $("#totalIndex").text(100 - res.totalIndex)
       } 
-      $("#total").text(totalNominalDokter())
+      
+      $("#totalDokter").maskMoney('mask', totalNominalDokter())
       $("#totalIndexDokter").text(totalIndexDokter())
      }
     });
@@ -492,14 +604,20 @@ $(document).ready(function() {
 
   // Save data
   $(".edit.indexPerawat").focusout(function(){
-    $(this).removeClass("editMode");
     let idJplPegawai = this.dataset.idJplPegawai;
     let statusPegawai = this.dataset.statusPegawai;
     let persentasePegawai = this.dataset.persentasePegawai;
-    let value = $(this).text();
     // let param = "{{rjp.metode}}"
     let total = "{{jplPendapatan.totalPengajuan}}"
     let jp = '{{ jplPegawai|json_encode }}'
+    let value = $(this).maskMoney("unmasked")[0];
+    if ($(this).attr("name") == "nilaiPendapatan") {
+      value = $(this).val();
+    } else {
+      if (isInt(value)) {
+        value = String(value) + ".00"
+      }
+    }    
     console.log(idJplPegawai + value + statusPegawai);
 
     $.ajax({
@@ -525,7 +643,7 @@ $(document).ready(function() {
       } else if (metode == "persentase") {
         $("#totalIndex").text(100 - res.totalIndex)
       } 
-      $("#total").text(totalNominalPerawat())
+      $("#totalPerawat").maskMoney('mask', totalNominalPerawat())
       $("#totalIndexPerawat").text(totalIndexPerawat())
      }
     });
@@ -539,10 +657,17 @@ $(document).ready(function() {
     $(this).removeClass("editMode");
     let idJplPegawai = this.dataset.idJplPegawai;
     let statusPegawai = this.dataset.statusPegawai;
-    let value = $(this).text();
     // let param = "{{rjp.metode}}"
     let total = "{{jplPendapatan.totalPengajuan}}"
     let jp = '{{ jplPegawai|json_encode }}'
+    let value = $(this).maskMoney("unmasked")[0];
+    if ($(this).attr("name") == "nilaiPendapatan") {
+      value = $(this).val();
+    } else {
+      if (isInt(value)) {
+        value = String(value) + ".00"
+      }
+    }    
     console.log(idJplPegawai + value + statusPegawai);
 
     $.ajax({
@@ -563,7 +688,7 @@ $(document).ready(function() {
       } else if (metode == "persentase") {
         $("#totalIndex").text(100 - res.totalIndex)
       } 
-      $("#totalDokter").text(totalNominalDokter())
+      $("#totalDokter").maskMoney('mask', totalNominalDokter())
       $("#totalIndexDokter").text(totalIndexDokter())
      }
     });
@@ -574,10 +699,17 @@ $(document).ready(function() {
     $(this).removeClass("editMode");
     let idJplPegawai = this.dataset.idJplPegawai;
     let statusPegawai = this.dataset.statusPegawai;
-    let value = $(this).text();
     // let param = "{{rjp.metode}}"
     let total = "{{jplPendapatan.totalPengajuan}}"
     let jp = '{{ jplPegawai|json_encode }}'
+    let value = $(this).maskMoney("unmasked")[0];
+    if ($(this).attr("name") == "nilaiPendapatan") {
+      value = $(this).val();
+    } else {
+      if (isInt(value)) {
+        value = String(value) + ".00"
+      }
+    }    
     console.log(idJplPegawai + value + statusPegawai);
 
     $.ajax({
@@ -597,7 +729,7 @@ $(document).ready(function() {
       } else if (metode == "persentase") {
         $("#totalIndex").text(100 - res.totalIndex)
       } 
-      $("#totalPerawat").text(totalNominalPerawat())
+      $("#totalPerawat").maskMoney('mask', totalNominalPerawat())
       $("#totalIndexPerawat").text(totalIndexPerawat())
      }
     });
