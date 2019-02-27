@@ -79,7 +79,9 @@
                   <?php echo bcadd($nom, 0, 2); ?>
                   </span> -->
                 {% else %}
-                  {{ text_field("nominal"~jp.id, "value": jp.nilaiPendapatan, "class": "edit nominal rupiah", "data-id-jpl-pegawai": jp.id, "style": "width:110px; text-align: center;") }}
+                  {% set nilaiPendapatan = jp.nilaiPendapatan %}
+                  <?php $nilaiPendapatan = number_format((float)$nilaiPendapatan, 2, '.', '') ?>
+                  {{ text_field("nominal"~jp.id, "value": nilaiPendapatan, "class": "edit nominal rupiah", "data-id-jpl-pegawai": jp.id, "style": "width:110px; text-align: center;") }}
                   <!-- <span id="nominal{{jp.id}}" class="edit nominal" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}">{{jp.nilaiPendapatan}}</span> -->
                 {% endif %}
               </td>
@@ -307,7 +309,9 @@ $(document).ready(function() {
                   <?php echo bcadd($nom, 0, 2); ?>
                   </span> -->
                 {% else %}
-                  {{ text_field("dNominal"~jp.id, "value": jp.nilaiPendapatan, "class": "edit nominalDokter rupiah", "data-id-jpl-pegawai": jp.id, "data-status-pegawai":"dokter", "data-persentase-pegawai": rjp.persentaseDokter, "style": "width:110px; text-align: center;") }}
+                  {% set nilaiPendapatan = jp.nilaiPendapatan %}
+                  <?php $nilaiPendapatan = number_format((float)$nilaiPendapatan, 2, '.', '') ?>
+                  {{ text_field("dNominal"~jp.id, "value": nilaiPendapatan, "class": "edit nominalDokter rupiah", "data-id-jpl-pegawai": jp.id, "data-status-pegawai":"dokter", "data-persentase-pegawai": rjp.persentaseDokter, "style": "width:110px; text-align: center;") }}
                   <!-- <span id="dNominal{{jp.id}}" class="edit nominalDokter" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}" data-status-pegawai="dokter" data-persentase-pegawai="{{rjp.persentaseDokter}}">{{jp.nilaiPendapatan}}</span> -->
                 {% endif %}
               </td>
@@ -409,7 +413,9 @@ $(document).ready(function() {
                   <?php echo bcadd($nom, 0, 2); ?>
                   </span> -->
                 {% else %}
-                  {{ text_field("bdNominal"~jp.id, "value": jp.nilaiPendapatan, "class": "edit nominalPerawat rupiah", "data-id-jpl-pegawai": jp.id, "data-status-pegawai":"bukandokter", "data-persentase-pegawai": rjp.persentasePerawat, "style": "width:110px; text-align: center;") }}
+                  {% set nilaiPendapatan = jp.nilaiPendapatan %}
+                  <?php $nilaiPendapatan = number_format((float)$nilaiPendapatan, 2, '.', '') ?>
+                  {{ text_field("bdNominal"~jp.id, "value": nilaiPendapatan, "class": "edit nominalPerawat rupiah", "data-id-jpl-pegawai": jp.id, "data-status-pegawai":"bukandokter", "data-persentase-pegawai": rjp.persentasePerawat, "style": "width:110px; text-align: center;") }}
                   <!-- <span id="bdNominal{{jp.id}}" class="edit nominalPerawat" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}" data-status-pegawai="bukandokter" data-persentase-pegawai="{{rjp.persentasePerawat}}">{{jp.nilaiPendapatan}}</span> -->
                 {% endif %}
               </td>
