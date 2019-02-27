@@ -118,7 +118,7 @@
               {% endif %}
               <td>Rp. 
                 {% if rjp.metode == "persentase" %}
-                  {% set nominalPersentase = jp.nilaiPendapatan / 100 * jplPendapatan.totalPengajuan * rjp.persentasePelayanan / 100 %}
+                  {% set nominalPersentase = jp.nilaiPendapatan / 100 * nominalJplFix %}
                   <?php $nominalPersentase = number_format((float)$nominalPersentase, 2, '.', '') ?>
                   {{ text_field("nominal"~jp.id, "value": nominalPersentase, "class": "nominal rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
 
@@ -126,7 +126,7 @@
                   <?php echo bcadd($nom, 0, 2); ?>
                   </span> -->
                 {% elseif rjp.metode == "index" %}
-                  {% set nominalIndex = jp.nilaiPendapatan / totalIndex * jplPendapatan.totalPengajuan * rjp.persentasePelayanan / 100 %}
+                  {% set nominalIndex = jp.nilaiPendapatan / totalIndex * nominalJplFix %}
                   <?php $nominalIndex = number_format((float)$nominalIndex, 2, '.', '') ?>
                   {{ text_field("nominal"~jp.id, "value": nominalIndex, "class": "nominal rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
 
@@ -186,8 +186,10 @@ $(document).ready(function() {
     $(this).focus()
   })
 
-  function nominal(idJplPegawai, totalIndex, nilaiPendapatan, totalPengajuan) {
-    let value = (Number(nilaiPendapatan) / totalIndex * Number(totalPengajuan)) * "{{rjp.persentasePelayanan}}" / 100
+  function nominal(idJplPegawai, totalIndex, nilaiPendapatan) {
+  // function nominal(idJplPegawai, totalIndex, nilaiPendapatan, totalPengajuan) {
+    // let value = (Number(nilaiPendapatan) / totalIndex * Number(totalPengajuan)) * "{{rjp.persentasePelayanan}}" / 100
+    let value = Number(nilaiPendapatan) / totalIndex * "{{nominalJplFix}}"
     $("#nominal" + idJplPegawai).maskMoney('mask', Number(value.toFixed(2)))
   }
 
