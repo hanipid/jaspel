@@ -1,7 +1,20 @@
-
+<style type="text/css">
+.rupiah {
+  width:120px; font-weight: 700; border: 0px; text-align: center;
+}
+</style>
 {{ javascript_include("js/jquery.maskMoney.311.min.js") }}
 {#{ javascript_include("js/jquery.maskMoney.302.min.js") }#}
 {{content()}}
+
+{% set persentaseDireksi      = persentaseJaspel.direksi / 100 %}
+{% set persentaseJasa         = persentaseJaspel.jasa / 100 %}
+{% set persentaseJpu          = persentaseJaspel.jpu / 100 %}
+{% set persentaseJplKotor     = persentaseJaspel.jpl / 100 %}
+{% set persentaseAdmin        = persentaseJaspel.admin / 100 %}
+{% set persentaseJplFix        = persentaseJaspel.jasaFix / 100 %}
+{% set persentasePelayanan    = rjp.persentasePelayanan / 100 %}
+{% set totalPengajuan         = jplPendapatan.totalPengajuan %}
 
 
 {# Select ruanganJenisPelayanan dengan idRjp = jplp.idRjp #}
@@ -22,16 +35,58 @@
       <!-- /.box-header -->
 
       <div class="box-body">
-        {% set totalPengajuan = jplPendapatan.totalPengajuan*rjp.persentasePelayanan/100 %}
-        <?php $totalPengajuan = number_format((float)$totalPengajuan, 2, '.', '') ?>
-        <span>Total Pengajuan: Rp. 
-        {{ text_field("totalPengajuan", "value": totalPengajuan, "class": "rupiah", "style": "width:120px; font-weight: 700; border: 0px; text-align: center;", "disabled": "disabled") }}</span>
+
+        {% set nominalPengajuan = totalPengajuan*rjp.persentasePelayanan/100 %}
+        <?php $nominalPengajuan = number_format((float)$nominalPengajuan, 2, '.', '') ?>
+        <span>Total Pengajuan Pelayanan: Rp. 
+        {{ text_field("totalPengajuan", "value": nominalPengajuan, "class": "rupiah", "style": "", "disabled": "disabled") }}</span>
+
+        <div class="row">
+          <div class="col-md-12">
+            {% set nominalDireksi = totalPengajuan * persentasePelayanan * persentaseDireksi %}
+            <?php $nominalDireksi = number_format((float)$nominalDireksi, 2, '.', '') ?>
+            {% set nominalJasa = totalPengajuan * persentasePelayanan * persentaseJasa %}
+            <?php $nominalJasa = number_format((float)$nominalJasa, 2, '.', '') ?>
+            {% set nominalJpu = nominalJasa * persentaseJpu %}
+            <?php $nominalJpu = number_format((float)$nominalJpu, 2, '.', '') ?>
+            {% set nominalJplKotor = nominalJasa * persentaseJplKotor %}
+            <?php $nominalJplKotor = number_format((float)$nominalJplKotor, 2, '.', '') ?>
+            {% set nominalAdmin = nominalJplKotor * persentaseAdmin %}
+            <?php $nominalAdmin = number_format((float)$nominalAdmin, 2, '.', '') ?>
+            {% set nominalJplFix = nominalJplKotor * persentaseJplFix %}
+            <?php $nominalJplFix = number_format((float)$nominalJplFix, 2, '.', '') ?>
+            <p>Direksi ({{persentaseJaspel.direksi}}%): Rp. {{ text_field("nominalDireksi", "class": "rupiah", "value": nominalDireksi) }} </p>
+
+            <table style="border: 0; width: 100%;">
+              <tr>
+                <td style="width: 15%;">Direksi ({{persentaseDireksi * 100}}%):</td>
+                <td style="width: 35%;">Rp. {{ text_field("nominalDireksi", "class": "rupiah", "value": nominalDireksi) }}</td>
+                <td style="width: 15%;">Jasa ({{persentaseJasa * 100}}%):</td>
+                <td style="width: 35%;">Rp. {{ text_field("nominalDireksi", "class": "rupiah", "value": nominalJasa) }}</td>
+              </tr>
+              <tr>
+                <td>JPU ({{persentaseJpu * 100}}%):</td>
+                <td>Rp. {{ text_field("nominalJpu", "class": "rupiah", "value": nominalJpu) }}</td>
+                <td>JPL Kotor ({{persentaseJplKotor * 100}}%):</td>
+                <td>Rp. {{ text_field("nominalJplKotor", "class": "rupiah", "value": nominalJplKotor) }}</td>
+              </tr>
+              <tr>
+                <td>Admin ({{persentaseAdmin * 100}}%):</td>
+                <td>Rp. {{ text_field("nominalAdmin", "class": "rupiah", "value": nominalAdmin) }}</td>
+                <td>JPL Fix ({{persentaseJplFix * 100}}%):</td>
+                <td>Rp. {{ text_field("nominalJplFix", "class": "rupiah", "value": nominalJplFix) }}</td>
+              </tr>
+            </table>
+
+          </div>
+        </div>
+
         {% if rjp.metode == "index" %}
-          <span class="pull-right">Total Index: <strong id="totalIndex">{{totalIndex}}</strong></span>
+          <span class="pull-left">Total Index: <strong id="totalIndex">{{totalIndex}}</strong></span>
         {% elseif rjp.metode == "persentase" %}
-          <span class="pull-right">Sisa %: <strong id="totalIndex">{{ 100 - totalIndex}}</strong> %</span>
+          <span class="pull-left">Selisih %: <strong id="totalIndex">{{ 100 - totalIndex}}</strong> %</span>
         {% else %}
-          <span class="pull-right">Manual</span>
+          <span class="pull-left">Selisih: Rp. {{ text_field("totalIndex", "class": "rupiah") }}</span>
         {% endif %}
         
 
@@ -148,6 +203,8 @@ $(document).ready(function() {
     return (tot)
   }
   $("#total").maskMoney('mask', totalNominal())
+  $("#totalIndex").maskMoney({allowNegative: true})
+  $("#totalIndex").maskMoney("mask", Number(("{{nominalJplFix}}" - totalNominal()).toFixed(2)) )
 
   // Add Class
   $('.edit').click(function(){
@@ -194,7 +251,9 @@ $(document).ready(function() {
         $("#totalIndex").text(res.totalIndex)
       } else if (metode == "persentase") {
         $("#totalIndex").text(100 - res.totalIndex)
-      } 
+      } else {
+        $("#totalIndex").maskMoney("mask", Number(("{{nominalJplFix}}" - totalNominal()).toFixed(2)) )
+      }
       // $("#total").val(totalNominal())
       $("#total").maskMoney('mask', totalNominal())
       // $(".nominal" + idJplPegawai).text(Number(value) / response * Number(total))

@@ -198,6 +198,7 @@ class PengajuanJaspelController extends ControllerBase
 		$jplPegawai = JplPegawai::findByIdJplPendapatan($idJplPendapatan);
 		$rjp = RuanganJenisPelayanan::findFirstById($idRuanganJenisPelayanan);
 		$jplPendapatan = JplPendapatan::findFirstById($idJplPendapatan);
+		$persentaseJaspel = PersentaseJaspel::findFirstByIdPJaspel(1);
 
 		$totalIndexDokter = 0;
 		$totalIndexPerawat = 0;
@@ -275,6 +276,7 @@ class PengajuanJaspelController extends ControllerBase
 		}
 
 		$this->view->setVars([
+			'persentaseJaspel' => $persentaseJaspel,
 			'idJplPendapatan' => $idJplPendapatan,
 			'jplPendapatan' => $jplPendapatan,
 			'idRuanganJenisPelayanan' => $idRuanganJenisPelayanan,
