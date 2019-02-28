@@ -16,6 +16,19 @@
 {% set persentasePelayanan    = rjp.persentasePelayanan / 100 %}
 {% set totalPengajuan         = jplPendapatan.totalPengajuan %}
 
+{% set nominalDireksi = totalPengajuan * persentasePelayanan * persentaseDireksi %}
+<?php $nominalDireksi = number_format((float)$nominalDireksi, 2, '.', '') ?>
+{% set nominalJasa = totalPengajuan * persentasePelayanan * persentaseJasa %}
+<?php $nominalJasa = number_format((float)$nominalJasa, 2, '.', '') ?>
+{% set nominalJpu = nominalJasa * persentaseJpu %}
+<?php $nominalJpu = number_format((float)$nominalJpu, 2, '.', '') ?>
+{% set nominalJplKotor = nominalJasa * persentaseJplKotor %}
+<?php $nominalJplKotor = number_format((float)$nominalJplKotor, 2, '.', '') ?>
+{% set nominalAdmin = nominalJplKotor * persentaseAdmin %}
+<?php $nominalAdmin = number_format((float)$nominalAdmin, 2, '.', '') ?>
+{% set nominalJplFix = nominalJplKotor * persentaseJplFix %}
+<?php $nominalJplFix = number_format((float)$nominalJplFix, 2, '.', '') ?>
+
 
 {# Select ruanganJenisPelayanan dengan idRjp = jplp.idRjp #}
 
@@ -43,19 +56,6 @@
 
         <div class="row">
           <div class="col-md-12">
-            {% set nominalDireksi = totalPengajuan * persentasePelayanan * persentaseDireksi %}
-            <?php $nominalDireksi = number_format((float)$nominalDireksi, 2, '.', '') ?>
-            {% set nominalJasa = totalPengajuan * persentasePelayanan * persentaseJasa %}
-            <?php $nominalJasa = number_format((float)$nominalJasa, 2, '.', '') ?>
-            {% set nominalJpu = nominalJasa * persentaseJpu %}
-            <?php $nominalJpu = number_format((float)$nominalJpu, 2, '.', '') ?>
-            {% set nominalJplKotor = nominalJasa * persentaseJplKotor %}
-            <?php $nominalJplKotor = number_format((float)$nominalJplKotor, 2, '.', '') ?>
-            {% set nominalAdmin = nominalJplKotor * persentaseAdmin %}
-            <?php $nominalAdmin = number_format((float)$nominalAdmin, 2, '.', '') ?>
-            {% set nominalJplFix = nominalJplKotor * persentaseJplFix %}
-            <?php $nominalJplFix = number_format((float)$nominalJplFix, 2, '.', '') ?>
-            <p>Direksi ({{persentaseJaspel.direksi}}%): Rp. {{ text_field("nominalDireksi", "class": "rupiah", "value": nominalDireksi) }} </p>
 
             <table style="border: 0; width: 100%;">
               <tr>
@@ -273,6 +273,7 @@ $(document).ready(function() {
 
 {% if rjp.kategori == "split" %}
 {# SPLIT #}
+{% set persentaseDokter = rjp.persentaseDokter / 100 %}
 <form>
 
   <div class="col-md-12">
@@ -290,6 +291,33 @@ $(document).ready(function() {
         <?php $totalPengajuan = number_format((float)$totalPengajuan, 2, '.', '') ?>
         <p>Jumlah: <strong>Rp.</strong> {{ text_field("totalPengajuan", "value": totalPengajuan, "class": "rupiah", "disabled": "disabled", "style": "width:120px; text-align: center; font-weight: 700;") }}</p>
         <!-- <p>Jumlah Diterima: <strong>Rp. x.xxx.xxx</strong></p> -->
+
+        <div class="row">
+          <div class="col-md-12">
+
+            <table style="border: 0; width: 100%;">
+              <tr>
+                <td style="width: 15%;">Direksi ({{persentaseDireksi * 100}}%):</td>
+                <td style="width: 35%;">Rp. {{ text_field("nominalDireksi", "class": "rupiah", "value": nominalDireksi) }}</td>
+                <td style="width: 15%;">Jasa ({{persentaseJasa * 100}}%):</td>
+                <td style="width: 35%;">Rp. {{ text_field("nominalDireksi", "class": "rupiah", "value": nominalJasa) }}</td>
+              </tr>
+              <tr>
+                <td>JPU ({{persentaseJpu * 100}}%):</td>
+                <td>Rp. {{ text_field("nominalJpu", "class": "rupiah", "value": nominalJpu) }}</td>
+                <td>JPL Kotor ({{persentaseJplKotor * 100}}%):</td>
+                <td>Rp. {{ text_field("nominalJplKotor", "class": "rupiah", "value": nominalJplKotor) }}</td>
+              </tr>
+              <tr>
+                <td>Admin ({{persentaseAdmin * 100}}%):</td>
+                <td>Rp. {{ text_field("nominalAdmin", "class": "rupiah", "value": nominalAdmin) }}</td>
+                <td>JPL Fix ({{persentaseJplFix * 100}}%):</td>
+                <td>Rp. {{ text_field("nominalJplFix", "class": "rupiah", "value": nominalJplFix) }}</td>
+              </tr>
+            </table>
+
+          </div>
+        </div>
 
       </div>
       <!-- /.box-body -->
@@ -311,16 +339,16 @@ $(document).ready(function() {
 
       <div class="box-body">
 
-        {% set jatahDokter = jplPendapatan.totalPengajuan*rjp.persentasePelayanan/100*rjp.persentaseDokter/100 %}
+        {% set jatahDokter = nominalJplFix*persentaseDokter %}
         <?php $jatahDokter = number_format((float)$jatahDokter, 2, '.', '') ?>
         <p>Jumlah Diterima: <strong>Rp.</strong> {{ text_field("jatahDokter", "value": jatahDokter, "class": "rupiah", "disabled": "disabled", "style": "width:120px; text-align: center; font-weight: 700;") }}</p>
         <p>
           {% if rjp.metode == "index" %}
             <span>Total Index: <strong id="totalIndexDokter"></strong></span>
           {% elseif rjp.metode == "persentase" %}
-            <span>Sisa %: <strong id="totalIndex">{{ 100 - totalIndexDokter }}</strong> %</span>
+            <span>Selisih %: <strong id="totalIndexDokter">{{ 100 - totalIndexDokter }}</strong> %</span>
           {% else %}
-            <span>Manual</span>
+            <span>Selisih: Rp. {{ text_field("totalIndexDokter", "class": "rupiah") }}</span>
           {% endif %}
         </p>
 
@@ -354,7 +382,7 @@ $(document).ready(function() {
               {% endif %}
               <td>Rp. 
                 {% if rjp.metode == "persentase" %}
-                  {% set dNominal = jp.nilaiPendapatan / 100 * jplPendapatan.totalPengajuan * rjp.persentasePelayanan / 100 * rjp.persentaseDokter / 100 %}
+                  {% set dNominal = jp.nilaiPendapatan / 100 * jatahDokter %}
                   <?php $dNominal = number_format((float)$dNominal, 2, '.', '') ?>
                   {{ text_field("dNominal"~jp.id, "value": dNominal, "class": "nominalDokter rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
 
@@ -362,7 +390,7 @@ $(document).ready(function() {
                   <?php echo bcadd($nom, 0, 2); ?>
                   </span> -->
                 {% elseif rjp.metode == "index" %}
-                  {% set dNominal = jp.nilaiPendapatan / totalIndexDokter * jplPendapatan.totalPengajuan * rjp.persentasePelayanan / 100 * rjp.persentaseDokter / 100 %}
+                  {% set dNominal = jp.nilaiPendapatan / totalIndexDokter * jatahDokter %}
                   <?php $dNominal = number_format((float)$dNominal, 2, '.', '') ?>
                   {{ text_field("dNominal"~jp.id, "value": dNominal, "class": "nominalDokter rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
 
@@ -422,9 +450,9 @@ $(document).ready(function() {
           {% if rjp.metode == "index" %}
             <span>Total Index: <strong id="totalIndexPerawat"></strong></span>
           {% elseif rjp.metode == "persentase" %}
-            <span>Sisa %: <strong id="totalIndex">{{ 100 - totalIndexPerawat }}</strong> %</span>
+            <span>Sisa %: <strong id="totalIndexPerawat">{{ 100 - totalIndexPerawat }}</strong> %</span>
           {% else %}
-            <span>Manual</span>
+            <span>Selisih: Rp. {{ text_field("totalIndexPerawat", "class": "rupiah") }}</span>
           {% endif %}
         </p>
 
@@ -458,7 +486,7 @@ $(document).ready(function() {
               {% endif %}
               <td>Rp. 
                 {% if rjp.metode == "persentase" %}
-                  {% set bdNominal = jp.nilaiPendapatan / 100 * jplPendapatan.totalPengajuan * rjp.persentasePelayanan / 100 * rjp.persentasePerawat / 100 %}
+                  {% set bdNominal = jp.nilaiPendapatan / 100 * jatahPerawat %}
                   <?php $bdNominal = number_format((float)$bdNominal, 2, '.', '') ?>
                   {{ text_field("bdNominal"~jp.id, "value": bdNominal, "class": "nominalPerawat rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
                   
@@ -466,7 +494,7 @@ $(document).ready(function() {
                   <?php echo bcadd($nom, 0, 2); ?>
                   </span> -->
                 {% elseif rjp.metode == "index" %}
-                  {% set bdNominal = jp.nilaiPendapatan / totalIndexDokter * jplPendapatan.totalPengajuan * rjp.persentasePelayanan / 100 * rjp.persentaseDokter / 100 %}
+                  {% set bdNominal = jp.nilaiPendapatan / totalIndexDokter * jatahPerawat %}
                   <?php $bdNominal = number_format((float)$bdNominal, 2, '.', '') ?>
                   {{ text_field("bdNominal"~jp.id, "value": bdNominal, "class": "nominalPerawat rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
 
@@ -532,7 +560,7 @@ $(document).ready(function() {
     // $("#nominal" + idJplPegawai).maskMoney('mask', Number(value.toFixed(2)))
 
     if (statusPegawai == "dokter") {
-      let value = (Number(nilaiPendapatan) / totalIndex * Number(totalPengajuan)) * persentasePegawai / 100 * "{{rjp.persentasePelayanan}}" / 100
+      let value = (Number(nilaiPendapatan) / totalIndex) * "{{jatahDokter}}"
       $("#dNominal" + idJplPegawai).maskMoney('mask', Number(value.toFixed(2)))
       // let r = Math.round(v * 100) / 100
       // let z = String(r).replace('.',',')
@@ -540,7 +568,7 @@ $(document).ready(function() {
       // $("#dNominal" + idJplPegawai).maskMoney('mask')
       // console.log(Number(value.toFixed(2)))
     } else {
-      let value = (Number(nilaiPendapatan) / totalIndex * Number(totalPengajuan)) * persentasePegawai / 100 * "{{rjp.persentasePelayanan}}" / 100
+      let value = (Number(nilaiPendapatan) / totalIndex) * "{{jatahPerawat}}"
       $("#bdNominal" + idJplPegawai).maskMoney('mask', Number(value.toFixed(2)))
       // $("#bdNominal" + idJplPegawai).maskMoney('mask', (Number(nilaiPendapatan) / totalIndex * Number(totalPengajuan)).toFixed(2) * persentasePegawai / 100 * "{{rjp.persentasePerawat}}" / 100)
       console.log(totalPengajuan)
@@ -575,6 +603,8 @@ $(document).ready(function() {
     return (tot)
   }
   $("#totalDokter").maskMoney('mask', totalNominalDokter())
+  $("#totalIndexDokter").maskMoney({allowNegative: true})
+  $("#totalIndexDokter").maskMoney("mask", Number(("{{jatahDokter}}" - totalNominalDokter()).toFixed(2)) )
 
   function totalNominalPerawat() {
     let tot = 0;
@@ -588,6 +618,8 @@ $(document).ready(function() {
     return (tot)
   }
   $("#totalPerawat").maskMoney('mask', totalNominalPerawat())
+  $("#totalIndexPerawat").maskMoney({allowNegative: true})
+  $("#totalIndexPerawat").maskMoney("mask", Number(("{{jatahPerawat}}" - totalNominalPerawat()).toFixed(2)) )
 
 
 
@@ -600,7 +632,11 @@ $(document).ready(function() {
     })
     return tot
   }
-  $("#totalIndexDokter").html(totalIndexDokter())
+  if ("{{rjp.metode}}" == "index") {
+    $("#totalIndexDokter").text(totalIndexDokter())
+  } else if ("{{rjp.metode}}" == "persentase") {
+    $("#totalIndexDokter").text(100 - totalIndexDokter())
+  } 
 
   function totalIndexPerawat() {
     let tot = 0;
@@ -610,7 +646,11 @@ $(document).ready(function() {
     })
     return tot
   }
-  $("#totalIndexPerawat").html(totalIndexPerawat())
+  if ("{{rjp.metode}}" == "index") {
+    $("#totalIndexPerawat").text(totalIndexPerawat())
+  } else if ("{{rjp.metode}}" == "persentase") {
+    $("#totalIndexPerawat").text(100 - totalIndexPerawat())
+  } 
 
 
   // Add Class
@@ -655,15 +695,14 @@ $(document).ready(function() {
         } 
         
       })
-      
+
       if (metode == "index") {
-        $("#totalIndex").text(res.totalIndex)
+        $("#totalIndexDokter").text(totalIndexDokter())
       } else if (metode == "persentase") {
-        $("#totalIndex").text(100 - res.totalIndex)
+        $("#totalIndexDokter").text(100 - totalIndexDokter())
       } 
       
       $("#totalDokter").maskMoney('mask', totalNominalDokter())
-      $("#totalIndexDokter").text(totalIndexDokter())
      }
     });
    
@@ -704,14 +743,14 @@ $(document).ready(function() {
         } 
         
       })
-      
+
       if (metode == "index") {
-        $("#totalIndex").text(res.totalIndex)
+        $("#totalIndexPerawat").text(totalIndexPerawat())
       } else if (metode == "persentase") {
-        $("#totalIndex").text(100 - res.totalIndex)
+        $("#totalIndexPerawat").text(100 - totalIndexPerawat())
       } 
+
       $("#totalPerawat").maskMoney('mask', totalNominalPerawat())
-      $("#totalIndexPerawat").text(totalIndexPerawat())
      }
     });
    
@@ -754,7 +793,9 @@ $(document).ready(function() {
         $("#totalIndex").text(res.totalIndex)
       } else if (metode == "persentase") {
         $("#totalIndex").text(100 - res.totalIndex)
-      } 
+      } else {
+        $("#totalIndexDokter").maskMoney("mask", Number(("{{jatahDokter}}" - totalNominalDokter()).toFixed(2)) )
+      }
       $("#totalDokter").maskMoney('mask', totalNominalDokter())
       $("#totalIndexDokter").text(totalIndexDokter())
      }
@@ -795,7 +836,9 @@ $(document).ready(function() {
         $("#totalIndex").text(res.totalIndex)
       } else if (metode == "persentase") {
         $("#totalIndex").text(100 - res.totalIndex)
-      } 
+      } else{
+        $("#totalIndexPerawat").maskMoney("mask", Number(("{{jatahPerawat}}" - totalNominalPerawat()).toFixed(2)) )
+      }
       $("#totalPerawat").maskMoney('mask', totalNominalPerawat())
       $("#totalIndexPerawat").text(totalIndexPerawat())
      }
