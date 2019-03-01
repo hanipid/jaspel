@@ -55,26 +55,74 @@ class PengajuanJaspelController extends ControllerBase
 	public function editAction($idPeriode)
 	{
 		$periodeJaspel = PeriodeJaspel::findFirstByIdPeriode($idPeriode);
-		$jplRuang1 = JplRuang::find([
-			"idPeriode = ?1 AND statusKomplit = ?2",
-			'bind' => [
-				'1' => $idPeriode,
-				'2' => 1
-			],
+		// $jplRuang1 = JplRuang::find([
+		// 	"idPeriode = ?1 AND statusKomplit = ?2",
+		// 	'bind' => [
+		// 		'1' => $idPeriode,
+		// 		'2' => 1
+		// 	],
+		// ]);
+		// $jplRuang0 = JplRuang::find([
+		// 	"idPeriode = ?1 AND statusKomplit = ?2",
+		// 	'bind' => [
+		// 		'1' => $idPeriode,
+		// 		'2' => 0
+		// 	],
+		// ]);
+		$query0 = $this->modelsManager->createQuery('
+			SELECT 
+				jr.id id,
+			  r.namaRuang,
+			  sum(jp.totalPengajuan) totalPengajuan
+			FROM \Jaspel\Models\JplRuang jr
+
+			JOIN \Jaspel\Models\RuanganJenisPelayanan rjp
+			  ON jr.idRuangan = rjp.idRuangan
+
+			JOIN \Jaspel\Models\JplPendapatan jp
+			  ON rjp.id = jp.idRuanganJenisPelayanan
+
+			JOIN \Jaspel\Models\Ruangan r
+			  ON jr.idRuangan = r.id
+
+			WHERE jr.idPeriode = :idPeriode:
+				AND jr.statusKomplit = :statusKomplit:
+			GROUP BY r.id
+			');
+		$jplRuang0 = $query0->execute([
+			'idPeriode' => $idPeriode,
+			'statusKomplit' => 0
 		]);
-		$jplRuang0 = JplRuang::find([
-			"idPeriode = ?1 AND statusKomplit = ?2",
-			'bind' => [
-				'1' => $idPeriode,
-				'2' => 0
-			],
+		$query1 = $this->modelsManager->createQuery('
+			SELECT 
+				jr.id id,
+			  r.namaRuang,
+			  sum(jp.totalPengajuan) totalPengajuan
+			FROM \Jaspel\Models\JplRuang jr
+
+			JOIN \Jaspel\Models\RuanganJenisPelayanan rjp
+			  ON jr.idRuangan = rjp.idRuangan
+
+			JOIN \Jaspel\Models\JplPendapatan jp
+			  ON rjp.id = jp.idRuanganJenisPelayanan
+
+			JOIN \Jaspel\Models\Ruangan r
+			  ON jr.idRuangan = r.id
+
+			WHERE jr.idPeriode = :idPeriode:
+				AND jr.statusKomplit = :statusKomplit:
+			GROUP BY r.id
+			');
+		$jplRuang1 = $query1->execute([
+			'idPeriode' => $idPeriode,
+			'statusKomplit' => 1
 		]);
 		$this->view->setVars([
 			'form' => new PengajuanJaspelForm($periodeJaspel),
 			'jplRuang0' => $jplRuang0,
 			'jplRuang1' => $jplRuang1
 		]);
-		if ($this->request->isPost()) {
+		if ($this->request->isPost() AND null === $this->request->getPost('reset')) {
 			$periodeJaspel->assign([
 				'idJaspel' => $this->request->getPost('idJaspel'),
 				'startPeriode' => $this->request->getPost('startPeriode'),
@@ -89,6 +137,19 @@ class PengajuanJaspelController extends ControllerBase
 				$this->flashSession->success('Berhasil mengubah data pengajuan jaspel.');
 			}
 			$this->response->redirect("pengajuan-jaspel/edit/" . $idPeriode);
+		}
+
+		if ($this->request->isPost() && $this->request->getPost('reset') == 'reset') {
+			$resetIdJplRuang = $this->request->getPost('resetIdJplRuang');
+			$jplRuang = JplRuang::findFirstById($resetIdJplRuang);
+			$jplRuang->statusKomplit = 0;
+// die($idPeriode . $idRuangan);
+			if (!$jplRuang->save()) {
+				foreach ($jplRUang->getMessages() as $m) {
+					$this->flashSession->error('Pengajuan error.');
+				}
+			}
+			$this->response->redirect('pengajuan-jaspel/edit/' . $idPeriode);
 		}
 	}
 
@@ -190,6 +251,19 @@ class PengajuanJaspelController extends ControllerBase
 			}
 			$arr = ['idRjp' => $idRjp, 'totalPengajuan' => $totalPengajuan, 'idPeriode' => $idPeriode, 'jplPendapatan' => $cJplPendapatan];
 			return $this->response->setContent(json_encode($arr));
+		} elseif ($this->request->isPost()) {
+			$jplRuang = JplRuang::findFirst([
+				'idPeriode = ?1 AND idRuangan = ?2',
+				'bind' => ['1' => $idPeriode, '2' => $idRuangan]
+			]);
+			$jplRuang->statusKomplit = 1;
+// die($idPeriode . $idRuangan);
+			if (!$jplRuang->save()) {
+				foreach ($jplRUang->getMessages() as $m) {
+					$this->flashSession->error('Pengajuan error.');
+				}
+			}
+			$this->response->redirect('pengajuan-jaspel/pendapatanPelayanan/' . $idPeriode);
 		}
 	}
 

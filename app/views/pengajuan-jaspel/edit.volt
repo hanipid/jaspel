@@ -1,4 +1,5 @@
 {{ stylesheet_link("vendor/almasaeed2010/adminlte/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css") }}
+{{ javascript_include("js/accounting.min.js") }}
 
 {{ content() }}
 
@@ -63,6 +64,7 @@
 	  		<thead>
 	  			<tr>
 	  				<th class="text-center"><span class="label label-success">{{jplRuang1|length}}</span> Ruangan</th>
+	  				<th></th>
 	  			</tr>
 	  		</thead>
 
@@ -70,10 +72,17 @@
 	  			{% for jr1 in jplRuang1 %}
 	  			<tr>
 	  				<td>
-	  					{{jr1.ruangan.namaRuang}}
+	  					{{jr1.namaRuang}}
+	  					<p>Total Pengajuan: <span class="accountingRupiah">{{jr1.totalPengajuan}}</span></p>
+	  				</td>
+	  				<td>
 	  					<span class="pull-right">
-	  						{{ link_to("#", "Reset", "class": "btn btn-primary btn-sm") }}
+	  						{{ form() }} 
+	  						{{ hidden_field("resetIdJplRuang", "value": jr1.id) }}
+	  						{{ submit_button("reset", "name": "reset", "class": "btn btn-primary btn-sm") }} 
 	  						{{ link_to("#", "<i class='fa fa-envelope-o'></i>", "class": "btn btn-warning btn-sm", "data-toggle": "modal", "data-target": "#modalPesan") }}
+	  						{{end_form()}}
+	  						
 	  					</span>
 	  				</td>
 	  			</tr>
@@ -105,6 +114,7 @@
 	  		<thead>
 	  			<tr>
 	  				<th class="text-center"><span class="label label-danger">{{jplRuang0|length}}</span> Ruangan</th>
+	  				<th></th>
 	  			</tr>
 	  		</thead>
 
@@ -112,7 +122,11 @@
 	  			{% for jr0 in jplRuang0 %}
 	  			<tr>
 	  				<td>
-	  					{{jr0.ruangan.namaRuang}}
+	  					{{jr0.namaRuang}}
+	  					<p>Total Pengajuan: <span class="accountingRupiah">{{jr0.totalPengajuan}}</span></p>
+	  					<!-- {{jr0.ruangan.namaRuang}} -->
+	  				</td>
+	  				<td>
 	  					<span class="pull-right">
 	  						{{ link_to("#", "<i class='fa fa-envelope-o'></i>", "class": "btn btn-warning btn-sm", "data-toggle": "modal", "data-target": "#modalPesan") }}
 	  					</span>
@@ -165,6 +179,12 @@
 <script>
 $(document).ready(function() {
 	$('#example1').DataTable();
+  $('#example1').DataTable().$('.accountingRupiah').each(function(){ // function to apply mask on load!
+    $(this).text(accounting.formatMoney(Number($(this).text()), "Rp. ", 2, ".", ","))
+  })
 	$('#example2').DataTable();
+  $('#example2').DataTable().$('.accountingRupiah').each(function(){ // function to apply mask on load!
+    $(this).text(accounting.formatMoney(Number($(this).text()), "Rp. ", 2, ".", ","))
+  })
 });
 </script>

@@ -8,6 +8,7 @@ use Jaspel\Models\Permissions;
 use Jaspel\Models\Profiles;
 use Jaspel\Models\ProfilesMenus;
 use Jaspel\Models\PeriodeJaspel;
+use Jaspel\Models\JplRuang;
 
 /**
  * ControllerBase
@@ -49,7 +50,15 @@ class ControllerBase extends Controller
     ->getQuery()
     ->execute();
 
-    $statusPeriodeJaspel = PeriodeJaspel::findByStatusPeriode(0);
+    // $statusPeriodeJaspel = PeriodeJaspel::findByStatusPeriode(0);
+    $statusPeriodeJaspel = JplRuang::find([
+      'idRuangan = ?1 AND statusKomplit = ?2',
+      'bind' => [
+        '1' => $this->auth->getIdentity()['idRuangan'],
+        '2' => 0
+      ]
+    ]);
+    // die(var_dump(count($statusPeriodeJaspel)));
     if (count($statusPeriodeJaspel) > 0) {
       $this->flash->warning("Waktunya memeriksa Pengjuan Jaspel");
     }

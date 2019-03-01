@@ -1,6 +1,6 @@
 <style type="text/css">
 .rupiah {
-  width:120px; font-weight: 700; border: 0px; text-align: center;
+  width:120px; font-weight: 700; text-align: center;
 }
 </style>
 {{ javascript_include("js/jquery.maskMoney.311.min.js") }}
@@ -59,22 +59,25 @@
 
             <table style="border: 0; width: 100%;">
               <tr>
-                <td style="width: 15%;">Direksi ({{persentaseDireksi * 100}}%):</td>
-                <td style="width: 35%;">Rp. {{ text_field("nominalDireksi", "class": "rupiah", "value": nominalDireksi) }}</td>
-                <td style="width: 15%;">Jasa ({{persentaseJasa * 100}}%):</td>
-                <td style="width: 35%;">Rp. {{ text_field("nominalDireksi", "class": "rupiah", "value": nominalJasa) }}</td>
+                <td style="width: 11%;">Direksi ({{persentaseDireksi * 100}}%):</td>
+                <td style="width: 15%;">Rp. {{ text_field("nominalDireksi", "class": "rupiah", "value": nominalDireksi, "disabled": "disabled") }}</td>
+                <td style="width: 11%;">Jasa ({{persentaseJasa * 100}}%):</td>
+                <td style="width: 15%;">Rp. {{ text_field("nominalDireksi", "class": "rupiah", "value": nominalJasa, "disabled": "disabled") }}</td>
+                <td><h4 style="margin-top: 5.4px"><span class="label label-success">(persentase dari Total Pengajuan Pelayanan)</span></h5></td>
               </tr>
               <tr>
                 <td>JPU ({{persentaseJpu * 100}}%):</td>
-                <td>Rp. {{ text_field("nominalJpu", "class": "rupiah", "value": nominalJpu) }}</td>
+                <td>Rp. {{ text_field("nominalJpu", "class": "rupiah", "value": nominalJpu, "disabled": "disabled") }}</td>
                 <td>JPL Kotor ({{persentaseJplKotor * 100}}%):</td>
-                <td>Rp. {{ text_field("nominalJplKotor", "class": "rupiah", "value": nominalJplKotor) }}</td>
+                <td>Rp. {{ text_field("nominalJplKotor", "class": "rupiah", "value": nominalJplKotor, "disabled": "disabled") }}</td>
+                <td><h4 style="margin-top: 5.4px"><span class="label label-success">(persentase dari Jasa)</span></h4></td>
               </tr>
               <tr>
                 <td>Admin ({{persentaseAdmin * 100}}%):</td>
-                <td>Rp. {{ text_field("nominalAdmin", "class": "rupiah", "value": nominalAdmin) }}</td>
+                <td>Rp. {{ text_field("nominalAdmin", "class": "rupiah", "value": nominalAdmin, "disabled": "disabled") }}</td>
                 <td>JPL Fix ({{persentaseJplFix * 100}}%):</td>
-                <td>Rp. {{ text_field("nominalJplFix", "class": "rupiah", "value": nominalJplFix) }}</td>
+                <td>Rp. {{ text_field("nominalJplFix", "class": "rupiah", "value": nominalJplFix, "disabled": "disabled") }}</td>
+                <td><h4 style="margin-top: 5.4px"><span class="label label-success">(persentase dari JPL Kotor)</span></h4></td>
               </tr>
             </table>
 
@@ -86,7 +89,7 @@
         {% elseif rjp.metode == "persentase" %}
           <span class="pull-left">Selisih %: <strong id="totalIndex">{{ 100 - totalIndex}}</strong> %</span>
         {% else %}
-          <span class="pull-left">Selisih: Rp. {{ text_field("totalIndex", "class": "rupiah") }}</span>
+          <span class="pull-left">Selisih: Rp. {{ text_field("totalIndex", "class": "rupiah", "disabled": "disabled") }}</span>
         {% endif %}
         
 
@@ -297,22 +300,25 @@ $(document).ready(function() {
 
             <table style="border: 0; width: 100%;">
               <tr>
-                <td style="width: 15%;">Direksi ({{persentaseDireksi * 100}}%):</td>
-                <td style="width: 35%;">Rp. {{ text_field("nominalDireksi", "class": "rupiah", "value": nominalDireksi) }}</td>
-                <td style="width: 15%;">Jasa ({{persentaseJasa * 100}}%):</td>
-                <td style="width: 35%;">Rp. {{ text_field("nominalDireksi", "class": "rupiah", "value": nominalJasa) }}</td>
+                <td style="width: 11%;">Direksi ({{persentaseDireksi * 100}}%):</td>
+                <td style="width: 15%;">Rp. {{ text_field("nominalDireksi", "class": "rupiah", "value": nominalDireksi, "disabled": "disabled") }}</td>
+                <td style="width: 11%;">Jasa ({{persentaseJasa * 100}}%):</td>
+                <td style="width: 15%;">Rp. {{ text_field("nominalDireksi", "class": "rupiah", "value": nominalJasa, "disabled": "disabled") }}</td>
+                <td><h4 style="margin-top: 5.4px"><span class="label label-success">(persentase dari Total Pengajuan Pelayanan)</span></h5></td>
               </tr>
               <tr>
                 <td>JPU ({{persentaseJpu * 100}}%):</td>
-                <td>Rp. {{ text_field("nominalJpu", "class": "rupiah", "value": nominalJpu) }}</td>
+                <td>Rp. {{ text_field("nominalJpu", "class": "rupiah", "value": nominalJpu, "disabled": "disabled") }}</td>
                 <td>JPL Kotor ({{persentaseJplKotor * 100}}%):</td>
-                <td>Rp. {{ text_field("nominalJplKotor", "class": "rupiah", "value": nominalJplKotor) }}</td>
+                <td>Rp. {{ text_field("nominalJplKotor", "class": "rupiah", "value": nominalJplKotor, "disabled": "disabled") }}</td>
+                <td><h4 style="margin-top: 5.4px"><span class="label label-success">(persentase dari Jasa)</span></h4></td>
               </tr>
               <tr>
                 <td>Admin ({{persentaseAdmin * 100}}%):</td>
-                <td>Rp. {{ text_field("nominalAdmin", "class": "rupiah", "value": nominalAdmin) }}</td>
+                <td>Rp. {{ text_field("nominalAdmin", "class": "rupiah", "value": nominalAdmin, "disabled": "disabled") }}</td>
                 <td>JPL Fix ({{persentaseJplFix * 100}}%):</td>
-                <td>Rp. {{ text_field("nominalJplFix", "class": "rupiah", "value": nominalJplFix) }}</td>
+                <td>Rp. {{ text_field("nominalJplFix", "class": "rupiah", "value": nominalJplFix, "disabled": "disabled") }}</td>
+                <td><h4 style="margin-top: 5.4px"><span class="label label-success">(persentase dari JPL Kotor)</span></h4></td>
               </tr>
             </table>
 

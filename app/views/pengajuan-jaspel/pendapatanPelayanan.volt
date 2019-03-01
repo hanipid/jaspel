@@ -9,14 +9,17 @@
     <div class="box-header with-border">
       <h3 class="box-title">Pendapatan Pelayanan {% if auth.getIdentity()["profile"] == "Pelayanan" and namaRuangan is defined %} {{namaRuangan.namaRuang}} {% endif %}</h3>
       <div class="box-tools pull-right">
-        {% set cek = 0 %}
+        <form method="post" action="">
+        {#% set cek = 0 %}
         {% for i in pendapatanPelayanan if i.statusJplPendapatan == 0 %}
           {% set cek += 1 %}
         {% endfor %}
         {% if cek == 0 %}
-          <a href="" class="btn btn-primary">Ajukan</a>
-        {% endif %}
+          {{ submit_button("pengajuan", "value": "Ajukan", "class": "btn btn-primary") }}
+        {% endif %#}
+        {{ submit_button("pengajuan", "value": "Ajukan", "class": "btn btn-primary") }}
         <a href="{{url('pengajuan-jaspel')}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
+        </form>
 
       </div>
     </div>
