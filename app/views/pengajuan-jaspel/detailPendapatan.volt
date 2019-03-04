@@ -12,7 +12,7 @@
 {% set persentaseJpu          = persentaseJaspel.jpu / 100 %}
 {% set persentaseJplKotor     = persentaseJaspel.jpl / 100 %}
 {% set persentaseAdmin        = persentaseJaspel.admin / 100 %}
-{% set persentaseJplFix        = persentaseJaspel.jasaFix / 100 %}
+{% set persentaseJplFix       = persentaseJaspel.jasaFix / 100 %}
 {% set persentasePelayanan    = rjp.persentasePelayanan / 100 %}
 {% set totalPengajuan         = jplPendapatan.totalPengajuan %}
 
@@ -261,10 +261,30 @@ $(document).ready(function() {
       }
       // $("#total").val(totalNominal())
       $("#total").maskMoney('mask', totalNominal())
+      if ("{{nominalJplFix}}" != totalNominal()) {
+        $("#total").css({background: "#DD4B39", color: "white"})
+      } else {
+        $("#total").css({background: "#00A65A", color: "white"})
+      }
       // $(".nominal" + idJplPegawai).text(Number(value) / response * Number(total))
      }
     });
    
+  });
+
+
+  if ("{{nominalJplFix}}" != totalNominal()) {
+    $("#total").css({background: "#DD4B39", color: "white"})
+    // window.onbeforeunload = confirmExit;
+  } else {
+    $("#total").css({background: "#00A65A", color: "white"})
+  }
+
+  window.addEventListener('beforeunload', function(e) {
+    if ("{{nominalJplFix}}" != totalNominal()) {
+      e.preventDefault(); //per the standard
+      e.returnValue = ''; //required for Chrome
+    } 
   });
 
 });
@@ -707,10 +727,19 @@ $(document).ready(function() {
       } else if (metode == "persentase") {
         $("#totalIndexDokter").text(100 - totalIndexDokter())
       } 
+
       
       $("#totalDokter").maskMoney('mask', totalNominalDokter())
+      if ("{{jatahDokter}}" != totalNominalDokter()) {
+        $("#totalDokter").css({background: "#DD4B39", color: "white"})
+      } else {
+        $("#totalDokter").css({background: "#00A65A", color: "white"})
+      }
      }
     });
+
+
+    
    
   });
 
@@ -757,6 +786,11 @@ $(document).ready(function() {
       } 
 
       $("#totalPerawat").maskMoney('mask', totalNominalPerawat())
+      if ("{{jatahPerawat}}" != totalNominalPerawat()) {
+        $("#totalPerawat").css({background: "#DD4B39", color: "white"})
+      } else {
+        $("#totalPerawat").css({background: "#00A65A", color: "white"})
+      }
      }
     });
    
@@ -804,6 +838,11 @@ $(document).ready(function() {
       }
       $("#totalDokter").maskMoney('mask', totalNominalDokter())
       $("#totalIndexDokter").text(totalIndexDokter())
+      if ("{{jatahDokter}}" != totalNominalDokter()) {
+        $("#totalDokter").css({background: "#DD4B39", color: "white"})
+      } else {
+        $("#totalDokter").css({background: "#00A65A", color: "white"})
+      }
      }
     });
   });
@@ -847,10 +886,41 @@ $(document).ready(function() {
       }
       $("#totalPerawat").maskMoney('mask', totalNominalPerawat())
       $("#totalIndexPerawat").text(totalIndexPerawat())
+      if ("{{jatahPerawat}}" != totalNominalPerawat()) {
+        $("#totalPerawat").css({background: "#DD4B39", color: "white"})
+      } else {
+        $("#totalPerawat").css({background: "#00A65A", color: "white"})
+      }
      }
     });
+  });
+
+  if ("{{jatahDokter}}" != totalNominalDokter()) {
+    $("#totalDokter").css({background: "#DD4B39", color: "white"})
+  } else {
+    $("#totalDokter").css({background: "#00A65A", color: "white"})
+  }
+  if ("{{jatahPerawat}}" != totalNominalPerawat()) {
+    $("#totalPerawat").css({background: "#DD4B39", color: "white"})
+  } else {
+    $("#totalPerawat").css({background: "#00A65A", color: "white"})
+  }
+
+
+  window.addEventListener('beforeunload', function(e) {
+    if ("{{jatahDokter}}" != totalNominalDokter() || "{{jatahPerawat}}" != totalNominalPerawat() ) {
+      e.preventDefault(); //per the standard
+      e.returnValue = ''; //required for Chrome
+    } 
   });
 
 });
 </script>
 {% endif %}
+
+<script>
+if ("{{jplRuang.statusKomplit}}" == 1) {
+  $(".edit").attr("disabled", "disabled")
+  $("input[type='submit']").attr("disabled", "disabled")
+}
+</script>

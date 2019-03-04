@@ -74,9 +74,11 @@ $("#direct").hide();
 $("#split").hide();
 if ($("#kategori").val() == "direct") {
   $("#direct").show();
+  $("#direct label").text("Pegawai");
   $("#split").hide();
 } else if ($("#kategori").val() == "split") {
   $("#direct").show();
+  $("#direct label").text("Dokter");
   $("#split").show();
 } else {
   $("#direct").hide();
@@ -86,10 +88,12 @@ if ($("#kategori").val() == "direct") {
 $("#kategori").on("change", function() {
   if ($(this).val() == "direct") {
     $("#direct").show();
+    $("#direct label").text("Pegawai");
     $("#split").hide();
   } else if ($(this).val() == "split") {
     $("#split").show();
     $("#direct").show();
+    $("#direct label").text("Dokter");
   } else {
     $("#direct").hide();
     $("#split").hide();

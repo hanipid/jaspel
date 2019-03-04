@@ -181,6 +181,14 @@ class PengajuanJaspelController extends ControllerBase
 		$idRuangan = $this->auth->getIdentity()['idRuangan'];
 		$ruanganJenisPelayanan = RuanganJenisPelayanan::findByIdRuangan($idRuangan);
 		$periodeJaspel = PeriodeJaspel::findFirstByIdPeriode($idPeriode);
+		$persentaseJaspel = PersentaseJaspel::findFirstByIdPJaspel(1);
+		$jplRuang = JplRuang::findFirst([
+			'idPeriode = ?1 AND idRuangan = ?2',
+			'bind' => [
+				'1' => $idPeriode,
+				'2' => $idRuangan
+			]
+		]);
 
 		$query = $this->modelsManager->createQuery('SELECT 
 			jp.id idJplPendapatan,
@@ -216,7 +224,8 @@ class PengajuanJaspelController extends ControllerBase
 			'jenisJaspel' => JenisJaspel::findFirstByIdJaspel($periodeJaspel->idJaspel),
 			'namaRuangan'     => Ruangan::findFirstById($idRuangan),
 			'idPeriode' => $idPeriode,
-			'pendapatanPelayanan' => $pendapatanPelayanan
+			'pendapatanPelayanan' => $pendapatanPelayanan,
+			'jplRuang' => $jplRuang
 		]);
 
 		if ($this->request->isPost() && $this->request->isAjax()) {
@@ -252,17 +261,109 @@ class PengajuanJaspelController extends ControllerBase
 			$arr = ['idRjp' => $idRjp, 'totalPengajuan' => $totalPengajuan, 'idPeriode' => $idPeriode, 'jplPendapatan' => $cJplPendapatan];
 			return $this->response->setContent(json_encode($arr));
 		} elseif ($this->request->isPost()) {
-			$jplRuang = JplRuang::findFirst([
-				'idPeriode = ?1 AND idRuangan = ?2',
-				'bind' => ['1' => $idPeriode, '2' => $idRuangan]
-			]);
-			$jplRuang->statusKomplit = 1;
-// die($idPeriode . $idRuangan);
-			if (!$jplRuang->save()) {
-				foreach ($jplRUang->getMessages() as $m) {
-					$this->flashSession->error('Pengajuan error.');
+
+			$pengajuanBatal = [];
+			foreach ($ruanganJenisPelayanan as $rjp) {
+				$jplPendapatan = JplPendapatan::find([
+					'idPeriode = ?1 AND idRuanganJenisPelayanan = ?2',
+					'bind' => [
+						'1' => $idPeriode,
+						'2' => $rjp->id
+					]
+				]);
+
+
+				foreach ($jplPendapatan as $jp) {
+					$jplPegawai = JplPegawai::find([
+						'idJplPendapatan = ?1',
+						'bind' => ['1' => $jp->id]
+					]);
+
+					$persentaseJasa         = $persentaseJaspel->jasa / 100;
+					$persentaseJplKotor     = $persentaseJaspel->jpl / 100;
+					$persentaseJplFix       = $persentaseJaspel->jasaFix / 100;
+					$persentasePelayanan    = $rjp->persentasePelayanan / 100;
+					$totalPengajuan         = $jp->totalPengajuan;
+
+					$nominalJasa = $totalPengajuan * $persentasePelayanan * $persentaseJasa;
+					$nominalJasa = number_format((float)$nominalJasa, 2, '.', '');
+
+					$nominalJplKotor = $nominalJasa * $persentaseJplKotor;
+					$nominalJplKotor = number_format((float)$nominalJplKotor, 2, '.', '');
+
+					$nominalJplFix = $nominalJplKotor * $persentaseJplFix;
+					$nominalJplFix = number_format((float)$nominalJplFix, 2, '.', '');
+
+					$totalJplPegawai = 0;
+					$totalJplPegawaiDokter = 0;
+					$totalJplPegawaiPerawat = 0;
+					foreach ($jplPegawai as $jPeg) {
+						$totalJplPegawai += number_format((float)$jPeg->nilaiPendapatan, 2, '.', '');
+						if ($jPeg->pegawai->posisiStatus == 'dokter') {
+							$totalJplPegawaiDokter += number_format((float)$jPeg->nilaiPendapatan, 2, '.', '');
+						} elseif ($jPeg->pegawai->posisiStatus == 'bukandokter') {
+							$totalJplPegawaiPerawat += number_format((float)$jPeg->nilaiPendapatan, 2, '.', '');
+						}
+					}
+					
+					// Direct
+					// Index
+					// $totalJplPegawai / $totalIndex * $nominalJplFix
+					if ($rjp->metode == 'index') {
+						if ($totalJplPegawai <= 0) {
+							// $pengajuanBatal = 1;
+							array_push($pengajuanBatal, 1);
+						}
+					} elseif ($rjp->kategori == 'direct' && $rjp->metode == 'persentase') {
+						if (($totalJplPegawai / 100) != 1) {
+							// $pengajuanBatal = 2;
+							array_push($pengajuanBatal, 2);
+						}
+					} elseif ($rjp->kategori == 'direct' && $rjp->metode == 'manual') {
+						if ($totalJplPegawai != $nominalJplFix) {
+							// $pengajuanBatal = 3;
+							array_push($pengajuanBatal, 3);
+						}
+					} elseif ($rjp->kategori == 'split' && $rjp->metode == 'persentase') {
+						if (($totalJplPegawaiDokter / 100) != 1 || ($totalJplPegawaiPerawat / 100) != 1) {
+							// $pengajuanBatal = 4;
+							array_push($pengajuanBatal, 4);
+						}
+					} elseif ($rjp->kategori == 'split' && $rjp->metode == 'manual') {
+						if ($totalJplPegawaiDokter != $nominalJplFix * $rjp->persentaseDokter / 100) {
+							// $pengajuanBatal = 5;
+							array_push($pengajuanBatal, 5);
+						}
+					} else {
+						// $pengajuanBatal = 6;
+						array_push($pengajuanBatal, 6);
+					}
+					
+				} // e.o. jplPendapatan
+
+
+					
+			} // e.o. ruanganJenisPelayanan
+
+			// die(var_dump(empty($pengajuanBatal)));
+
+			if (empty($pengajuanBatal)) {
+				$jplRuang = JplRuang::findFirst([
+					'idPeriode = ?1 AND idRuangan = ?2',
+					'bind' => ['1' => $idPeriode, '2' => $idRuangan]
+				]);
+				$jplRuang->statusKomplit = 1;
+
+				if (!$jplRuang->save()) {
+					foreach ($jplRUang->getMessages() as $m) {
+						$this->flashSession->error('Pengajuan error.');
+					}
 				}
+			} else {
+				$this->flashSession->notice(json_encode($pengajuanBatal));
 			}
+			
+				
 			$this->response->redirect('pengajuan-jaspel/pendapatanPelayanan/' . $idPeriode);
 		}
 	}
@@ -273,6 +374,13 @@ class PengajuanJaspelController extends ControllerBase
 		$rjp = RuanganJenisPelayanan::findFirstById($idRuanganJenisPelayanan);
 		$jplPendapatan = JplPendapatan::findFirstById($idJplPendapatan);
 		$persentaseJaspel = PersentaseJaspel::findFirstByIdPJaspel(1);
+		$jplRuang = JplRuang::findFirst([
+			'idPeriode = ?1 AND idRuangan = ?2',
+			'bind' => [
+				'1' => $jplPendapatan->idPeriode,
+				'2' => $rjp->idRuangan
+			]
+		]);
 
 		$totalIndexDokter = 0;
 		$totalIndexPerawat = 0;
@@ -358,7 +466,8 @@ class PengajuanJaspelController extends ControllerBase
 			'rjp' => $rjp,
 			'totalIndex' => $totalIndex,
 			'totalIndexDokter' => $totalIndexDokter,
-			'totalIndexPerawat' => $totalIndexPerawat
+			'totalIndexPerawat' => $totalIndexPerawat,
+			'jplRuang' => $jplRuang
 		]);
 	}
 }

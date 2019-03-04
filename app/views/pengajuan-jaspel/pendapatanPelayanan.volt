@@ -17,7 +17,9 @@
         {% if cek == 0 %}
           {{ submit_button("pengajuan", "value": "Ajukan", "class": "btn btn-primary") }}
         {% endif %#}
-        {{ submit_button("pengajuan", "value": "Ajukan", "class": "btn btn-primary") }}
+        {% if jplRuang.statusKomplit == 0 %}
+          {{ submit_button("pengajuan", "value": "Ajukan", "class": "btn btn-primary") }}
+        {% endif %}
         <a href="{{url('pengajuan-jaspel')}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
         </form>
 
@@ -110,5 +112,9 @@ $(document).ready(function() {
     });
    
   });
+
+  if ("{{jplRuang.statusKomplit}}" == 1) {
+    $(".edit").attr("disabled", "disabled")
+  }
 });
 </script>
