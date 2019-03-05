@@ -124,23 +124,14 @@
                   {% set nominalPersentase = jp.nilaiPendapatan / 100 * nominalJplFix %}
                   <?php $nominalPersentase = number_format((float)$nominalPersentase, 2, '.', '') ?>
                   {{ text_field("nominal"~jp.id, "value": nominalPersentase, "class": "nominal rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
-
-                  <!-- <span id="nominal{{jp.id}}" class="nominal">{% set nom = jp.nilaiPendapatan / 100 * jplPendapatan.totalPengajuan %}
-                  <?php echo bcadd($nom, 0, 2); ?>
-                  </span> -->
                 {% elseif rjp.metode == "index" %}
                   {% set nominalIndex = jp.nilaiPendapatan / totalIndex * nominalJplFix %}
                   <?php $nominalIndex = number_format((float)$nominalIndex, 2, '.', '') ?>
                   {{ text_field("nominal"~jp.id, "value": nominalIndex, "class": "nominal rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
-
-                  <!-- <span id="nominal{{jp.id}}" class="nominal">{% set nom = jp.nilaiPendapatan / totalIndex * jplPendapatan.totalPengajuan %}
-                  <?php echo bcadd($nom, 0, 2); ?>
-                  </span> -->
                 {% else %}
                   {% set nilaiPendapatan = jp.nilaiPendapatan %}
                   <?php $nilaiPendapatan = number_format((float)$nilaiPendapatan, 2, '.', '') ?>
                   {{ text_field("nominal"~jp.id, "value": nilaiPendapatan, "class": "edit nominal rupiah", "data-id-jpl-pegawai": jp.id, "style": "width:110px; text-align: center;") }}
-                  <!-- <span id="nominal{{jp.id}}" class="edit nominal" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}">{{jp.nilaiPendapatan}}</span> -->
                 {% endif %}
               </td>
             </tr>
@@ -413,22 +404,16 @@ $(document).ready(function() {
                   <?php $dNominal = number_format((float)$dNominal, 2, '.', '') ?>
                   {{ text_field("dNominal"~jp.id, "value": dNominal, "class": "nominalDokter rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
 
-                  <!-- <span id="dNominal{{jp.id}}" class="nominalDokter">{% set nom = jp.nilaiPendapatan / 100 * jplPendapatan.totalPengajuan * rjp.persentaseDokter / 100 %}
-                  <?php echo bcadd($nom, 0, 2); ?>
-                  </span> -->
                 {% elseif rjp.metode == "index" %}
                   {% set dNominal = jp.nilaiPendapatan / totalIndexDokter * jatahDokter %}
                   <?php $dNominal = number_format((float)$dNominal, 2, '.', '') ?>
                   {{ text_field("dNominal"~jp.id, "value": dNominal, "class": "nominalDokter rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
 
-                  <!-- <span id="dNominal{{jp.id}}" class="nominalDokter">{% set nom = jp.nilaiPendapatan / totalIndexDokter * jplPendapatan.totalPengajuan * rjp.persentaseDokter / 100 %}
-                  <?php echo bcadd($nom, 0, 2); ?>
-                  </span> -->
                 {% else %}
                   {% set nilaiPendapatan = jp.nilaiPendapatan %}
                   <?php $nilaiPendapatan = number_format((float)$nilaiPendapatan, 2, '.', '') ?>
                   {{ text_field("dNominal"~jp.id, "value": nilaiPendapatan, "class": "edit nominalDokter rupiah", "data-id-jpl-pegawai": jp.id, "data-status-pegawai":"dokter", "data-persentase-pegawai": rjp.persentaseDokter, "style": "width:110px; text-align: center;") }}
-                  <!-- <span id="dNominal{{jp.id}}" class="edit nominalDokter" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}" data-status-pegawai="dokter" data-persentase-pegawai="{{rjp.persentaseDokter}}">{{jp.nilaiPendapatan}}</span> -->
+
                 {% endif %}
               </td>
             </tr>
@@ -519,22 +504,16 @@ $(document).ready(function() {
                   <?php $bdNominal = number_format((float)$bdNominal, 2, '.', '') ?>
                   {{ text_field("bdNominal"~jp.id, "value": bdNominal, "class": "nominalPerawat rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
                   
-                  <!-- <span id="bdNominal{{jp.id}}" class="nominalPerawat">{% set nom = jp.nilaiPendapatan / 100 * jplPendapatan.totalPengajuan * rjp.persentasePerawat / 100 %}
-                  <?php echo bcadd($nom, 0, 2); ?>
-                  </span> -->
                 {% elseif rjp.metode == "index" %}
                   {% set bdNominal = jp.nilaiPendapatan / totalIndexPerawat * jatahPerawat %}
                   <?php $bdNominal = number_format((float)$bdNominal, 2, '.', '') ?>
                   {{ text_field("bdNominal"~jp.id, "value": bdNominal, "class": "nominalPerawat rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
 
-                  <!-- <span id="bdNominal{{jp.id}}" class="nominalPerawat">{% set nom = jp.nilaiPendapatan / totalIndexPerawat * jplPendapatan.totalPengajuan * rjp.persentasePerawat / 100 %}
-                  <?php echo bcadd($nom, 0, 2); ?>
-                  </span> -->
                 {% else %}
                   {% set nilaiPendapatan = jp.nilaiPendapatan %}
                   <?php $nilaiPendapatan = number_format((float)$nilaiPendapatan, 2, '.', '') ?>
                   {{ text_field("bdNominal"~jp.id, "value": nilaiPendapatan, "class": "edit nominalPerawat rupiah", "data-id-jpl-pegawai": jp.id, "data-status-pegawai":"bukandokter", "data-persentase-pegawai": rjp.persentasePerawat, "style": "width:110px; text-align: center;") }}
-                  <!-- <span id="bdNominal{{jp.id}}" class="edit nominalPerawat" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}" data-status-pegawai="bukandokter" data-persentase-pegawai="{{rjp.persentasePerawat}}">{{jp.nilaiPendapatan}}</span> -->
+                  
                 {% endif %}
               </td>
             </tr>
@@ -647,7 +626,7 @@ $(document).ready(function() {
   }
   $("#totalPerawat").maskMoney('mask', totalNominalPerawat())
 
-
+  console.log("{{jatahDokter}}")
 
   function totalIndexDokter() {
     let tot = 0;
