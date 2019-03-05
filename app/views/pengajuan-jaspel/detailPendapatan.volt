@@ -418,7 +418,7 @@ $(document).ready(function() {
                   </span> -->
                 {% elseif rjp.metode == "index" %}
                   {% set dNominal = jp.nilaiPendapatan / totalIndexDokter * jatahDokter %}
-                  <?php # $dNominal = number_format((float)$dNominal, 2, '.', '') ?>
+                  <?php $dNominal = number_format((float)$dNominal, 2, '.', '') ?>
                   {{ text_field("dNominal"~jp.id, "value": dNominal, "class": "nominalDokter rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
 
                   <!-- <span id="dNominal{{jp.id}}" class="nominalDokter">{% set nom = jp.nilaiPendapatan / totalIndexDokter * jplPendapatan.totalPengajuan * rjp.persentaseDokter / 100 %}
@@ -523,8 +523,8 @@ $(document).ready(function() {
                   <?php echo bcadd($nom, 0, 2); ?>
                   </span> -->
                 {% elseif rjp.metode == "index" %}
-                  {% set bdNominal = jp.nilaiPendapatan / totalIndexDokter * jatahPerawat %}
-                  <?php # $bdNominal = number_format((float)$bdNominal, 2, '.', '') ?>
+                  {% set bdNominal = jp.nilaiPendapatan / totalIndexPerawat * jatahPerawat %}
+                  <?php $bdNominal = number_format((float)$bdNominal, 2, '.', '') ?>
                   {{ text_field("bdNominal"~jp.id, "value": bdNominal, "class": "nominalPerawat rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
 
                   <!-- <span id="bdNominal{{jp.id}}" class="nominalPerawat">{% set nom = jp.nilaiPendapatan / totalIndexPerawat * jplPendapatan.totalPengajuan * rjp.persentasePerawat / 100 %}
