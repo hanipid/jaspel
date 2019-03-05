@@ -297,6 +297,7 @@ $(document).ready(function() {
 {% if rjp.kategori == "split" %}
 {# SPLIT #}
 {% set persentaseDokter = rjp.persentaseDokter / 100 %}
+{% set persentasePerawat = rjp.persentasePerawat / 100 %}
 <form>
 
   <div class="col-md-12">
@@ -469,8 +470,10 @@ $(document).ready(function() {
 
       <div class="box-body">
 
-        {% set jatahPerawat = jplPendapatan.totalPengajuan*rjp.persentasePelayanan/100*rjp.persentasePerawat/100 %}
+        {% set jatahPerawat = nominalJplFix*persentasePerawat %}
         <?php $jatahPerawat = number_format((float)$jatahPerawat, 2, '.', '') ?>
+        {#% set jatahPerawat = jplPendapatan.totalPengajuan*rjp.persentasePelayanan/100*rjp.persentasePerawat/100 %#}
+        <?php // $jatahPerawat = number_format((float)$jatahPerawat, 2, '.', '') ?>
         <p>Jumlah Diterima: <strong>Rp.</strong> {{ text_field("jatahPerawat", "value": jatahPerawat, "class": "rupiah", "disabled": "disabled", "style": "width:120px; text-align: center; font-weight: 700;") }}</p>
         <p>
           {% if rjp.metode == "index" %}
