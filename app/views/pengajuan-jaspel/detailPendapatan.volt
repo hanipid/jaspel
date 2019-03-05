@@ -387,7 +387,7 @@ $(document).ready(function() {
               {% if rjp.metode != "manual" %}
               <th>{{rjp.metode|capitalize}}</th>
               {% endif %}
-              <th>Nominal</th>
+              <th style="width: 148px;">Nominal</th>
             </tr>
           </thead>
 
@@ -400,7 +400,7 @@ $(document).ready(function() {
               <td>{{ jp.pegawai.gelarDepan }} {{jp.pegawai.namaPegawai}} {{ jp.pegawai.gelarBelakang }}</td>
               {% if rjp.metode != "manual" %}
               <td>
-                {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit indexDokter", "data-id-jpl-pegawai": jp.id, "data-status-pegawai": "dokter", "data-persentase-pegawai": rjp.persentaseDokter, "style": "width:30px; text-align: center;") }}
+                {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit indexDokter", "data-id-jpl-pegawai": jp.id, "data-status-pegawai": "dokter", "data-persentase-pegawai": rjp.persentaseDokter, "style": "width:40px; text-align: center;") }}
                 <!-- <span class="edit indexDokter" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}" data-status-pegawai="dokter" data-persentase-pegawai="{{rjp.persentaseDokter}}">{{jp.nilaiPendapatan}}</span> -->
                 {% if rjp.metode == "persentase" %}
                 %
@@ -493,7 +493,7 @@ $(document).ready(function() {
               {% if rjp.metode != "manual" %}
               <th>{{rjp.metode|capitalize}}</th>
               {% endif %}
-              <th>Nominal</th>
+              <th style="width: 148px;">Nominal</th>
             </tr>
           </thead>
 
@@ -506,7 +506,7 @@ $(document).ready(function() {
               <td>{{ jp.pegawai.gelarDepan }} {{jp.pegawai.namaPegawai}} {{ jp.pegawai.gelarBelakang }}</td>
               {% if rjp.metode != "manual" %}
               <td>
-                {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit indexPerawat", "data-id-jpl-pegawai": jp.id, "data-status-pegawai": "bukandokter", "data-persentase-pegawai": rjp.persentasePerawat, "style": "width:30px; text-align: center;") }}
+                {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit indexPerawat", "data-id-jpl-pegawai": jp.id, "data-status-pegawai": "bukandokter", "data-persentase-pegawai": rjp.persentasePerawat, "style": "width:40px; text-align: center;") }}
                 <!-- <span class="edit indexPerawat" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}" data-status-pegawai="bukandokter" data-persentase-pegawai="{{rjp.persentasePerawat}}">{{jp.nilaiPendapatan}}</span> -->
                 {% if rjp.metode == "persentase" %}
                 %
@@ -632,8 +632,7 @@ $(document).ready(function() {
     return (tot)
   }
   $("#totalDokter").maskMoney('mask', totalNominalDokter())
-  $("#totalIndexDokter").maskMoney({allowNegative: true})
-  $("#totalIndexDokter").maskMoney("mask", Number(("{{jatahDokter}}" - totalNominalDokter()).toFixed(2)) )
+    
 
   function totalNominalPerawat() {
     let tot = 0;
@@ -647,8 +646,6 @@ $(document).ready(function() {
     return (tot)
   }
   $("#totalPerawat").maskMoney('mask', totalNominalPerawat())
-  $("#totalIndexPerawat").maskMoney({allowNegative: true})
-  $("#totalIndexPerawat").maskMoney("mask", Number(("{{jatahPerawat}}" - totalNominalPerawat()).toFixed(2)) )
 
 
 
@@ -665,7 +662,10 @@ $(document).ready(function() {
     $("#totalIndexDokter").text(totalIndexDokter())
   } else if ("{{rjp.metode}}" == "persentase") {
     $("#totalIndexDokter").text(100 - totalIndexDokter())
-  } 
+  } else {
+    $("#totalIndexDokter").maskMoney({allowNegative: true})
+    $("#totalIndexDokter").maskMoney("mask", Number(("{{jatahDokter}}" - totalNominalDokter()).toFixed(2)) )
+  }
 
   function totalIndexPerawat() {
     let tot = 0;
@@ -679,7 +679,10 @@ $(document).ready(function() {
     $("#totalIndexPerawat").text(totalIndexPerawat())
   } else if ("{{rjp.metode}}" == "persentase") {
     $("#totalIndexPerawat").text(100 - totalIndexPerawat())
-  } 
+  } else {
+    $("#totalIndexPerawat").maskMoney({allowNegative: true})
+    $("#totalIndexPerawat").maskMoney("mask", Number(("{{jatahPerawat}}" - totalNominalPerawat()).toFixed(2)) )
+  }
 
 
   // Add Class
