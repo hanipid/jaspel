@@ -919,7 +919,7 @@ $(document).ready(function() {
 {% endif %}
 
 <script>
-if ("{{jplRuang.statusKomplit}}" == 1) {
+if ("{{jplRuang.statusKomplit}}" == 1 || "{{nominalJplFix}}" == 0) {
   $(".edit").attr("disabled", "disabled")
   $("input[type='submit']").attr("disabled", "disabled")
 }

@@ -283,6 +283,8 @@ class PengajuanJaspelController extends ControllerBase
 					$persentaseJplKotor     = $persentaseJaspel->jpl / 100;
 					$persentaseJplFix       = $persentaseJaspel->jasaFix / 100;
 					$persentasePelayanan    = $rjp->persentasePelayanan / 100;
+					$persentaseDokter    		= $rjp->persentaseDokter / 100;
+					$persentasePerawat    	= $rjp->persentasePerawat / 100;
 					$totalPengajuan         = $jp->totalPengajuan;
 
 					$nominalJasa = $totalPengajuan * $persentasePelayanan * $persentaseJasa;
@@ -293,6 +295,12 @@ class PengajuanJaspelController extends ControllerBase
 
 					$nominalJplFix = $nominalJplKotor * $persentaseJplFix;
 					$nominalJplFix = number_format((float)$nominalJplFix, 2, '.', '');
+
+					$nominalDokter = $nominalJplFix * $persentaseDokter;
+					$nominalDokter = number_format((float)$nominalDokter, 2, '.', '');
+
+					$nominalPerawat = $nominalJplFix * $persentasePerawat;
+					$nominalPerawat = number_format((float)$nominalPerawat, 2, '.', '');
 
 					$totalJplPegawai = 0;
 					$totalJplPegawaiDokter = 0;
@@ -311,32 +319,48 @@ class PengajuanJaspelController extends ControllerBase
 					// $totalJplPegawai / $totalIndex * $nominalJplFix
 					if ($rjp->metode == 'index') {
 						if ($totalJplPegawai <= 0) {
-							// $pengajuanBatal = 1;
 							array_push($pengajuanBatal, 1);
 						}
 					} elseif ($rjp->kategori == 'direct' && $rjp->metode == 'persentase') {
-						if (($totalJplPegawai / 100) != 1) {
-							// $pengajuanBatal = 2;
+
+						// jika total nominal pegawai TIDAK DIISI dan totalPengajuan pendapatan DIISI, PENGAJUAN BATAL
+						if ($totalJplPegawai == 0 && $nominalJplFix > 0) {
 							array_push($pengajuanBatal, 2);
+						} elseif ($totalJplPegawai > 0) {
+
+							// jika total nominal pegawai TIDAK SAMA dengan totalPengajuan pendpatana, PENGAJUAN BATAL
+							if (($totalJplPegawai / 100 * $nominalJplFix) != $nominalJplFix) {
+								array_push($pengajuanBatal, 3);
+							}
 						}
+						
 					} elseif ($rjp->kategori == 'direct' && $rjp->metode == 'manual') {
+
+						// jika total nominal pegawai TIDAK SAMA dengan totalPengajuan pendpatana, PENGAJUAN BATAL
 						if ($totalJplPegawai != $nominalJplFix) {
-							// $pengajuanBatal = 3;
-							array_push($pengajuanBatal, 3);
-						}
-					} elseif ($rjp->kategori == 'split' && $rjp->metode == 'persentase') {
-						if (($totalJplPegawaiDokter / 100) != 1 || ($totalJplPegawaiPerawat / 100) != 1) {
-							// $pengajuanBatal = 4;
 							array_push($pengajuanBatal, 4);
 						}
-					} elseif ($rjp->kategori == 'split' && $rjp->metode == 'manual') {
-						if ($totalJplPegawaiDokter != $nominalJplFix * $rjp->persentaseDokter / 100) {
-							// $pengajuanBatal = 5;
+
+					} elseif ($rjp->kategori == 'split' && $rjp->metode == 'persentase') {
+
+						// jika total nominal pegawai TIDAK DIISI dan totalPengajuan pendapatan DIISI, PENGAJUAN BATAL
+						if (($totalJplPegawaiDokter == 0 && $nominalDokter > 0) || ($totalJplPegawaiPerawat == 0 && $nominalPerawat > 0) ) {
 							array_push($pengajuanBatal, 5);
+						} elseif ($totalJplPegawaiDokter > 0 && $totalJplPegawaiPerawat > 0) {
+
+							// jika total nominal pegawai TIDAK SAMA dengan totalPengajuan pendpatana, PENGAJUAN BATAL
+							if ($totalJplPegawaiDokter / 100 * $nominalDokter != $nominalDokter || $totalJplPegawaiPerawat / 100 * $nominalPerawat != $nominalPerawat) {
+								array_push($pengajuanBatal, 6);
+							}
+						}
+							
+						
+					} elseif ($rjp->kategori == 'split' && $rjp->metode == 'manual') {
+						if ($totalJplPegawaiDokter != $nominalJplFix * $persentaseDokter || $totalJplPegawaiPerawat != $nominalJplFix * $persentasePerawat) {
+							array_push($pengajuanBatal, 7);
 						}
 					} else {
-						// $pengajuanBatal = 6;
-						array_push($pengajuanBatal, 6);
+						array_push($pengajuanBatal, 8);
 					}
 					
 				} // e.o. jplPendapatan
@@ -345,7 +369,7 @@ class PengajuanJaspelController extends ControllerBase
 					
 			} // e.o. ruanganJenisPelayanan
 
-			// die(var_dump(empty($pengajuanBatal)));
+			// die(var_dump(($pengajuanBatal)));
 
 			if (empty($pengajuanBatal)) {
 				$jplRuang = JplRuang::findFirst([
@@ -360,7 +384,7 @@ class PengajuanJaspelController extends ControllerBase
 					}
 				}
 			} else {
-				$this->flashSession->notice(json_encode($pengajuanBatal));
+				$this->flashSession->warning('Error code: ' . json_encode($pengajuanBatal));
 			}
 			
 				
