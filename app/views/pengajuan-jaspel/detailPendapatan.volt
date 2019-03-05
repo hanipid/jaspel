@@ -513,7 +513,7 @@ $(document).ready(function() {
                   {% set nilaiPendapatan = jp.nilaiPendapatan %}
                   <?php $nilaiPendapatan = number_format((float)$nilaiPendapatan, 2, '.', '') ?>
                   {{ text_field("bdNominal"~jp.id, "value": nilaiPendapatan, "class": "edit nominalPerawat rupiah", "data-id-jpl-pegawai": jp.id, "data-status-pegawai":"bukandokter", "data-persentase-pegawai": rjp.persentasePerawat, "style": "width:110px; text-align: center;") }}
-                  
+
                 {% endif %}
               </td>
             </tr>
@@ -563,6 +563,24 @@ $(document).ready(function() {
     return n % 1 === 0;
   }
 
+  function roundTo(n, digits) {
+    var negative = false;
+    if (digits === undefined) {
+      digits = 0;
+    }
+    if( n < 0) {
+      negative = true;
+      n = n * -1;
+    }
+    var multiplicator = Math.pow(10, digits);
+    n = parseFloat((n * multiplicator).toFixed(11));
+    n = (Math.round(n) / multiplicator).toFixed(2);
+    if( negative ) {    
+      n = (n * -1).toFixed(2);
+    }
+    return n;
+  }
+
   function nominal(idJplPegawai, totalIndex, nilaiPendapatan, totalPengajuan, statusPegawai, persentasePegawai) {
     // let value = (Number(nilaiPendapatan) / totalIndex * Number(totalPengajuan)) * "{{rjp.persentasePelayanan}}" / 100
     // $("#nominal" + idJplPegawai).maskMoney('mask', Number(value.toFixed(2)))
@@ -607,11 +625,12 @@ $(document).ready(function() {
       v = $(this).maskMoney("unmasked")[0];
       tot += Number(v);
     })
-    console.log("totnomdok : " + (tot))
-    return (tot)
+    console.log("totnomdok : " + roundTo(tot, 2))
+    return Number(roundTo(tot, 2))
   }
   $("#totalDokter").maskMoney('mask', totalNominalDokter())
     
+  console.log("{{jatahDokter}}")
 
   function totalNominalPerawat() {
     let tot = 0;
@@ -621,12 +640,11 @@ $(document).ready(function() {
       v = $(this).maskMoney("unmasked")[0];
       tot += Number(v);
     })
-    console.log("totnomper : " + (tot))
-    return (tot)
+    console.log("totnomper : " + tot + " : " + roundTo(tot, 2))
+    return Number(roundTo(tot, 2))
   }
   $("#totalPerawat").maskMoney('mask', totalNominalPerawat())
 
-  console.log("{{jatahDokter}}")
 
   function totalIndexDokter() {
     let tot = 0;
