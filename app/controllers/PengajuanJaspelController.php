@@ -317,20 +317,20 @@ class PengajuanJaspelController extends ControllerBase
 					// Direct
 					// Index
 					// $totalJplPegawai / $totalIndex * $nominalJplFix
-					if ($rjp->metode == 'index') {
-						if ($totalJplPegawai <= 0) {
-							array_push($pengajuanBatal, 1);
+					if ($rjp->kategori == 'direct' && $rjp->metode == 'index') {
+						if ($totalJplPegawai <= 0 & $totalPengajuan > 0) {
+							array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
 						}
 					} elseif ($rjp->kategori == 'direct' && $rjp->metode == 'persentase') {
 
 						// jika total nominal pegawai TIDAK DIISI dan totalPengajuan pendapatan DIISI, PENGAJUAN BATAL
 						if ($totalJplPegawai == 0 && $nominalJplFix > 0) {
-							array_push($pengajuanBatal, 2);
+							array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
 						} elseif ($totalJplPegawai > 0) {
 
 							// jika total nominal pegawai TIDAK SAMA dengan totalPengajuan pendpatana, PENGAJUAN BATAL
 							if (($totalJplPegawai / 100 * $nominalJplFix) != $nominalJplFix) {
-								array_push($pengajuanBatal, 3);
+								array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
 							}
 						}
 						
@@ -338,29 +338,35 @@ class PengajuanJaspelController extends ControllerBase
 
 						// jika total nominal pegawai TIDAK SAMA dengan totalPengajuan pendpatana, PENGAJUAN BATAL
 						if ($totalJplPegawai != $nominalJplFix) {
-							array_push($pengajuanBatal, 4);
+							array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
 						}
 
 					} elseif ($rjp->kategori == 'split' && $rjp->metode == 'persentase') {
 
 						// jika total nominal pegawai TIDAK DIISI dan totalPengajuan pendapatan DIISI, PENGAJUAN BATAL
 						if (($totalJplPegawaiDokter == 0 && $nominalDokter > 0) || ($totalJplPegawaiPerawat == 0 && $nominalPerawat > 0) ) {
-							array_push($pengajuanBatal, 5);
+							array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
 						} elseif ($totalJplPegawaiDokter > 0 && $totalJplPegawaiPerawat > 0) {
 
 							// jika total nominal pegawai TIDAK SAMA dengan totalPengajuan pendpatana, PENGAJUAN BATAL
 							if ($totalJplPegawaiDokter / 100 * $nominalDokter != $nominalDokter || $totalJplPegawaiPerawat / 100 * $nominalPerawat != $nominalPerawat) {
-								array_push($pengajuanBatal, 6);
+								array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
 							}
 						}
 							
 						
 					} elseif ($rjp->kategori == 'split' && $rjp->metode == 'manual') {
 						if ($totalJplPegawaiDokter != $nominalJplFix * $persentaseDokter || $totalJplPegawaiPerawat != $nominalJplFix * $persentasePerawat) {
-							array_push($pengajuanBatal, 7);
+							array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
+						}
+					} elseif ($rjp->kategori == 'split' && $rjp->metode == 'index') {
+						if (($totalJplPegawaiDokter <= 0) && $totalPengajuan > 0) {
+							array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
+						} elseif ($totalJplPegawaiPerawat <= 0 && $totalPengajuan > 0) {
+							array_push($pengajuanBatal,  $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
 						}
 					} else {
-						array_push($pengajuanBatal, 8);
+						array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
 					}
 					
 				} // e.o. jplPendapatan
@@ -384,7 +390,7 @@ class PengajuanJaspelController extends ControllerBase
 					}
 				}
 			} else {
-				$this->flashSession->warning('Error code: ' . json_encode($pengajuanBatal));
+				$this->flashSession->warning('Kesalahan pengisian form: ' . json_encode($pengajuanBatal));
 			}
 			
 				

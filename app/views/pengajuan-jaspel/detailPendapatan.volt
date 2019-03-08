@@ -121,13 +121,17 @@
               {% endif %}
               <td>Rp. 
                 {% if rjp.metode == "persentase" %}
-                  {% set nominalPersentase = jp.nilaiPendapatan / 100 * nominalJplFix %}
-                  <?php $nominalPersentase = number_format((float)$nominalPersentase, 2, '.', '') ?>
+                  {% set rumusNominalPersentase = jp.nilaiPendapatan / 100 * nominalJplFix %}
+                  <?php $nominalPersentase = number_format((float)$rumusNominalPersentase, 2, '.', '') ?>
+                  <?php $hNominalPersentase = number_format((float)$rumusNominalPersentase, 8, '.', '') ?>
                   {{ text_field("nominal"~jp.id, "value": nominalPersentase, "class": "nominal rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
+                  {{ hidden_field("hNominal"~jp.id, "value": hNominalPersentase, "class": "hiddenNominal rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;", "data-precision": "8") }}
                 {% elseif rjp.metode == "index" %}
-                  {% set nominalIndex = jp.nilaiPendapatan / totalIndex * nominalJplFix %}
-                  <?php $nominalIndex = number_format((float)$nominalIndex, 2, '.', '') ?>
+                  {% set rumusNominalIndex = jp.nilaiPendapatan / totalIndex * nominalJplFix %}
+                  <?php $nominalIndex = number_format((float)$rumusNominalIndex, 2, '.', '') ?>
+                  <?php $hNominalIndex = number_format((float)$rumusNominalIndex, 8, '.', '') ?>
                   {{ text_field("nominal"~jp.id, "value": nominalIndex, "class": "nominal rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
+                  {{ hidden_field("hNominal"~jp.id, "value": hNominalIndex, "class": "hiddenNominal rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;", "data-precision": "8") }}
                 {% else %}
                   {% set nilaiPendapatan = jp.nilaiPendapatan %}
                   <?php $nilaiPendapatan = number_format((float)$nilaiPendapatan, 2, '.', '') ?>
@@ -168,6 +172,24 @@
 <script>
 $(document).ready(function() {
 
+  function roundTo(n, digits) {
+    var negative = false;
+    if (digits === undefined) {
+      digits = 0;
+    }
+    if( n < 0) {
+      negative = true;
+      n = n * -1;
+    }
+    var multiplicator = Math.pow(10, digits);
+    n = parseFloat((n * multiplicator).toFixed(11));
+    n = (Math.round(n) / multiplicator).toFixed(2);
+    if( negative ) {    
+      n = (n * -1).toFixed(2);
+    }
+    return n;
+  }
+
   function isInt(n) {
     return n % 1 === 0;
   }
@@ -185,18 +207,29 @@ $(document).ready(function() {
     // let value = (Number(nilaiPendapatan) / totalIndex * Number(totalPengajuan)) * "{{rjp.persentasePelayanan}}" / 100
     let value = Number(nilaiPendapatan) / totalIndex * "{{nominalJplFix}}"
     $("#nominal" + idJplPegawai).maskMoney('mask', Number(value.toFixed(2)))
+    $("#hNominal" + idJplPegawai).maskMoney('mask', Number(value.toFixed(8)))
   }
 
   function totalNominal() {
     let v = 0
     let tot = 0
-    $(".nominal").each(function(){
-      $(this).maskMoney();
-      v = $(this).maskMoney("unmasked")[0];
-      tot += Number(v);
-    })
-    console.log((tot).toFixed(2))
-    return (tot)
+    if ($(".hiddenNominal").length) {
+      $(".hiddenNominal").each(function(){
+        $(this).maskMoney({precision: 8});
+        v = $(this).maskMoney("unmasked")[0];
+        tot += Number(v);
+        // console.log("hidnom : " + hv)
+      })
+    } else {
+      $(".nominal").each(function(){
+        $(this).maskMoney();
+        v = $(this).maskMoney("unmasked")[0];
+        tot += Number(v);
+      })
+    }
+    // console.log("htotnom : " + roundTo(htot, 2))
+    // console.log((tot).toFixed(2))
+    return (Number(roundTo(tot, 2)))
   }
   $("#total").maskMoney('mask', totalNominal())
   $("#totalIndex").maskMoney({allowNegative: true})
@@ -250,7 +283,6 @@ $(document).ready(function() {
       } else {
         $("#totalIndex").maskMoney("mask", Number(("{{nominalJplFix}}" - totalNominal()).toFixed(2)) )
       }
-      // $("#total").val(totalNominal())
       $("#total").maskMoney('mask', totalNominal())
       if ("{{nominalJplFix}}" != totalNominal()) {
         $("#total").css({background: "#DD4B39", color: "white"})
@@ -400,14 +432,18 @@ $(document).ready(function() {
               {% endif %}
               <td>Rp. 
                 {% if rjp.metode == "persentase" %}
-                  {% set dNominal = jp.nilaiPendapatan / 100 * jatahDokter %}
-                  <?php $dNominal = number_format((float)$dNominal, 2, '.', '') ?>
+                  {% set rumusDNominal = jp.nilaiPendapatan / 100 * jatahDokter %}
+                  <?php $dNominal = number_format((float)$rumusDNominal, 2, '.', '') ?>
+                  <?php $hdNominal = number_format((float)$rumusDNominal, 8, '.', '') ?>
                   {{ text_field("dNominal"~jp.id, "value": dNominal, "class": "nominalDokter rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
+                  {{ hidden_field("hdNominal"~jp.id, "value": hdNominal, "class": "hiddenNominalDokter rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;", "data-precision": "8") }}
 
                 {% elseif rjp.metode == "index" %}
-                  {% set dNominal = jp.nilaiPendapatan / totalIndexDokter * jatahDokter %}
-                  <?php $dNominal = number_format((float)$dNominal, 2, '.', '') ?>
+                  {% set rumusDNominal = jp.nilaiPendapatan / totalIndexDokter * jatahDokter %}
+                  <?php $dNominal = number_format((float)$rumusDNominal, 2, '.', '') ?>
+                  <?php $hdNominal = number_format((float)$rumusDNominal, 8, '.', '') ?>
                   {{ text_field("dNominal"~jp.id, "value": dNominal, "class": "nominalDokter rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
+                  {{ hidden_field("hdNominal"~jp.id, "value": hdNominal, "class": "hiddenNominalDokter rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;", "data-precision": "8") }}
 
                 {% else %}
                   {% set nilaiPendapatan = jp.nilaiPendapatan %}
@@ -500,14 +536,18 @@ $(document).ready(function() {
               {% endif %}
               <td>Rp. 
                 {% if rjp.metode == "persentase" %}
-                  {% set bdNominal = jp.nilaiPendapatan / 100 * jatahPerawat %}
-                  <?php $bdNominal = number_format((float)$bdNominal, 2, '.', '') ?>
+                  {% set rumusBdNominal = jp.nilaiPendapatan / 100 * jatahPerawat %}
+                  <?php $bdNominal = number_format((float)$rumusBdNominal, 2, '.', '') ?>
+                  <?php $hbdNominal = number_format((float)$rumusBdNominal, 8, '.', '') ?>
                   {{ text_field("bdNominal"~jp.id, "value": bdNominal, "class": "nominalPerawat rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
+                  {{ hidden_field("hbdNominal"~jp.id, "value": hbdNominal, "class": "hiddenNominalPerawat rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;", "data-precision": "8") }}
                   
                 {% elseif rjp.metode == "index" %}
-                  {% set bdNominal = jp.nilaiPendapatan / totalIndexPerawat * jatahPerawat %}
-                  <?php $bdNominal = number_format((float)$bdNominal, 2, '.', '') ?>
+                  {% set rumusBdNominal = jp.nilaiPendapatan / totalIndexPerawat * jatahPerawat %}
+                  <?php $bdNominal = number_format((float)$rumusBdNominal, 2, '.', '') ?>
+                  <?php $hbdNominal = number_format((float)$rumusBdNominal, 8, '.', '') ?>
                   {{ text_field("bdNominal"~jp.id, "value": bdNominal, "class": "nominalPerawat rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
+                  {{ hidden_field("hbdNominal"~jp.id, "value": hbdNominal, "class": "hiddenNominalPerawat rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;", "data-precision": "8") }}
 
                 {% else %}
                   {% set nilaiPendapatan = jp.nilaiPendapatan %}
@@ -587,16 +627,12 @@ $(document).ready(function() {
 
     if (statusPegawai == "dokter") {
       let value = (Number(nilaiPendapatan) / totalIndex) * "{{jatahDokter}}"
-      $("#dNominal" + idJplPegawai).maskMoney('mask', Number(value.toFixed(2)))
-      // let r = Math.round(v * 100) / 100
-      // let z = String(r).replace('.',',')
-      // $("#dNominal" + idJplPegawai).val(z)
-      // $("#dNominal" + idJplPegawai).maskMoney('mask')
-      // console.log(Number(value.toFixed(2)))
+      $("#dNominal" + idJplPegawai).maskMoney('mask', Number(roundTo(value, 2)))
+      $("#hdNominal" + idJplPegawai).maskMoney('mask', Number(value.toFixed(8)))
     } else {
       let value = (Number(nilaiPendapatan) / totalIndex) * "{{jatahPerawat}}"
-      $("#bdNominal" + idJplPegawai).maskMoney('mask', Number(value.toFixed(2)))
-      // $("#bdNominal" + idJplPegawai).maskMoney('mask', (Number(nilaiPendapatan) / totalIndex * Number(totalPengajuan)).toFixed(2) * persentasePegawai / 100 * "{{rjp.persentasePerawat}}" / 100)
+      $("#bdNominal" + idJplPegawai).maskMoney('mask', Number(roundTo(value, 2)))
+      $("#hbdNominal" + idJplPegawai).maskMoney('mask', Number(value.toFixed(8)))
       console.log(totalPengajuan)
     }
     
@@ -620,12 +656,25 @@ $(document).ready(function() {
   function totalNominalDokter() {
     let v = 0
     let tot = 0
-    $(".nominalDokter").each(function(){
-      $(this).maskMoney();
-      v = $(this).maskMoney("unmasked")[0];
-      tot += Number(v);
-    })
-    console.log("totnomdok : " + roundTo(tot, 2))
+    if ($(".hiddenNominalDokter").length) {
+      $(".hiddenNominalDokter").each(function(){
+        $(this).maskMoney({precision: 8});
+        v = $(this).maskMoney("unmasked")[0];
+        tot += Number(v);
+        console.log("hidnomdok : " + v)
+      })
+    } else {
+      $(".nominalDokter").each(function(){
+        $(this).maskMoney();
+        v = $(this).maskMoney("unmasked")[0];
+        tot += Number(v);
+        console.log("nomdok : " + roundTo(v, 2))
+      })
+    }
+    
+    
+    // console.log("totnomdok : " + roundTo(tot, 2))
+    console.log("htotnomdok : " + roundTo(tot, 2))
     return Number(roundTo(tot, 2))
   }
   $("#totalDokter").maskMoney('mask', totalNominalDokter())
@@ -635,12 +684,23 @@ $(document).ready(function() {
   function totalNominalPerawat() {
     let tot = 0;
     let v = 0
-    $(".nominalPerawat").each(function(){
-      $(this).maskMoney();
-      v = $(this).maskMoney("unmasked")[0];
-      tot += Number(v);
-    })
-    console.log("totnomper : " + tot + " : " + roundTo(tot, 2))
+    if ($(".hiddenNominalPerawat").length) {
+      $(".hiddenNominalPerawat").each(function(){
+        $(this).maskMoney({precision: 8});
+        v = $(this).maskMoney("unmasked")[0];
+        tot += Number(hv);
+        console.log("hidnomper : " + v)
+      })
+    } else {
+      $(".nominalPerawat").each(function(){
+        $(this).maskMoney();
+        v = $(this).maskMoney("unmasked")[0];
+        tot += Number(v);
+      })
+    }
+    
+    // console.log("totnomper : " + tot + " : " + roundTo(tot, 2))
+    console.log("htotnomper : " + roundTo(tot, 2))
     return Number(roundTo(tot, 2))
   }
   $("#totalPerawat").maskMoney('mask', totalNominalPerawat())
