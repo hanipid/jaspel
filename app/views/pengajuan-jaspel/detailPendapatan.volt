@@ -688,7 +688,7 @@ $(document).ready(function() {
       $(".hiddenNominalPerawat").each(function(){
         $(this).maskMoney({precision: 8});
         v = $(this).maskMoney("unmasked")[0];
-        tot += Number(hv);
+        tot += Number(v);
         console.log("hidnomper : " + v)
       })
     } else {
