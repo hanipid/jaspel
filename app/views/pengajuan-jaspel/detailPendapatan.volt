@@ -112,7 +112,7 @@
               <td>{{ jp.pegawai.gelarDepan }} {{jp.pegawai.namaPegawai}} {{ jp.pegawai.gelarBelakang }}</td>
               {% if rjp.metode != "manual" %}
               <td>
-                {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit", "data-id-jpl-pegawai": jp.id, "style": "width:30px; text-align: center;") }}
+                {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit", "data-id-jpl-pegawai": jp.id, "style": "width:50px; text-align: center;") }}
                 <!-- <span class="edit" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}">{{jp.nilaiPendapatan}}</span> -->
                 {% if rjp.metode == "persentase" %}
                 %
@@ -423,7 +423,7 @@ $(document).ready(function() {
               <td>{{ jp.pegawai.gelarDepan }} {{jp.pegawai.namaPegawai}} {{ jp.pegawai.gelarBelakang }}</td>
               {% if rjp.metode != "manual" %}
               <td>
-                {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit indexDokter", "data-id-jpl-pegawai": jp.id, "data-status-pegawai": "dokter", "data-persentase-pegawai": rjp.persentaseDokter, "style": "width:40px; text-align: center;") }}
+                {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit indexDokter", "data-id-jpl-pegawai": jp.id, "data-status-pegawai": "dokter", "data-persentase-pegawai": rjp.persentaseDokter, "style": "width:50px; text-align: center;") }}
                 <!-- <span class="edit indexDokter" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}" data-status-pegawai="dokter" data-persentase-pegawai="{{rjp.persentaseDokter}}">{{jp.nilaiPendapatan}}</span> -->
                 {% if rjp.metode == "persentase" %}
                 %
@@ -527,7 +527,7 @@ $(document).ready(function() {
               <td>{{ jp.pegawai.gelarDepan }} {{jp.pegawai.namaPegawai}} {{ jp.pegawai.gelarBelakang }}</td>
               {% if rjp.metode != "manual" %}
               <td>
-                {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit indexPerawat", "data-id-jpl-pegawai": jp.id, "data-status-pegawai": "bukandokter", "data-persentase-pegawai": rjp.persentasePerawat, "style": "width:40px; text-align: center;") }}
+                {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit indexPerawat", "data-id-jpl-pegawai": jp.id, "data-status-pegawai": "bukandokter", "data-persentase-pegawai": rjp.persentasePerawat, "style": "width:50px; text-align: center;") }}
                 <!-- <span class="edit indexPerawat" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}" data-status-pegawai="bukandokter" data-persentase-pegawai="{{rjp.persentasePerawat}}">{{jp.nilaiPendapatan}}</span> -->
                 {% if rjp.metode == "persentase" %}
                 %
@@ -710,10 +710,10 @@ $(document).ready(function() {
     let tot = 0;
     let v = 0;
     $(".indexDokter").each(function(){
-      v = $(this).val()
-      tot += Number(v.replace(/[^0-9\s]/gi, ""));
+      v = $(this).val();
+      tot += Number(v);
     })
-    return tot
+    return Number(roundTo(tot, 2))
   }
   if ("{{rjp.metode}}" == "index") {
     $("#totalIndexDokter").text(totalIndexDokter())
@@ -726,11 +726,14 @@ $(document).ready(function() {
 
   function totalIndexPerawat() {
     let tot = 0;
+    let v = 0;
     $(".indexPerawat").each(function(){
-      v = $(this).val()
-      tot += Number(v.replace(/[^0-9\s]/gi, ""));
+      // v = $(this).val()
+      // tot += Number(v.replace(/[^0-9\s]/gi, ""));
+      v = $(this).val();
+      tot += Number(v);
     })
-    return tot
+    return Number(roundTo(tot, 2))
   }
   if ("{{rjp.metode}}" == "index") {
     $("#totalIndexPerawat").text(totalIndexPerawat())
