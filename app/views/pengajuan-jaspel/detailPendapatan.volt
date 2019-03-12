@@ -5,6 +5,13 @@
 </style>
 {{ javascript_include("js/jquery.maskMoney.311.min.js") }}
 {#{ javascript_include("js/jquery.maskMoney.302.min.js") }#}
+<script type="text/javascript">
+function thousandSep(val) {
+  return String(val).split("").reverse().join("")
+        .replace(/(\d{3}\B)/g, "$1,")
+        .split("").reverse().join("");
+}
+</script>
 {{content()}}
 
 {% set persentaseDireksi      = persentaseJaspel.direksi / 100 %}
@@ -232,8 +239,13 @@ $(document).ready(function() {
     return (Number(roundTo(tot, 2)))
   }
   $("#total").maskMoney('mask', totalNominal())
-  $("#totalIndex").maskMoney({allowNegative: true})
-  $("#totalIndex").maskMoney("mask", Number(("{{nominalJplFix}}" - totalNominal()).toFixed(2)) )
+  if ("{{rjp.metode}}" == "index") {
+    $("#totalIndex").text(thousandSep("{{totalIndex}}"));
+  } else {
+    $("#totalIndex").maskMoney({allowNegative: true})
+    $("#totalIndex").maskMoney("mask", Number(("{{nominalJplFix}}" - totalNominal()).toFixed(2)) )
+  }
+  
 
   // Add Class
   $('.edit').click(function(){
@@ -277,7 +289,7 @@ $(document).ready(function() {
       })
       
       if (metode == "index") {
-        $("#totalIndex").text(res.totalIndex)
+        $("#totalIndex").text(thousandSep(res.totalIndex))
       } else if (metode == "persentase") {
         $("#totalIndex").text(100 - res.totalIndex)
       } else {
@@ -716,7 +728,7 @@ $(document).ready(function() {
     return Number(roundTo(tot, 2))
   }
   if ("{{rjp.metode}}" == "index") {
-    $("#totalIndexDokter").text(totalIndexDokter())
+    $("#totalIndexDokter").text(thousandSep(totalIndexDokter()))
   } else if ("{{rjp.metode}}" == "persentase") {
     $("#totalIndexDokter").text(100 - totalIndexDokter())
   } else {
@@ -736,7 +748,7 @@ $(document).ready(function() {
     return Number(roundTo(tot, 2))
   }
   if ("{{rjp.metode}}" == "index") {
-    $("#totalIndexPerawat").text(totalIndexPerawat())
+    $("#totalIndexPerawat").text(thousandSep(totalIndexPerawat()))
   } else if ("{{rjp.metode}}" == "persentase") {
     $("#totalIndexPerawat").text(100 - totalIndexPerawat())
   } else {
@@ -789,7 +801,7 @@ $(document).ready(function() {
       })
 
       if (metode == "index") {
-        $("#totalIndexDokter").text(totalIndexDokter())
+        $("#totalIndexDokter").text(thousandSep(totalIndexDokter()))
       } else if (metode == "persentase") {
         $("#totalIndexDokter").text(100 - totalIndexDokter())
       } 
@@ -846,7 +858,7 @@ $(document).ready(function() {
       })
 
       if (metode == "index") {
-        $("#totalIndexPerawat").text(totalIndexPerawat())
+        $("#totalIndexPerawat").text(thousandSep(totalIndexPerawat()))
       } else if (metode == "persentase") {
         $("#totalIndexPerawat").text(100 - totalIndexPerawat())
       } 
