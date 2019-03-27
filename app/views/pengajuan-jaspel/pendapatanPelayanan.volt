@@ -45,11 +45,15 @@
           <tr>
             <td>{{pp.namaPelayanan}}</td>
             <td>
-              Rp. {{ text_field("sarana", "value": pp.totalPengajuan*pp.persentaseSarana/100, "class": "edit rupiah", "data-id-rjp": pp.idRjp, "style": "width:110px;", "disabled": "disabled") }} 
+              {% set sarana = pp.totalPengajuan * pp.persentaseSarana / 100 %}
+              <?php $nominalSarana = number_format((float)$sarana, 2, '.', '') ?>
+              Rp. {{ text_field("sarana", "value": nominalSarana, "class": "edit rupiah", "data-id-rjp": pp.idRjp, "style": "width:110px;", "disabled": "disabled") }} 
               {{pp.persentaseSarana}} %
             </td>
             <td>
-              Rp. {{ text_field("pelayanan", "value": pp.totalPengajuan*pp.persentasePelayanan/100, "class": "edit rupiah", "data-id-rjp": pp.idRjp, "style": "width:110px;", "disabled": "disabled") }} 
+              {% set pelayanan = pp.totalPengajuan * pp.persentasePelayanan / 100 %}
+              <?php $nominalPelayanan = number_format((float)$pelayanan, 2, '.', '') ?>
+              Rp. {{ text_field("pelayanan", "value": nominalPelayanan, "class": "edit rupiah", "data-id-rjp": pp.idRjp, "style": "width:110px;", "disabled": "disabled") }} 
               {{pp.persentasePelayanan}} %
             </td>
             <!-- <td>{{jenisJaspel.konversiJaspel}} %</td> -->
@@ -83,9 +87,13 @@ $(document).ready(function() {
     return n % 1 === 0;
   }
 
-  $('.rupiah').maskMoney();
+  $('.rupiah').maskMoney({thousand: ',', decimal: '.', precision: 2});
   $('.rupiah').each(function(){ // function to apply mask on load!
-    $(this).maskMoney('mask', $(this).val());
+    // $(this).maskMoney('mask', $(this).val());
+    let v = $(this).val();
+    $(this).val(v)
+    $(this).maskMoney('mask')
+    $(this).focus()
   })
 
   // Save data
