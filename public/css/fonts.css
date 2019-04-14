@@ -2,12 +2,14 @@
   font-family: 'Roboto';
   font-style: normal;
   font-weight: 400;
-  src: local('Roboto'), local('Roboto-Regular'), url(../fonts/Roboto-Regular.ttf) format('ttf');
+  src: url(../fonts/Roboto-Regular.ttf);
+  src: url(../fonts/Roboto-Regular.ttf) format('truetype');
 }
 
 @font-face {
   font-family: 'Roboto';
-  font-style: normal;
+  font-style: bold;
   font-weight: 700;
-  src: local('Roboto Bold'), local('Roboto-Bold'), url(../fonts/Roboto-Bold.ttf) format('ttf');
+  src: url(../fonts/Roboto-Bold.ttf);
+  src: url(../fonts/Roboto-Bold.ttf) format('truetype');
 }

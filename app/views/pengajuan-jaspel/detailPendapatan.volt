@@ -1,6 +1,9 @@
 <style type="text/css">
 .rupiah {
-  width:120px; font-weight: 700; text-align: center;
+  width:120px; font-weight: 400; text-align: center;
+}
+input[disabled="disabled"] {
+  background: #ebebe4;
 }
 </style>
 {{ javascript_include("js/jquery.maskMoney.311.min.js") }}
@@ -119,7 +122,7 @@ function thousandSep(val) {
               <td>{{ jp.pegawai.gelarDepan }} {{jp.pegawai.namaPegawai}} {{ jp.pegawai.gelarBelakang }}</td>
               {% if rjp.metode != "manual" %}
               <td>
-                {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit", "data-id-jpl-pegawai": jp.id, "style": "width:50px; text-align: center;") }}
+                {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit", "data-id-jpl-pegawai": jp.id, "style": "width:54px; text-align: center;") }}
                 <!-- <span class="edit" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}">{{jp.nilaiPendapatan}}</span> -->
                 {% if rjp.metode == "persentase" %}
                 %
@@ -131,18 +134,18 @@ function thousandSep(val) {
                   {% set rumusNominalPersentase = jp.nilaiPendapatan / 100 * nominalJplFix %}
                   <?php $nominalPersentase = number_format((float)$rumusNominalPersentase, 2, '.', '') ?>
                   <?php $hNominalPersentase = number_format((float)$rumusNominalPersentase, 10, '.', '') ?>
-                  {{ text_field("nominal"~jp.id, "value": nominalPersentase, "class": "nominal rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
-                  {{ hidden_field("hNominal"~jp.id, "value": hNominalPersentase, "class": "hiddenNominal rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;", "data-precision": "10") }}
+                  {{ text_field("nominal"~jp.id, "value": nominalPersentase, "class": "nominal rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;") }}
+                  {{ hidden_field("hNominal"~jp.id, "value": hNominalPersentase, "class": "hiddenNominal rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;", "data-precision": "10") }}
                 {% elseif rjp.metode == "index" %}
                   {% set rumusNominalIndex = jp.nilaiPendapatan / totalIndex * nominalJplFix %}
                   <?php $nominalIndex = number_format((float)$rumusNominalIndex, 2, '.', '') ?>
                   <?php $hNominalIndex = number_format((float)$rumusNominalIndex, 10, '.', '') ?>
-                  {{ text_field("nominal"~jp.id, "value": nominalIndex, "class": "nominal rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
-                  {{ hidden_field("hNominal"~jp.id, "value": hNominalIndex, "class": "hiddenNominal rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;", "data-precision": "10") }}
+                  {{ text_field("nominal"~jp.id, "value": nominalIndex, "class": "nominal rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;") }}
+                  {{ hidden_field("hNominal"~jp.id, "value": hNominalIndex, "class": "hiddenNominal rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;", "data-precision": "10") }}
                 {% else %}
                   {% set nilaiPendapatan = jp.nilaiPendapatan %}
                   <?php $nilaiPendapatan = number_format((float)$nilaiPendapatan, 2, '.', '') ?>
-                  {{ text_field("nominal"~jp.id, "value": nilaiPendapatan, "class": "edit nominal rupiah", "data-id-jpl-pegawai": jp.id, "style": "width:110px; text-align: center;") }}
+                  {{ text_field("nominal"~jp.id, "value": nilaiPendapatan, "class": "edit nominal rupiah", "data-id-jpl-pegawai": jp.id, "style": "width:109px; text-align: center;") }}
                 {% endif %}
               </td>
             </tr>
@@ -409,7 +412,10 @@ $(document).ready(function() {
             <span>Total Index: <strong id="totalIndexDokter"></strong></span>
           {% elseif rjp.metode == "persentase" %}
             <span>Selisih %: <strong id="totalIndexDokter">{{ 100 - totalIndexDokter }}</strong> %</span>
-          {% else %}
+            <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+            <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+            <p><input id="toggle-event" type="checkbox" checked data-toggle="toggle" data-size="mini" data-on="%" data-off="Rp" data-offstyle="info"></p>
+          {% else %} {# manual #}
             <span>Selisih: Rp. {{ text_field("totalIndexDokter", "class": "rupiah") }}</span>
           {% endif %}
         </p>
@@ -435,7 +441,7 @@ $(document).ready(function() {
               <td>{{ jp.pegawai.gelarDepan }} {{jp.pegawai.namaPegawai}} {{ jp.pegawai.gelarBelakang }}</td>
               {% if rjp.metode != "manual" %}
               <td>
-                {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit indexDokter", "data-id-jpl-pegawai": jp.id, "data-status-pegawai": "dokter", "data-persentase-pegawai": rjp.persentaseDokter, "style": "width:50px; text-align: center;") }}
+                {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit indexDokter", "data-id-jpl-pegawai": jp.id, "data-status-pegawai": "dokter", "data-persentase-pegawai": rjp.persentaseDokter, "style": "width:54px; text-align: center;") }}
                 <!-- <span class="edit indexDokter" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}" data-status-pegawai="dokter" data-persentase-pegawai="{{rjp.persentaseDokter}}">{{jp.nilaiPendapatan}}</span> -->
                 {% if rjp.metode == "persentase" %}
                 %
@@ -447,20 +453,20 @@ $(document).ready(function() {
                   {% set rumusDNominal = jp.nilaiPendapatan / 100 * jatahDokter %}
                   <?php $dNominal = number_format((float)$rumusDNominal, 2, '.', '') ?>
                   <?php $hdNominal = number_format((float)$rumusDNominal, 10, '.', '') ?>
-                  {{ text_field("dNominal"~jp.id, "value": dNominal, "class": "nominalDokter rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
-                  {{ hidden_field("hdNominal"~jp.id, "value": hdNominal, "class": "hiddenNominalDokter rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;", "data-precision": "10") }}
+                  {{ text_field("dNominal"~jp.id, "value": dNominal, "class": "nominalDokter rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;") }}
+                  {{ hidden_field("hdNominal"~jp.id, "value": hdNominal, "class": "hiddenNominalDokter rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;", "data-precision": "10") }}
 
                 {% elseif rjp.metode == "index" %}
                   {% set rumusDNominal = jp.nilaiPendapatan / totalIndexDokter * jatahDokter %}
                   <?php $dNominal = number_format((float)$rumusDNominal, 2, '.', '') ?>
                   <?php $hdNominal = number_format((float)$rumusDNominal, 10, '.', '') ?>
-                  {{ text_field("dNominal"~jp.id, "value": dNominal, "class": "nominalDokter rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
-                  {{ hidden_field("hdNominal"~jp.id, "value": hdNominal, "class": "hiddenNominalDokter rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;", "data-precision": "10") }}
+                  {{ text_field("dNominal"~jp.id, "value": dNominal, "class": "nominalDokter rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;") }}
+                  {{ hidden_field("hdNominal"~jp.id, "value": hdNominal, "class": "hiddenNominalDokter rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;", "data-precision": "10") }}
 
                 {% else %}
                   {% set nilaiPendapatan = jp.nilaiPendapatan %}
                   <?php $nilaiPendapatan = number_format((float)$nilaiPendapatan, 2, '.', '') ?>
-                  {{ text_field("dNominal"~jp.id, "value": nilaiPendapatan, "class": "edit nominalDokter rupiah", "data-id-jpl-pegawai": jp.id, "data-status-pegawai":"dokter", "data-persentase-pegawai": rjp.persentaseDokter, "style": "width:110px; text-align: center;") }}
+                  {{ text_field("dNominal"~jp.id, "value": nilaiPendapatan, "class": "edit nominalDokter rupiah", "data-id-jpl-pegawai": jp.id, "data-status-pegawai":"dokter", "data-persentase-pegawai": rjp.persentaseDokter, "style": "width:109px; text-align: center;") }}
 
                 {% endif %}
               </td>
@@ -539,7 +545,7 @@ $(document).ready(function() {
               <td>{{ jp.pegawai.gelarDepan }} {{jp.pegawai.namaPegawai}} {{ jp.pegawai.gelarBelakang }}</td>
               {% if rjp.metode != "manual" %}
               <td>
-                {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit indexPerawat", "data-id-jpl-pegawai": jp.id, "data-status-pegawai": "bukandokter", "data-persentase-pegawai": rjp.persentasePerawat, "style": "width:50px; text-align: center;") }}
+                {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit indexPerawat", "data-id-jpl-pegawai": jp.id, "data-status-pegawai": "bukandokter", "data-persentase-pegawai": rjp.persentasePerawat, "style": "width:54px; text-align: center;") }}
                 <!-- <span class="edit indexPerawat" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}" data-status-pegawai="bukandokter" data-persentase-pegawai="{{rjp.persentasePerawat}}">{{jp.nilaiPendapatan}}</span> -->
                 {% if rjp.metode == "persentase" %}
                 %
@@ -551,20 +557,20 @@ $(document).ready(function() {
                   {% set rumusBdNominal = jp.nilaiPendapatan / 100 * jatahPerawat %}
                   <?php $bdNominal = number_format((float)$rumusBdNominal, 2, '.', '') ?>
                   <?php $hbdNominal = number_format((float)$rumusBdNominal, 10, '.', '') ?>
-                  {{ text_field("bdNominal"~jp.id, "value": bdNominal, "class": "nominalPerawat rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
-                  {{ hidden_field("hbdNominal"~jp.id, "value": hbdNominal, "class": "hiddenNominalPerawat rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;", "data-precision": "10") }}
+                  {{ text_field("bdNominal"~jp.id, "value": bdNominal, "class": "nominalPerawat rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;") }}
+                  {{ hidden_field("hbdNominal"~jp.id, "value": hbdNominal, "class": "hiddenNominalPerawat rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;", "data-precision": "10") }}
                   
                 {% elseif rjp.metode == "index" %}
                   {% set rumusBdNominal = jp.nilaiPendapatan / totalIndexPerawat * jatahPerawat %}
                   <?php $bdNominal = number_format((float)$rumusBdNominal, 2, '.', '') ?>
                   <?php $hbdNominal = number_format((float)$rumusBdNominal, 10, '.', '') ?>
-                  {{ text_field("bdNominal"~jp.id, "value": bdNominal, "class": "nominalPerawat rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;") }}
-                  {{ hidden_field("hbdNominal"~jp.id, "value": hbdNominal, "class": "hiddenNominalPerawat rupiah", "disabled": "disabled", "style": "width:110px; text-align: center;", "data-precision": "10") }}
+                  {{ text_field("bdNominal"~jp.id, "value": bdNominal, "class": "nominalPerawat rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;") }}
+                  {{ hidden_field("hbdNominal"~jp.id, "value": hbdNominal, "class": "hiddenNominalPerawat rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;", "data-precision": "10") }}
 
                 {% else %}
                   {% set nilaiPendapatan = jp.nilaiPendapatan %}
                   <?php $nilaiPendapatan = number_format((float)$nilaiPendapatan, 2, '.', '') ?>
-                  {{ text_field("bdNominal"~jp.id, "value": nilaiPendapatan, "class": "edit nominalPerawat rupiah", "data-id-jpl-pegawai": jp.id, "data-status-pegawai":"bukandokter", "data-persentase-pegawai": rjp.persentasePerawat, "style": "width:110px; text-align: center;") }}
+                  {{ text_field("bdNominal"~jp.id, "value": nilaiPendapatan, "class": "edit nominalPerawat rupiah", "data-id-jpl-pegawai": jp.id, "data-status-pegawai":"bukandokter", "data-persentase-pegawai": rjp.persentasePerawat, "style": "width:109px; text-align: center;") }}
 
                 {% endif %}
               </td>
@@ -609,6 +615,10 @@ $(document).ready(function() {
     $(this).val(v)
     $(this).maskMoney('mask')
     $(this).focus()
+  })
+
+  $('#toggle-event').change(function (){
+    alert();
   })
 
   function isInt(n) {

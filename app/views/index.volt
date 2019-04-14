@@ -2,7 +2,6 @@
 <html>
   <head>
     <title>Jasa Pelayanan RS. Mardi Waluyo</title>
-    {{ stylesheet_link("css/fonts.css") }}
     {{ stylesheet_link("vendor/almasaeed2010/adminlte/bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css") }}
     {{ stylesheet_link("vendor/almasaeed2010/adminlte/bower_components/bootstrap/dist/css/bootstrap.min.css") }}
     {{ stylesheet_link("vendor/almasaeed2010/adminlte/bower_components/font-awesome/css/font-awesome.min.css") }}
@@ -11,6 +10,7 @@
     {{ stylesheet_link("vendor/almasaeed2010/adminlte/dist/css/skins/skin-blue.min.css") }}
     {{ stylesheet_link("css/sorting.css") }}
     {{ stylesheet_link('css/style.css') }}
+    {{ stylesheet_link("css/fonts.css") }}
 
     {{ javascript_include("vendor/almasaeed2010/adminlte/bower_components/jquery/dist/jquery.min.js") }}
     {{ javascript_include("vendor/almasaeed2010/adminlte/bower_components/jquery-ui/jquery-ui.min.js") }}
