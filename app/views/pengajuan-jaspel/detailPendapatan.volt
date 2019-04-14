@@ -15,6 +15,7 @@ function thousandSep(val) {
         .split("").reverse().join("");
 }
 </script>
+
 {{content()}}
 
 {% set persentaseDireksi      = persentaseJaspel.direksi / 100 %}
