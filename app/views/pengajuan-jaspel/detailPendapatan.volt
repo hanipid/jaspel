@@ -441,8 +441,8 @@ $(document).ready(function() {
               {% set i += 1 %}
               <td>{{ jp.pegawai.gelarDepan }} {{jp.pegawai.namaPegawai}} {{ jp.pegawai.gelarBelakang }}</td>
               {% if rjp.metode != "manual" %}
-              <td>
-                {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit indexDokter", "data-id-jpl-pegawai": jp.id, "data-status-pegawai": "dokter", "data-persentase-pegawai": rjp.persentaseDokter, "style": "width:54px; text-align: center;") }}
+              <td width="83px">
+                {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit indexDokter nilaiPendapatan"~jp.id, "data-id-jpl-pegawai": jp.id, "data-status-pegawai": "dokter", "data-persentase-pegawai": rjp.persentaseDokter, "style": "width:54px; text-align: center;") }}
                 <!-- <span class="edit indexDokter" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}" data-status-pegawai="dokter" data-persentase-pegawai="{{rjp.persentaseDokter}}">{{jp.nilaiPendapatan}}</span> -->
                 {% if rjp.metode == "persentase" %}
                 %
@@ -454,7 +454,7 @@ $(document).ready(function() {
                   {% set rumusDNominal = jp.nilaiPendapatan / 100 * jatahDokter %}
                   <?php $dNominal = number_format((float)$rumusDNominal, 2, '.', '') ?>
                   <?php $hdNominal = number_format((float)$rumusDNominal, 10, '.', '') ?>
-                  {{ text_field("dNominal"~jp.id, "value": dNominal, "class": "nominalDokter rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;") }}
+                  {{ text_field("dNominal"~jp.id, "value": dNominal, "class": "nominalDokter rupiah", "disabled": "disabled", "data-id-jpl-pegawai": jp.id, "data-status-pegawai": "dokter", "data-persentase-pegawai": rjp.persentaseDokter, "style": "width:109px; text-align: center;") }}
                   {{ hidden_field("hdNominal"~jp.id, "value": hdNominal, "class": "hiddenNominalDokter rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;", "data-precision": "10") }}
 
                 {% elseif rjp.metode == "index" %}
@@ -545,7 +545,7 @@ $(document).ready(function() {
               {% set i += 1 %}
               <td>{{ jp.pegawai.gelarDepan }} {{jp.pegawai.namaPegawai}} {{ jp.pegawai.gelarBelakang }}</td>
               {% if rjp.metode != "manual" %}
-              <td>
+              <td width="83px">
                 {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit indexPerawat", "data-id-jpl-pegawai": jp.id, "data-status-pegawai": "bukandokter", "data-persentase-pegawai": rjp.persentasePerawat, "style": "width:54px; text-align: center;") }}
                 <!-- <span class="edit indexPerawat" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}" data-status-pegawai="bukandokter" data-persentase-pegawai="{{rjp.persentasePerawat}}">{{jp.nilaiPendapatan}}</span> -->
                 {% if rjp.metode == "persentase" %}
@@ -618,10 +618,6 @@ $(document).ready(function() {
     $(this).focus()
   })
 
-  $('#toggle-event').change(function (){
-    alert();
-  })
-
   function isInt(n) {
     return n % 1 === 0;
   }
@@ -643,6 +639,72 @@ $(document).ready(function() {
     }
     return n;
   }
+
+  $('#toggle-event').change(function (){
+    if ( $(this).prop('checked') == false ) {
+      $('.indexDokter').prop('disabled', true);
+      $('.nominalDokter').prop('disabled', false);
+      // $('.nominalDokter').addClass('edit');
+
+      $('.nominalDokter').focusout(function () {
+        let idJplPegawai = this.dataset.idJplPegawai;
+        let statusPegawai = this.dataset.statusPegawai;
+        let persentasePegawai = this.dataset.persentasePegawai;
+        // let param = "{{rjp.metode}}"
+        let total = "{{jplPendapatan.totalPengajuan}}"
+        console.log( "idJplPegawai: " +idJplPegawai+ "statusPegawai: " +statusPegawai+ "persentasePegawai: " +persentasePegawai+ "total: " +total  )
+
+        $(this).maskMoney();
+        let v = $(this).maskMoney("unmasked")[0];
+        // let value = roundTo((Number(v) / Number("{{jatahDokter}}") * 100), 10)
+        let value = (Number(v) / Number("{{jatahDokter}}") * 100).toFixed(10)
+        console.log( "value" +value )
+
+        $.ajax({
+          url: '{{url("pengajuan-jaspel/detailPendapatan/"~idJplPendapatan~"/"~idRuanganJenisPelayanan)}}',
+          type: 'post',
+          data: { idJplPegawai:idJplPegawai, value:value },
+          success:function(response){
+            let res = JSON.parse(response)
+            let metode = "{{rjp.metode}}"
+            // console.log(res.arr);
+            $.each(res.arr, function(i, v){
+              console.log(i + ':' + v.nilaiPendapatan + ':' + res.totalIndex)
+              if (metode == "index") {
+                nominal(v.id, totalIndexDokter(), v.nilaiPendapatan, total, statusPegawai, persentasePegawai)
+              } else if (metode == "persentase") {
+                nominal(v.id, 100, v.nilaiPendapatan, total, statusPegawai, persentasePegawai)
+              } 
+
+
+              
+            })
+
+            $('.nilaiPendapatan' + idJplPegawai).val(value)
+
+            if (metode == "index") {
+              $("#totalIndexDokter").text(thousandSep(totalIndexDokter()))
+            } else if (metode == "persentase") {
+              $("#totalIndexDokter").text(100 - totalIndexDokter())
+            } 
+
+            
+            $("#totalDokter").maskMoney('mask', totalNominalDokter())
+            if ("{{jatahDokter}}" != totalNominalDokter()) {
+              $("#totalDokter").css({background: "#DD4B39", color: "white"})
+            } else {
+              $("#totalDokter").css({background: "#00A65A", color: "white"})
+            }
+          }
+        });
+      })
+    } else {
+      $('.indexDokter').prop('disabled', false);
+      $('.nominalDokter').prop('disabled', true);
+      // $('.nominalDokter').removeClass('edit');
+    }
+    
+  })
 
   function nominal(idJplPegawai, totalIndex, nilaiPendapatan, totalPengajuan, statusPegawai, persentasePegawai) {
     // let value = (Number(nilaiPendapatan) / totalIndex * Number(totalPengajuan)) * "{{rjp.persentasePelayanan}}" / 100
@@ -791,37 +853,37 @@ $(document).ready(function() {
     console.log(idJplPegawai + value + statusPegawai);
 
     $.ajax({
-     url: '{{url("pengajuan-jaspel/detailPendapatan/"~idJplPendapatan~"/"~idRuanganJenisPelayanan)}}',
-     type: 'post',
-     data: { idJplPegawai:idJplPegawai, value:value },
-     success:function(response){
-      let res = JSON.parse(response)
-      let metode = "{{rjp.metode}}"
-      // console.log(res.arr);
-      $.each(res.arr, function(i, v){
-        console.log(i + ':' + v.nilaiPendapatan + ':' + res.totalIndex)
+      url: '{{url("pengajuan-jaspel/detailPendapatan/"~idJplPendapatan~"/"~idRuanganJenisPelayanan)}}',
+      type: 'post',
+      data: { idJplPegawai:idJplPegawai, value:value },
+      success:function(response){
+        let res = JSON.parse(response)
+        let metode = "{{rjp.metode}}"
+        // console.log(res.arr);
+        $.each(res.arr, function(i, v){
+          console.log(i + ':' + v.nilaiPendapatan + ':' + res.totalIndex)
+          if (metode == "index") {
+            nominal(v.id, totalIndexDokter(), v.nilaiPendapatan, total, statusPegawai, persentasePegawai)
+          } else if (metode == "persentase") {
+            nominal(v.id, 100, v.nilaiPendapatan, total, statusPegawai, persentasePegawai)
+          } 
+          
+        })
+
         if (metode == "index") {
-          nominal(v.id, totalIndexDokter(), v.nilaiPendapatan, total, statusPegawai, persentasePegawai)
+          $("#totalIndexDokter").text(thousandSep(totalIndexDokter()))
         } else if (metode == "persentase") {
-          nominal(v.id, 100, v.nilaiPendapatan, total, statusPegawai, persentasePegawai)
+          $("#totalIndexDokter").text(100 - totalIndexDokter())
         } 
+
         
-      })
-
-      if (metode == "index") {
-        $("#totalIndexDokter").text(thousandSep(totalIndexDokter()))
-      } else if (metode == "persentase") {
-        $("#totalIndexDokter").text(100 - totalIndexDokter())
-      } 
-
-      
-      $("#totalDokter").maskMoney('mask', totalNominalDokter())
-      if ("{{jatahDokter}}" != totalNominalDokter()) {
-        $("#totalDokter").css({background: "#DD4B39", color: "white"})
-      } else {
-        $("#totalDokter").css({background: "#00A65A", color: "white"})
+        $("#totalDokter").maskMoney('mask', totalNominalDokter())
+        if ("{{jatahDokter}}" != totalNominalDokter()) {
+          $("#totalDokter").css({background: "#DD4B39", color: "white"})
+        } else {
+          $("#totalDokter").css({background: "#00A65A", color: "white"})
+        }
       }
-     }
     });
 
 
