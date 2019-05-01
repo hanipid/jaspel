@@ -6,8 +6,11 @@ input[disabled="disabled"] {
   background: #ebebe4;
 }
 </style>
+{{ stylesheet_link("css/bootstrap-toggle.min.css") }}
 {{ javascript_include("js/jquery.maskMoney.311.min.js") }}
 {#{ javascript_include("js/jquery.maskMoney.302.min.js") }#}
+
+{{ javascript_include("js/bootstrap-toggle.min.js") }}
 <script type="text/javascript">
 function thousandSep(val) {
   return String(val).split("").reverse().join("")
@@ -413,9 +416,7 @@ $(document).ready(function() {
             <span>Total Index: <strong id="totalIndexDokter"></strong></span>
           {% elseif rjp.metode == "persentase" %}
             <span>Selisih %: <strong id="totalIndexDokter">{{ 100 - totalIndexDokter }}</strong> %</span>
-            <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
-            <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
-            <p><input id="toggle-event" type="checkbox" checked data-toggle="toggle" data-size="mini" data-on="%" data-off="Rp" data-offstyle="info"></p>
+            <p><input id="toggleEventDokter" type="checkbox" checked data-toggle="toggle" data-size="mini" data-on="%" data-off="Rp" data-offstyle="info"></p>
           {% else %} {# manual #}
             <span>Selisih: Rp. {{ text_field("totalIndexDokter", "class": "rupiah") }}</span>
           {% endif %}
@@ -519,7 +520,8 @@ $(document).ready(function() {
           {% if rjp.metode == "index" %}
             <span>Total Index: <strong id="totalIndexPerawat"></strong></span>
           {% elseif rjp.metode == "persentase" %}
-            <span>Sisa %: <strong id="totalIndexPerawat">{{ 100 - totalIndexPerawat }}</strong> %</span>
+            <span>Selisih %: <strong id="totalIndexPerawat">{{ 100 - totalIndexPerawat }}</strong> %</span>
+            <p><input id="toggleEventPerawat" type="checkbox" checked data-toggle="toggle" data-size="mini" data-on="%" data-off="Rp" data-offstyle="info"></p>
           {% else %}
             <span>Selisih: Rp. {{ text_field("totalIndexPerawat", "class": "rupiah") }}</span>
           {% endif %}
@@ -546,7 +548,7 @@ $(document).ready(function() {
               <td>{{ jp.pegawai.gelarDepan }} {{jp.pegawai.namaPegawai}} {{ jp.pegawai.gelarBelakang }}</td>
               {% if rjp.metode != "manual" %}
               <td width="83px">
-                {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit indexPerawat", "data-id-jpl-pegawai": jp.id, "data-status-pegawai": "bukandokter", "data-persentase-pegawai": rjp.persentasePerawat, "style": "width:54px; text-align: center;") }}
+                {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit indexPerawat nilaiPendapatan"~jp.id, "data-id-jpl-pegawai": jp.id, "data-status-pegawai": "bukandokter", "data-persentase-pegawai": rjp.persentasePerawat, "style": "width:54px; text-align: center;") }}
                 <!-- <span class="edit indexPerawat" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}" data-status-pegawai="bukandokter" data-persentase-pegawai="{{rjp.persentasePerawat}}">{{jp.nilaiPendapatan}}</span> -->
                 {% if rjp.metode == "persentase" %}
                 %
@@ -558,7 +560,7 @@ $(document).ready(function() {
                   {% set rumusBdNominal = jp.nilaiPendapatan / 100 * jatahPerawat %}
                   <?php $bdNominal = number_format((float)$rumusBdNominal, 2, '.', '') ?>
                   <?php $hbdNominal = number_format((float)$rumusBdNominal, 10, '.', '') ?>
-                  {{ text_field("bdNominal"~jp.id, "value": bdNominal, "class": "nominalPerawat rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;") }}
+                  {{ text_field("bdNominal"~jp.id, "value": bdNominal, "class": "nominalPerawat rupiah", "disabled": "disabled", "data-id-jpl-pegawai": jp.id, "data-status-pegawai": "perawat", "data-persentase-pegawai": rjp.persentaseDokter, "style": "width:109px; text-align: center;") }}
                   {{ hidden_field("hbdNominal"~jp.id, "value": hbdNominal, "class": "hiddenNominalPerawat rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;", "data-precision": "10") }}
                   
                 {% elseif rjp.metode == "index" %}
@@ -640,7 +642,7 @@ $(document).ready(function() {
     return n;
   }
 
-  $('#toggle-event').change(function (){
+  $('#toggleEventDokter').change(function (){
     if ( $(this).prop('checked') == false ) {
       $('.indexDokter').prop('disabled', true);
       $('.nominalDokter').prop('disabled', false);
@@ -675,9 +677,6 @@ $(document).ready(function() {
               } else if (metode == "persentase") {
                 nominal(v.id, 100, v.nilaiPendapatan, total, statusPegawai, persentasePegawai)
               } 
-
-
-              
             })
 
             $('.nilaiPendapatan' + idJplPegawai).val(value)
@@ -702,6 +701,70 @@ $(document).ready(function() {
       $('.indexDokter').prop('disabled', false);
       $('.nominalDokter').prop('disabled', true);
       // $('.nominalDokter').removeClass('edit');
+    }
+    
+  })
+
+  $('#toggleEventPerawat').change(function (){
+    if ( $(this).prop('checked') == false ) {
+      $('.indexPerawat').prop('disabled', true);
+      $('.nominalPerawat').prop('disabled', false);
+      // $('.nominalPerawat').addClass('edit');
+
+      $('.nominalPerawat').focusout(function () {
+        let idJplPegawai = this.dataset.idJplPegawai;
+        let statusPegawai = this.dataset.statusPegawai;
+        let persentasePegawai = this.dataset.persentasePegawai;
+        // let param = "{{rjp.metode}}"
+        let total = "{{jplPendapatan.totalPengajuan}}"
+        console.log( "idJplPegawai: " +idJplPegawai+ "statusPegawai: " +statusPegawai+ "persentasePegawai: " +persentasePegawai+ "total: " +total  )
+
+        $(this).maskMoney();
+        let v = $(this).maskMoney("unmasked")[0];
+        // let value = roundTo((Number(v) / Number("{{jatahPerawat}}") * 100), 10)
+        let value = (Number(v) / Number("{{jatahPerawat}}") * 100).toFixed(10)
+        console.log( "value" +value )
+
+        $.ajax({
+          url: '{{url("pengajuan-jaspel/detailPendapatan/"~idJplPendapatan~"/"~idRuanganJenisPelayanan)}}',
+          type: 'post',
+          data: { idJplPegawai:idJplPegawai, value:value },
+          success:function(response){
+            let res = JSON.parse(response)
+            let metode = "{{rjp.metode}}"
+            // console.log(res.arr);
+            $.each(res.arr, function(i, v){
+              console.log(i + ':' + v.nilaiPendapatan + ':' + res.totalIndex)
+              if (metode == "index") {
+                nominal(v.id, totalIndexPerawat(), v.nilaiPendapatan, total, statusPegawai, persentasePegawai)
+              } else if (metode == "persentase") {
+                nominal(v.id, 100, v.nilaiPendapatan, total, statusPegawai, persentasePegawai)
+              } 
+            })
+
+            $('.nilaiPendapatan' + idJplPegawai).val(value)
+
+            if (metode == "index") {
+              $("#totalIndexPerawat").text(thousandSep(totalIndexPerawat()))
+            } else if (metode == "persentase") {
+              $("#totalIndexPerawat").text(100 - totalIndexPerawat())
+            } 
+
+            
+            $("#totalPerawat").maskMoney('mask', totalNominalPerawat())
+            console.log(totalNominalPerawat())
+            if ("{{jatahPerawat}}" != totalNominalPerawat()) {
+              $("#totalPerawat").css({background: "#DD4B39", color: "white"})
+            } else {
+              $("#totalPerawat").css({background: "#00A65A", color: "white"})
+            }
+          }
+        });
+      })
+    } else {
+      $('.indexPerawat').prop('disabled', false);
+      $('.nominalPerawat').prop('disabled', true);
+      // $('.nominalPerawat').removeClass('edit');
     }
     
   })
