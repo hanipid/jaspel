@@ -102,6 +102,7 @@ function thousandSep(val) {
           <span class="pull-left">Total Index: <strong id="totalIndex">{{totalIndex}}</strong></span>
         {% elseif rjp.metode == "persentase" %}
           <span class="pull-left">Selisih %: <strong id="totalIndex">{{ 100 - totalIndex}}</strong> %</span>
+          <p><input id="toggleEvent" type="checkbox" checked data-toggle="toggle" data-size="mini" data-on="%" data-off="Rp" data-offstyle="info"></p>
         {% else %}
           <span class="pull-left">Selisih: Rp. {{ text_field("totalIndex", "class": "rupiah", "disabled": "disabled") }}</span>
         {% endif %}
@@ -126,7 +127,7 @@ function thousandSep(val) {
               <td>{{ jp.pegawai.gelarDepan }} {{jp.pegawai.namaPegawai}} {{ jp.pegawai.gelarBelakang }}</td>
               {% if rjp.metode != "manual" %}
               <td>
-                {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit", "data-id-jpl-pegawai": jp.id, "style": "width:54px; text-align: center;") }}
+                {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit index nilaiPendapatan"~jp.id, "data-id-jpl-pegawai": jp.id, "style": "width:54px; text-align: center;") }}
                 <!-- <span class="edit" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}">{{jp.nilaiPendapatan}}</span> -->
                 {% if rjp.metode == "persentase" %}
                 %
@@ -138,7 +139,7 @@ function thousandSep(val) {
                   {% set rumusNominalPersentase = jp.nilaiPendapatan / 100 * nominalJplFix %}
                   <?php $nominalPersentase = number_format((float)$rumusNominalPersentase, 2, '.', '') ?>
                   <?php $hNominalPersentase = number_format((float)$rumusNominalPersentase, 10, '.', '') ?>
-                  {{ text_field("nominal"~jp.id, "value": nominalPersentase, "class": "nominal rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;") }}
+                  {{ text_field("nominal"~jp.id, "value": nominalPersentase, "class": "nominal rupiah", "disabled": "disabled", "data-id-jpl-pegawai": jp.id, "style": "width:109px; text-align: center;") }}
                   {{ hidden_field("hNominal"~jp.id, "value": hNominalPersentase, "class": "hiddenNominal rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;", "data-precision": "10") }}
                 {% elseif rjp.metode == "index" %}
                   {% set rumusNominalIndex = jp.nilaiPendapatan / totalIndex * nominalJplFix %}
@@ -214,6 +215,74 @@ $(document).ready(function() {
     $(this).val(v)
     $(this).maskMoney('mask')
     $(this).focus()
+  })
+
+
+
+  $('#toggleEvent').change(function (){
+    if ( $(this).prop('checked') == false ) {
+      $('.index').prop('disabled', true);
+      $('.nominal').prop('disabled', false);
+      // $('.nominalDokter').addClass('edit');
+
+      $('.nominal').focusout(function () {
+        let idJplPegawai = this.dataset.idJplPegawai;
+        let statusPegawai = this.dataset.statusPegawai;
+        let persentasePegawai = this.dataset.persentasePegawai;
+        // let param = "{{rjp.metode}}"
+        let total = "{{jplPendapatan.totalPengajuan}}"
+        console.log( "idJplPegawai: " +idJplPegawai+ "statusPegawai: " +statusPegawai+ "persentasePegawai: " +persentasePegawai+ "total: " +total  )
+
+        $(this).maskMoney();
+        let v = $(this).maskMoney("unmasked")[0];
+        // let value = roundTo((Number(v) / Number("{{nominalJplFix}}") * 100), 10)
+        let value = Number((Number(v) / Number("{{nominalJplFix}}") * 100).toFixed(10)) + 0
+        console.log( "value" +value )
+
+        $.ajax({
+          url: '{{url("pengajuan-jaspel/detailPendapatan/"~idJplPendapatan~"/"~idRuanganJenisPelayanan)}}',
+          type: 'post',
+          data: { idJplPegawai:idJplPegawai, value:value },
+          success:function(response){
+            let res = JSON.parse(response)
+            let metode = "{{rjp.metode}}"
+            // console.log(res.arr);
+            $.each(res.arr, function(i, v){
+              console.log(i + ':' + v.nilaiPendapatan + ':' + res.totalIndex)
+              if (metode == "index") {
+                nominal(v.id, res.totalIndex, v.nilaiPendapatan, total)
+              } else if (metode == "persentase") {
+                nominal(v.id, 100, v.nilaiPendapatan, total)
+              } 
+              
+            })
+
+            $('.nilaiPendapatan' + idJplPegawai).val(value)
+
+            if (metode == "index") {
+              $("#totalIndex").text(thousandSep(res.totalIndex))
+            } else if (metode == "persentase") {
+              $("#totalIndex").text(100 - res.totalIndex)
+            } else {
+              $("#totalIndex").maskMoney("mask", Number(("{{nominalJplFix}}" - totalNominal()).toFixed(2)) )
+            }
+            $("#total").maskMoney('mask', totalNominal())
+            if ("{{nominalJplFix}}" != totalNominal()) {
+              $("#total").css({background: "#DD4B39", color: "white"})
+            } else {
+              $("#total").css({background: "#00A65A", color: "white"})
+            }
+
+          }
+        });
+
+      })
+    } else {
+      $('.index').prop('disabled', false);
+      $('.nominal').prop('disabled', true);
+      // $('.nominal').removeClass('edit');
+    }
+    
   })
 
   function nominal(idJplPegawai, totalIndex, nilaiPendapatan) {
@@ -659,7 +728,7 @@ $(document).ready(function() {
         $(this).maskMoney();
         let v = $(this).maskMoney("unmasked")[0];
         // let value = roundTo((Number(v) / Number("{{jatahDokter}}") * 100), 10)
-        let value = (Number(v) / Number("{{jatahDokter}}") * 100).toFixed(10)
+        let value = Number((Number(v) / Number("{{jatahDokter}}") * 100).toFixed(10)) + 0
         console.log( "value" +value )
 
         $.ajax({
@@ -722,7 +791,7 @@ $(document).ready(function() {
         $(this).maskMoney();
         let v = $(this).maskMoney("unmasked")[0];
         // let value = roundTo((Number(v) / Number("{{jatahPerawat}}") * 100), 10)
-        let value = (Number(v) / Number("{{jatahPerawat}}") * 100).toFixed(10)
+        let value = Number((Number(v) / Number("{{jatahPerawat}}") * 100).toFixed(10)) + 0
         console.log( "value" +value )
 
         $.ajax({
