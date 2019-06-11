@@ -363,7 +363,7 @@ class PengajuanJaspelController extends ControllerBase
 						if (($totalJplPegawaiDokter <= 0) && $totalPengajuan > 0) {
 							array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
 						} elseif ($totalJplPegawaiPerawat <= 0 && $totalPengajuan > 0) {
-							array_push($pengajuanBatal,  $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
+							array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
 						}
 					} else {
 						array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);

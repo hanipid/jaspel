@@ -108,13 +108,13 @@ function thousandSep(val) {
         {% endif %}
         
 
-        <table class="table table-striped table-hover">
+        <table class="table table-striped table-hover" id="table">
           <thead>
             <tr>
               <th>No.</th>
               <th>Nama</th>
               {% if rjp.metode != "manual" %}
-              <th>{{rjp.metode|capitalize}}</th>
+              <th class="text-center">{{rjp.metode|capitalize}}</th>
               {% endif %}
               <th>Nominal</th>
             </tr>
@@ -126,7 +126,7 @@ function thousandSep(val) {
               <td>{{loop.index}}</td>
               <td>{{ jp.pegawai.gelarDepan }} {{jp.pegawai.namaPegawai}} {{ jp.pegawai.gelarBelakang }}</td>
               {% if rjp.metode != "manual" %}
-              <td>
+              <td class="text-center">
                 {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit index nilaiPendapatan"~jp.id, "data-id-jpl-pegawai": jp.id, "style": "width:54px; text-align: center;") }}
                 <!-- <span class="edit" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}">{{jp.nilaiPendapatan}}</span> -->
                 {% if rjp.metode == "persentase" %}
@@ -162,7 +162,7 @@ function thousandSep(val) {
               <th>Total</th>
               <th></th>
               {% if rjp.metode != "manual" %}
-              <th></th>
+              <th id="totalIndexPersentase" class="text-center">{{ totalIndex }}{% if rjp.metode == "persentase" %}%{% endif %}</th>
               {% endif %}
               <th>Rp. {{ text_field("total", "class": "rupiah", "disabled": "disabled", "style": "width:120px; text-align: center; font-weight: 700;") }}
                 <!-- Rp. <span id="total"></span> --></th>
@@ -216,7 +216,6 @@ $(document).ready(function() {
     $(this).maskMoney('mask')
     $(this).focus()
   })
-
 
 
   $('#toggleEvent').change(function (){
@@ -368,6 +367,7 @@ $(document).ready(function() {
         $("#totalIndex").text(thousandSep(res.totalIndex))
       } else if (metode == "persentase") {
         $("#totalIndex").text(100 - res.totalIndex)
+        $("#totalIndexPersentase").text(res.totalIndex)
       } else {
         $("#totalIndex").maskMoney("mask", Number(("{{nominalJplFix}}" - totalNominal()).toFixed(2)) )
       }
