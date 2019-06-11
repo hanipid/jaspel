@@ -262,6 +262,7 @@ $(document).ready(function() {
               $("#totalIndex").text(thousandSep(res.totalIndex))
             } else if (metode == "persentase") {
               $("#totalIndex").text(100 - res.totalIndex)
+              $("#totalIndexPersentase").text(res.totalIndex)
             } else {
               $("#totalIndex").maskMoney("mask", Number(("{{nominalJplFix}}" - totalNominal()).toFixed(2)) )
             }
@@ -550,7 +551,7 @@ $(document).ready(function() {
               <th>Total</th>
               <th></th>
               {% if rjp.metode != "manual" %}
-              <th></th>
+              <th id="totalIndexPersentaseDokter" class="text-center">{{ totalIndexDokter }}{% if rjp.metode == "persentase" %}%{% endif %}</th>
               {% endif %}
               <th>Rp. {{ text_field("totalDokter", "class": "rupiah", "disabled": "disabled", "style": "width:120px; text-align: center; font-weight: 700;") }}</th>
             </tr>
@@ -655,7 +656,7 @@ $(document).ready(function() {
               <th>Total</th>
               <th></th>
               {% if rjp.metode != "manual" %}
-              <th></th>
+              <th id="totalIndexPersentasePerawat" class="text-center">{{ totalIndexPerawat }}{% if rjp.metode == "persentase" %}%{% endif %}</th>
               {% endif %}
               <th>{{ text_field("totalPerawat", "class": "rupiah", "disabled": "disabled", "style": "width:120px; text-align: center; font-weight: 700;") }}</th>
             </tr>
@@ -754,6 +755,7 @@ $(document).ready(function() {
               $("#totalIndexDokter").text(thousandSep(totalIndexDokter()))
             } else if (metode == "persentase") {
               $("#totalIndexDokter").text(100 - totalIndexDokter())
+              $("#totalIndexPersentaseDokter").text(totalIndexDokter())
             } 
 
             
@@ -817,6 +819,7 @@ $(document).ready(function() {
               $("#totalIndexPerawat").text(thousandSep(totalIndexPerawat()))
             } else if (metode == "persentase") {
               $("#totalIndexPerawat").text(100 - totalIndexPerawat())
+              $("#totalIndexPersentasePerawat").text(totalIndexPerawat())
             } 
 
             
@@ -933,6 +936,7 @@ $(document).ready(function() {
     $("#totalIndexDokter").text(thousandSep(totalIndexDokter()))
   } else if ("{{rjp.metode}}" == "persentase") {
     $("#totalIndexDokter").text(100 - totalIndexDokter())
+    $("#totalIndexPersentaseDokter").text(totalIndexDokter())
   } else {
     $("#totalIndexDokter").maskMoney({allowNegative: true})
     $("#totalIndexDokter").maskMoney("mask", Number(("{{jatahDokter}}" - totalNominalDokter()).toFixed(2)) )
@@ -953,6 +957,7 @@ $(document).ready(function() {
     $("#totalIndexPerawat").text(thousandSep(totalIndexPerawat()))
   } else if ("{{rjp.metode}}" == "persentase") {
     $("#totalIndexPerawat").text(100 - totalIndexPerawat())
+    $("#totalIndexPersentasePerawat").text(totalIndexPerawat())
   } else {
     $("#totalIndexPerawat").maskMoney({allowNegative: true})
     $("#totalIndexPerawat").maskMoney("mask", Number(("{{jatahPerawat}}" - totalNominalPerawat()).toFixed(2)) )
@@ -1006,6 +1011,7 @@ $(document).ready(function() {
           $("#totalIndexDokter").text(thousandSep(totalIndexDokter()))
         } else if (metode == "persentase") {
           $("#totalIndexDokter").text(100 - totalIndexDokter())
+          $("#totalIndexPersentaseDokter").text(totalIndexDokter())
         } 
 
         
@@ -1063,6 +1069,7 @@ $(document).ready(function() {
         $("#totalIndexPerawat").text(thousandSep(totalIndexPerawat()))
       } else if (metode == "persentase") {
         $("#totalIndexPerawat").text(100 - totalIndexPerawat())
+        $("#totalIndexPersentasePerawat").text(totalIndexPerawat())
       } 
 
       $("#totalPerawat").maskMoney('mask', totalNominalPerawat())
