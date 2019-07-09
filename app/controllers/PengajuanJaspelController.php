@@ -306,11 +306,11 @@ class PengajuanJaspelController extends ControllerBase
 					$totalJplPegawaiDokter = 0;
 					$totalJplPegawaiPerawat = 0;
 					foreach ($jplPegawai as $jPeg) {
-						$totalJplPegawai += number_format((float)$jPeg->nilaiPendapatan, 2, '.', '');
+						$totalJplPegawai += number_format((float)$jPeg->nilaiPendapatan, 10, '.', '');
 						if ($jPeg->pegawai->posisiStatus == 'dokter') {
-							$totalJplPegawaiDokter += number_format((float)$jPeg->nilaiPendapatan, 2, '.', '');
+							$totalJplPegawaiDokter += number_format((float)$jPeg->nilaiPendapatan, 10, '.', '');
 						} elseif ($jPeg->pegawai->posisiStatus == 'bukandokter') {
-							$totalJplPegawaiPerawat += number_format((float)$jPeg->nilaiPendapatan, 2, '.', '');
+							$totalJplPegawaiPerawat += number_format((float)$jPeg->nilaiPendapatan, 10, '.', '');
 						}
 					}
 					
@@ -343,9 +343,9 @@ class PengajuanJaspelController extends ControllerBase
 
 					} elseif ($rjp->kategori == 'split' && $rjp->metode == 'persentase') {
 
-						if ($totalJplPegawaiDokter == 99.99)
+						if ($totalJplPegawaiDokter >= 99.99)
 							$totalJplPegawaiDokter = 100;
-						if ($totalJplPegawaiPerawat == 99.99)
+						if ($totalJplPegawaiPerawat >= 99.99)
 							$totalJplPegawaiPerawat = 100;
 
 						// jika total nominal pegawai TIDAK DIISI dan totalPengajuan pendapatan DIISI, PENGAJUAN BATAL
