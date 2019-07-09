@@ -343,6 +343,11 @@ class PengajuanJaspelController extends ControllerBase
 
 					} elseif ($rjp->kategori == 'split' && $rjp->metode == 'persentase') {
 
+						if ($totalJplPegawaiDokter == 99.99)
+							$totalJplPegawaiDokter = 100;
+						if ($totalJplPegawaiPerawat == 99.99)
+							$totalJplPegawaiPerawat = 100;
+
 						// jika total nominal pegawai TIDAK DIISI dan totalPengajuan pendapatan DIISI, PENGAJUAN BATAL
 						if (($totalJplPegawaiDokter == 0 && $nominalDokter > 0) || ($totalJplPegawaiPerawat == 0 && $nominalPerawat > 0) ) {
 							array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
@@ -350,7 +355,7 @@ class PengajuanJaspelController extends ControllerBase
 
 							// jika total nominal pegawai TIDAK SAMA dengan totalPengajuan pendpatana, PENGAJUAN BATAL
 							if ($totalJplPegawaiDokter / 100 * $nominalDokter != $nominalDokter || $totalJplPegawaiPerawat / 100 * $nominalPerawat != $nominalPerawat) {
-								array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
+								array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan . " - " . $totalJplPegawaiDokter . " - " . $totalJplPegawaiPerawat);
 							}
 						}
 							
