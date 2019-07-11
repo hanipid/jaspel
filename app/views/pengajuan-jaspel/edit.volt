@@ -72,7 +72,7 @@
 	  			{% for jr1 in jplRuang1 %}
 	  			<tr>
 	  				<td>
-	  					{{jr1.namaRuang}}
+						{{ link_to("pengajuan-jaspel/pendapatanPelayanan/"~jr1.idPeriode~"/"~jr1.idRuangan, jr1.namaRuang) }}
 	  					<p>Total Pengajuan: <span class="accountingRupiah">{{jr1.totalPengajuan}}</span></p>
 	  				</td>
 	  				<td>
@@ -122,7 +122,7 @@
 	  			{% for jr0 in jplRuang0 %}
 	  			<tr>
 	  				<td>
-	  					{{jr0.namaRuang}}
+						{{ link_to("pengajuan-jaspel/pendapatanPelayanan/"~jr0.idPeriode~"/"~jr0.idRuangan, jr0.namaRuang) }}
 	  					<p>Total Pengajuan: <span class="accountingRupiah">{{jr0.totalPengajuan}}</span></p>
 	  					<!-- {{jr0.ruangan.namaRuang}} -->
 	  				</td>

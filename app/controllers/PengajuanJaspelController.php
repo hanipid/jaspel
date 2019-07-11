@@ -73,7 +73,9 @@ class PengajuanJaspelController extends ControllerBase
 			SELECT 
 				jr.id id,
 			  r.namaRuang,
-			  sum(jp.totalPengajuan) totalPengajuan
+			  sum(jp.totalPengajuan) totalPengajuan,
+			  jr.idPeriode,
+			  jr.idRuangan
 			FROM \Jaspel\Models\JplRuang jr
 
 			JOIN \Jaspel\Models\RuanganJenisPelayanan rjp
@@ -97,7 +99,9 @@ class PengajuanJaspelController extends ControllerBase
 			SELECT 
 				jr.id id,
 			  r.namaRuang,
-			  sum(jp.totalPengajuan) totalPengajuan
+			  sum(jp.totalPengajuan) totalPengajuan,
+			  jr.idPeriode,
+			  jr.idRuangan
 			FROM \Jaspel\Models\JplRuang jr
 
 			JOIN \Jaspel\Models\RuanganJenisPelayanan rjp
@@ -176,9 +180,10 @@ class PengajuanJaspelController extends ControllerBase
 	/******************************************/
 
 
-	public function pendapatanPelayananAction($idPeriode, $idRuangan $this->auth->getIdentity()['idRuangan'])
+	public function pendapatanPelayananAction($idPeriode, $idRuangan = null)
 	{
-		// $idRuangan = $this->auth->getIdentity()['idRuangan'];
+		if ($idRuangan == null)
+			$idRuangan = $this->auth->getIdentity()['idRuangan'];
 		$ruanganJenisPelayanan = RuanganJenisPelayanan::findByIdRuangan($idRuangan);
 		$periodeJaspel = PeriodeJaspel::findFirstByIdPeriode($idPeriode);
 		$persentaseJaspel = PersentaseJaspel::findFirstByIdPJaspel(1);
