@@ -223,6 +223,119 @@ class PengajuanJaspelController extends ControllerBase
 	      'idPeriode' => $idPeriode,
 	    ]
 		);
+
+		$pengajuanBatal = [];
+		foreach ($ruanganJenisPelayanan as $rjp) {
+			$jplPendapatan = JplPendapatan::find([
+				'idPeriode = ?1 AND idRuanganJenisPelayanan = ?2',
+				'bind' => [
+					'1' => $idPeriode,
+					'2' => $rjp->id
+				]
+			]);
+
+
+			foreach ($jplPendapatan as $jp) {
+				$jplPegawai = JplPegawai::find([
+					'idJplPendapatan = ?1',
+					'bind' => ['1' => $jp->id]
+				]);
+
+				$persentaseJasa         = $persentaseJaspel->jasa / 100;
+				$persentaseJplKotor     = $persentaseJaspel->jpl / 100;
+				$persentaseJplFix       = $persentaseJaspel->jasaFix / 100;
+				$persentasePelayanan    = $rjp->persentasePelayanan / 100;
+				$persentaseDokter    		= $rjp->persentaseDokter / 100;
+				$persentasePerawat    	= $rjp->persentasePerawat / 100;
+				$totalPengajuan         = $jp->totalPengajuan;
+
+				$nominalJasa = $totalPengajuan * $persentasePelayanan * $persentaseJasa;
+				$nominalJasa = number_format((float)$nominalJasa, 2, '.', '');
+
+				$nominalJplKotor = $nominalJasa * $persentaseJplKotor;
+				$nominalJplKotor = number_format((float)$nominalJplKotor, 2, '.', '');
+
+				$nominalJplFix = $nominalJplKotor * $persentaseJplFix;
+				$nominalJplFix = number_format((float)$nominalJplFix, 2, '.', '');
+
+				$nominalDokter = $nominalJplFix * $persentaseDokter;
+				$nominalDokter = number_format((float)$nominalDokter, 2, '.', '');
+
+				$nominalPerawat = $nominalJplFix * $persentasePerawat;
+				$nominalPerawat = number_format((float)$nominalPerawat, 2, '.', '');
+
+				$totalJplPegawai = 0;
+				$totalJplPegawaiDokter = 0;
+				$totalJplPegawaiPerawat = 0;
+				foreach ($jplPegawai as $jPeg) {
+					$totalJplPegawai += number_format((float)$jPeg->nilaiPendapatan, 10, '.', '');
+					if ($jPeg->pegawai->posisiStatus == 'dokter') {
+						$totalJplPegawaiDokter += number_format((float)$jPeg->nilaiPendapatan, 10, '.', '');
+					} elseif ($jPeg->pegawai->posisiStatus == 'bukandokter') {
+						$totalJplPegawaiPerawat += number_format((float)$jPeg->nilaiPendapatan, 10, '.', '');
+					}
+				}
+				
+				// Direct
+				// Index
+				// $totalJplPegawai / $totalIndex * $nominalJplFix
+				if ($rjp->kategori == 'direct' && $rjp->metode == 'index') {
+					if ($totalJplPegawai <= 0 & $totalPengajuan > 0) {
+						array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
+					}
+				} elseif ($rjp->kategori == 'direct' && $rjp->metode == 'persentase') {
+
+					// jika total nominal pegawai TIDAK DIISI dan totalPengajuan pendapatan DIISI, PENGAJUAN BATAL
+					if ($totalJplPegawai == 0 && $nominalJplFix > 0) {
+						array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
+					} elseif ($totalJplPegawai > 0) {
+
+						// jika total nominal pegawai TIDAK SAMA dengan totalPengajuan pendpatana, PENGAJUAN BATAL
+						if (($totalJplPegawai / 100 * $nominalJplFix) != $nominalJplFix) {
+							array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
+						}
+					}
+					
+				} elseif ($rjp->kategori == 'direct' && $rjp->metode == 'manual') {
+
+					// jika total nominal pegawai TIDAK SAMA dengan totalPengajuan pendpatana, PENGAJUAN BATAL
+					if ($totalJplPegawai != $nominalJplFix) {
+						array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
+					}
+
+				} elseif ($rjp->kategori == 'split' && $rjp->metode == 'persentase') {
+
+					// jika total nominal pegawai TIDAK DIISI dan totalPengajuan pendapatan DIISI, PENGAJUAN BATAL
+					if (($totalJplPegawaiDokter == 0 && $nominalDokter > 0) || ($totalJplPegawaiPerawat == 0 && $nominalPerawat > 0) ) {
+						array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
+					} elseif ($totalJplPegawaiDokter > 0 && $totalJplPegawaiPerawat > 0) {
+
+						// jika total nominal pegawai TIDAK SAMA dengan totalPengajuan pendpatana, PENGAJUAN BATAL
+						if ($totalJplPegawaiDokter / 100 * $nominalDokter != $nominalDokter || $totalJplPegawaiPerawat / 100 * $nominalPerawat != $nominalPerawat) {
+							array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
+						}
+					}
+						
+					
+				} elseif ($rjp->kategori == 'split' && $rjp->metode == 'manual') {
+					if ($totalJplPegawaiDokter != $nominalJplFix * $persentaseDokter || $totalJplPegawaiPerawat != $nominalJplFix * $persentasePerawat) {
+						array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
+					}
+				} elseif ($rjp->kategori == 'split' && $rjp->metode == 'index') {
+					if (($totalJplPegawaiDokter <= 0) && $totalPengajuan > 0) {
+						array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
+					} elseif ($totalJplPegawaiPerawat <= 0 && $totalPengajuan > 0) {
+						array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
+					}
+				} else {
+					array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
+				}
+				
+			} // e.o. jplPendapatan
+
+
+				
+		} // e.o. ruanganJenisPelayanan
 		
 		$this->view->setVars([
 			'ruanganJenisPelayanan' 	=> $ruanganJenisPelayanan,
@@ -230,7 +343,8 @@ class PengajuanJaspelController extends ControllerBase
 			'namaRuangan'     => Ruangan::findFirstById($idRuangan),
 			'idPeriode' => $idPeriode,
 			'pendapatanPelayanan' => $pendapatanPelayanan,
-			'jplRuang' => $jplRuang
+			'jplRuang' => $jplRuang,
+			'pengajuanBatal' => $pengajuanBatal
 		]);
 
 		if ($this->request->isPost() && $this->request->isAjax()) {

@@ -56,7 +56,11 @@ function thousandSep(val) {
       <div class="box-header with-border">
         <h3 class="box-title">Pengajuan Detail {{rjp.jenisPelayanan.namaPelayanan}} | April 2018</h3>
         <div class="box-tools pull-right">
-          <a href="{{url('pengajuan-jaspel/pendapatanPelayanan/'~jplPendapatan.idPeriode)}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
+          {% if auth.getIdentity()['profile'] == "Super User"%}
+            <a href="{{url('pengajuan-jaspel/pendapatanPelayanan/'~jplPendapatan.idPeriode~'/'~jplRuang.idRuangan)}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
+          {% else %}
+            <a href="{{url('pengajuan-jaspel/pendapatanPelayanan/'~jplPendapatan.idPeriode)}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
+          {% endif %}
         </div>
       </div>
       <!-- /.box-header -->
@@ -417,7 +421,11 @@ $(document).ready(function() {
       <div class="box-header with-border">
         <h3 class="box-title">Pengajuan Detail {{rjp.jenisPelayanan.namaPelayanan}} | April 2018</h3>
         <div class="box-tools pull-right">
-          <a href="{{url('pengajuan-jaspel/pendapatanPelayanan/'~jplPendapatan.idPeriode)}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
+          {% if auth.getIdentity()['profile'] == "Super User"%}
+            <a href="{{url('pengajuan-jaspel/pendapatanPelayanan/'~jplPendapatan.idPeriode~'/'~jplRuang.idRuangan)}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
+          {% else %}
+            <a href="{{url('pengajuan-jaspel/pendapatanPelayanan/'~jplPendapatan.idPeriode)}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
+          {% endif %}
         </div>
       </div>
       <!-- /.box-header -->
@@ -1206,7 +1214,7 @@ $(document).ready(function() {
 {% endif %}
 
 <script>
-if ("{{jplRuang.statusKomplit}}" == 1 || "{{nominalJplFix}}" == 0) {
+if ("{{jplRuang.statusKomplit}}" == 1 || "{{nominalJplFix}}" == 0 || "{{auth.getIdentity()['profile']}}" != "Pelayanan") {
   $(".edit").attr("disabled", "disabled")
   $("input[type='submit']").attr("disabled", "disabled")
 }

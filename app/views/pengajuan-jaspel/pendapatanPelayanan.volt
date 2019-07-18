@@ -17,10 +17,18 @@
         {% if cek == 0 %}
           {{ submit_button("pengajuan", "value": "Ajukan", "class": "btn btn-primary") }}
         {% endif %#}
-        {% if jplRuang.statusKomplit == 0 %}
-          {{ submit_button("pengajuan", "value": "Ajukan", "class": "btn btn-primary") }}
+        
+
+        {% if auth.getIdentity()['profile'] == "Super User"%}
+          <a href="{{url('pengajuan-jaspel/edit/'~idPeriode)}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
+        {% else %}
+          {% if jplRuang.statusKomplit == 0 %}
+            {{ submit_button("pengajuan", "value": "Ajukan", "class": "btn btn-primary") }}
+          {% endif %}
+          <a href="{{url('pengajuan-jaspel')}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
         {% endif %}
-        <a href="{{url('pengajuan-jaspel')}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
+
+        
         </form>
 
       </div>
@@ -40,10 +48,11 @@
           </tr>
         </thead>
         <tbody>
-      
+          
+          {% set i = 0 %}
           {% for pp in pendapatanPelayanan %}
           <tr>
-            <td>{{pp.namaPelayanan}}</td>
+            <td {% if pengajuanBatal[i] == pp.namaPelayanan %}class="text-danger" style="font-weight: 700;" {% endif %}>{{pp.namaPelayanan}}</td>
             <td>
               {% set sarana = pp.totalPengajuan * pp.persentaseSarana / 100 %}
               <?php $nominalSarana = number_format((float)$sarana, 2, '.', '') ?>
@@ -66,6 +75,7 @@
             <td width="2%">{{ link_to("pengajuan-jaspel/detailPendapatan/" ~ pp.idJplPendapatan ~ "/" ~ pp.idRjp, '<i class="glyphicon glyphicon-pencil"></i> Detail', "class": "btn btn-primary") }}</td>
             {#<td width="2%">{{ link_to("pengajuan-jaspel/delete/" ~ pp.idPeriode, '<i class="glyphicon glyphicon-remove"></i> Delete', "class": "btn btn-danger", "onclick": "return confirm('Are you sure?')") }}</td>#}
           </tr>
+          {% set i += 1 %}
           {% endfor %}
 
         </tbody>
@@ -121,7 +131,7 @@ $(document).ready(function() {
    
   });
 
-  if ("{{jplRuang.statusKomplit}}" == 1) {
+  if ("{{jplRuang.statusKomplit}}" == 1 || "{{auth.getIdentity()['profile']}}" != "Pelayanan") {
     $(".edit").attr("disabled", "disabled")
   }
 });
