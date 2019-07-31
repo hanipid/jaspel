@@ -2,51 +2,58 @@
 {{ javascript_include("js/accounting.min.js") }}
 
 {{ content() }}
-
-<form method="post" action="">
-
 	<div class="col-md-6 col-md-offset-3">
 
 		<div class="box box-primary">
 		  <div class="box-header with-border">
 		    <h3 class="box-title">Periode Pengajuan Jaspel</h3>
 		    <div class="box-tools pull-right">
-		      {{ link_to("pengajuan-jaspel/createKlaim", "Klaim", "class": "btn btn-success") }}
+		    	{% if periodeJaspel.statusPeriode == 0 %}
+			    	{{ form("style": "display:inline-block;") }} 
+			      	{{ submit_button("Proses", "name": "proses", "class": "btn btn-info") }} 
+			      {{ end_form() }} 
+			    {% else %}
+		      	{{ link_to("pengajuan-jaspel/createKlaim/"~periodeJaspel.idPeriode, "Klaim", "class": "btn btn-success") }}
+		      {% endif %}
 		      {{ link_to("pengajuan-jaspel", "<i class='fa fa-times'></i>", "class": "btn btn-box-tool") }}
 		    </div>
 		  </div>
 		  <!-- /.box-header -->
 
-		  <div class="box-body">
+		  <form method="post" action="">
 
-		  	<div class="form-group">
-		  		<label for="idJaspel">Jenis</label>
-		  		{{ form.render("idJaspel") }}
-		  	</div>
+			  <div class="box-body">	
 
-		  	<div class="form-group col-md-6">
-		  		<label for="startPeriode">Start Periode</label>
-		  		{{ form.render("startPeriode") }}
-		  	</div>
+			  	<div class="form-group">
+			  		<label for="idJaspel">Jenis</label>
+			  		{{ form.render("idJaspel") }}
+			  	</div>
 
-		  	<div class="form-group col-md-6">
-		  		<label for="endPeriode">End Periode</label>
-		  		{{ form.render("endPeriode") }}
-		  	</div>
+			  	<div class="form-group col-md-6">
+			  		<label for="startPeriode">Start Periode</label>
+			  		{{ form.render("startPeriode") }}
+			  	</div>
 
-		  </div>
-		  <!-- /.box-body -->
+			  	<div class="form-group col-md-6">
+			  		<label for="endPeriode">End Periode</label>
+			  		{{ form.render("endPeriode") }}
+			  	</div>
 
-		  <div class="box-footer">
-		  	{{ submit_button("Save", "class": "btn btn-primary") }}
-		  </div>
-		  <!-- /.box-footer -->
+			  </div>
+			  <!-- /.box-body -->
+
+			  <div class="box-footer">
+			  	{{ submit_button("Save", "name": "save", "class": "btn btn-primary") }}
+			  </div>
+			  <!-- /.box-footer -->
+
+		  </form>
 
 		</div>
 		<!-- /.box -->
 	</div>
 	<!-- /.col-md-6 -->
-</form>
+
 
 <div class="col-md-6">
 
@@ -79,7 +86,9 @@
 	  					<span class="pull-right">
 	  						{{ form() }} 
 	  						{{ hidden_field("resetIdJplRuang", "value": jr1.id) }}
-	  						{{ submit_button("reset", "name": "reset", "class": "btn btn-primary btn-sm") }} 
+	  						{% if periodeJaspel.statusPeriode == 0 %}
+	  							{{ submit_button("reset", "name": "reset", "class": "btn btn-primary btn-sm") }} 
+	  						{% endif %}
 	  						{{ link_to("#", "<i class='fa fa-envelope-o'></i>", "class": "btn btn-warning btn-sm", "data-toggle": "modal", "data-target": "#modalPesan") }}
 	  						{{end_form()}}
 	  						

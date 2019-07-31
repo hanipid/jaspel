@@ -83,6 +83,8 @@
 
 <script>
 $(document).ready(function() {
-    $('#dataTable').dataTable();
+    $('#dataTable').dataTable( {
+        "order": [[ 1, "desc" ]]
+    } );
 } );
 </script>

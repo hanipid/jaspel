@@ -22,6 +22,72 @@
 		    		<label for="totalKlaim">Total Klaim</label>
 		    		{{ text_field("totalKlaim", "class": "form-control") }}
 		    	</div>
+
+		    	{# ambil data pendapatanTambahan,
+		    	Kirim sesuai nama di bungkus array/object
+
+		    	Tabel klaim_jaspel_tambahan (pendapatanTambahan) | ForeignKey = idKlaimJaspel
+		    	id | idKlaimJaspel | namaPendapatanTambahan | value 
+
+		    	namaPendapatan disimpan lowercase #}
+
+		    	
+
+		    	<hr>
+
+		    	<h4>Pendapatan Tambahan</h4>
+
+		    	<input type="text" id="input"> <button id="btnAdd">Add</button>
+
+					<div id="formInputGroup"></div>
+
+					<script>
+					$("#btnAdd").click(function(e){
+						e.preventDefault();
+				  	var inputVal = $("#input").val();
+				  	// alert($(this).val())
+				    
+				    var openWrap = "<div class='form-group'>"
+				    var formLabel = "<label>" + inputVal + "</label>"
+				    var formInput = "<input type='text' name='"+ inputVal +"' class='form-control'>"
+				    var closeWrap = "</div>"
+				    $("#formInputGroup").append(openWrap, formLabel, formInput, closeWrap)
+				    
+				    $("#input").val("");
+					})
+					</script>
+
+		    	<button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-default">
+            +
+          </button>
+
+          <div class="modal fade" id="modal-default" style="display: none;">
+	          <div class="modal-dialog">
+	            <div class="modal-content">
+	              <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                  <span aria-hidden="true">×</span></button>
+	                <h4 class="modal-title">Pendapatan Tambahan</h4>
+	              </div>
+	              <div class="modal-body">
+	                {% for pt in pendapatanTambahan %}
+	                	<div class="checkbox" style="display:inline-block;">
+	                    <label>
+	                      <input type="checkbox">
+	                      {{ pt.pendapatanTambahan }}
+	                    </label>
+	                  </div>
+	                {% endfor %}
+	              </div>
+	              <div class="modal-footer">
+	                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+	                <button type="button" class="btn btn-primary">Save changes</button>
+	              </div>
+	            </div>
+	            <!-- /.modal-content -->
+	          </div>
+	          <!-- /.modal-dialog -->
+	        </div>
 		    	
 		    	<div class="form-group">
 		    		<label for="totalSharing">Sharing</label>

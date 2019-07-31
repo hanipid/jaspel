@@ -10,6 +10,7 @@ use Jaspel\Models\PersentaseJaspel;
 use Jaspel\Models\JplPendapatan;
 use Jaspel\Models\JplPegawai;
 use Jaspel\Models\JplRuang;
+use Jaspel\Models\PendapatanTambahan;
 
 /**
  * Controller Jenis Jasa Pelayanan
@@ -36,6 +37,7 @@ class PengajuanJaspelController extends ControllerBase
 		if ($this->request->isPost()) {
 			$periodeJaspel = new PeriodeJaspel([
 				'idJaspel' => $this->request->getPost('idJaspel'),
+				'tglBuat' => date("Y-m-d"),
 				'startPeriode' => $this->request->getPost('startPeriode'),
 				'endPeriode' => $this->request->getPost('endPeriode'),
 				'statusPeriode' => '0'
@@ -124,9 +126,10 @@ class PengajuanJaspelController extends ControllerBase
 		$this->view->setVars([
 			'form' => new PengajuanJaspelForm($periodeJaspel),
 			'jplRuang0' => $jplRuang0,
-			'jplRuang1' => $jplRuang1
+			'jplRuang1' => $jplRuang1,
+			'periodeJaspel' => $periodeJaspel
 		]);
-		if ($this->request->isPost() AND null === $this->request->getPost('reset')) {
+		if ($this->request->isPost() AND 'Save' === $this->request->getPost('save')) {
 			$periodeJaspel->assign([
 				'idJaspel' => $this->request->getPost('idJaspel'),
 				'startPeriode' => $this->request->getPost('startPeriode'),
@@ -155,6 +158,22 @@ class PengajuanJaspelController extends ControllerBase
 			}
 			$this->response->redirect('pengajuan-jaspel/edit/' . $idPeriode);
 		}
+
+		// tombol proses
+		if ($this->request->isPost() AND 'Proses' === $this->request->getPost('proses') ) {
+			$this->view->disable();
+			$periodeJaspel = PeriodeJaspel::findFirstByIdPeriode($idPeriode);
+			$periodeJaspel->statusPeriode = 1;
+			if ($periodeJaspel->save() == false) {
+				foreach ($periodeJaspel->getMessages() as $m) {
+					$this->flashSession->error('Proses error.');
+				}
+			} else {
+				$this->flashSession->success('Proses sukses.');
+			}
+			
+			$this->response->redirect('pengajuan-jaspel/edit/' . $idPeriode);
+		}
 	}
 
 	public function deleteAction()
@@ -162,8 +181,13 @@ class PengajuanJaspelController extends ControllerBase
 		# code...
 	}
 
-	public function createKlaimAction()
+	public function createKlaimAction($idPeriode)
 	{
+		$pendapatanTambahan = PendapatanTambahan::find();
+
+		$this->view->setVars([
+			'pendapatanTambahan' => $pendapatanTambahan
+		]);
 		if ($this->request->isPost()) {
 			$this->response->redirect("pengajuan-jaspel/create");
 		}
