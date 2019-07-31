@@ -47,13 +47,24 @@
 				  	var inputVal = $("#input").val();
 				  	// alert($(this).val())
 				    
-				    var openWrap = "<div class='form-group'>"
-				    var formLabel = "<label>" + inputVal + "</label>"
-				    var formInput = "<input type='text' name='"+ inputVal +"' class='form-control'>"
-				    var closeWrap = "</div>"
-				    $("#formInputGroup").append(openWrap, formLabel, formInput, closeWrap)
+				    var formGroup = `
+				      <div class='form-group'>
+				      	<label>${inputVal}</label> <strong class='deleted text-danger'>x</strong>
+				      	<input type='text' name='${inputVal}' class='form-control'>
+				        
+				      </div>
+				    `;
+				    $("#formInputGroup").append(formGroup)
 				    
 				    $("#input").val("");
+
+				    $(".deleted").on("click", function (e){
+					    //alert();
+					    e.preventDefault();
+					    e.stopPropagation();
+					    e.stopImmediatePropagation();
+					    $(this).parent().remove();
+					  })
 					})
 					</script>
 
