@@ -11,6 +11,9 @@ use Jaspel\Models\JplPendapatan;
 use Jaspel\Models\JplPegawai;
 use Jaspel\Models\JplRuang;
 use Jaspel\Models\PendapatanTambahan;
+use Jaspel\Models\KlaimJaspel;
+use Jaspel\Models\KlaimPendapatanTambahan;
+use Jaspel\Models\VSebelumKlaim;
 
 /**
  * Controller Jenis Jasa Pelayanan
@@ -127,7 +130,8 @@ class PengajuanJaspelController extends ControllerBase
 			'form' => new PengajuanJaspelForm($periodeJaspel),
 			'jplRuang0' => $jplRuang0,
 			'jplRuang1' => $jplRuang1,
-			'periodeJaspel' => $periodeJaspel
+			'periodeJaspel' => $periodeJaspel,
+			'klaimJaspel' => KlaimJaspel::findByIdPeriode($idPeriode)
 		]);
 		if ($this->request->isPost() AND 'Save' === $this->request->getPost('save')) {
 			$periodeJaspel->assign([
@@ -184,12 +188,245 @@ class PengajuanJaspelController extends ControllerBase
 	public function createKlaimAction($idPeriode)
 	{
 		$pendapatanTambahan = PendapatanTambahan::find();
+		$klaimJaspel = KlaimJaspel::findByIdPeriode($idPeriode);
+
+		if ($this->request->isPost()) {
+			$newKlaimJaspel = new KlaimJaspel();
+
+			echo json_encode($this->request->getPost());
+
+			$tglPencairan = $this->request->getPost('tglPencairan');
+			$totalKlaim = $this->request->getPost('totalKlaim','float');
+
+			$newKlaimJaspel->assign([
+				'idPeriode' => $idPeriode,
+				'tglPencairan' => $tglPencairan,
+				'totalKlaim' => $totalKlaim
+			]);
+
+			if ($newKlaimJaspel->save() == false) {
+				foreach ($newKlaimJaspel->getMessages() as $m) {
+					$this->flashSession->error('Proses klaimJaspel error.');
+				}
+			} else {
+				$namaPTambahan = $this->request->getPost('namaPTambahan');
+				$nominal = $this->request->getPost('nominal');
+				$pendapatanTambahanLength = count($namaPTambahan);
+
+				for ($i=0; $i < $pendapatanTambahanLength; $i++) {
+					$klaimPendapatanTambahan = new KlaimPendapatanTambahan();
+					// cari apakah nama pendapatan tambahan sudah ada
+					$pendapatanTambahan = PendapatanTambahan::findFirstByPendapatanTambahan($namaPTambahan[$i]);
+
+					if ($pendapatanTambahan->pendapatanTambahan == null) {
+						echo "new nama pendapatan tambahan";
+						$pendapatanTambahanNew = new PendapatanTambahan();
+						$pendapatanTambahanNew->pendapatanTambahan = $namaPTambahan[$i];
+
+						if (!$pendapatanTambahanNew->save()) {
+							echo "error tabel pendapatanTambahan";
+							foreach ($pendapatanTambahanNew->getMessages() as $m) {
+								$this->flashSession->error('error tabel pendapatanTambahan.');
+							}
+						} else {
+							echo "done new pendapatanTambahan";
+							$pendapatanTambahan = PendapatanTambahan::findFirstByPendapatanTambahan($namaPTambahan[$i]);
+						}
+					}
+
+					$klaimPendapatanTambahan->assign([
+						'idPTambahan' => $pendapatanTambahan->idPTambahan,
+						'idKlaimJaspel' => $newKlaimJaspel->idKlaim,
+						'nominal' => $nominal[$i]
+					]);
+					if (!$klaimPendapatanTambahan->save()) {
+						foreach ($klaimPendapatanTambahan->getMessages() as $m) {
+							$this->flashSession->error('error tabel klaimPendapatanTambahan.');
+							echo "error tabel klaimPendapatanTambahan \n";
+							echo $m;
+						}
+					} else {
+						echo "done new klaimPendapatanTambahan";
+					}
+				} // E.O. for pendapatanTambahanLength
+			} // E.O Else newKlaimJaspel
+
+			$this->response->redirect('pengajuan-jaspel/edit/' . $idPeriode);
+			// $this->view-disable();
+		}
 
 		$this->view->setVars([
 			'pendapatanTambahan' => $pendapatanTambahan
 		]);
+	}
+
+	public function editKlaimAction($idKlaim)
+	{
+		$klaimJaspel = KlaimJaspel::findFirstByIdKlaim($idKlaim);
+		$klaimPendapatanTambahan = KlaimPendapatanTambahan::findByIdKlaimJaspel($idKlaim);
+		$pendapatanTambahan = PendapatanTambahan::find();
+
 		if ($this->request->isPost()) {
-			$this->response->redirect("pengajuan-jaspel/create");
+			$tglPencairan = $this->request->getPost('tglPencairan');
+			$totalKlaim = $this->request->getPost('totalKlaim','float');
+
+			$klaimJaspel->assign([
+				'tglPencairan' => $tglPencairan,
+				'totalKlaim' => $totalKlaim
+			]);
+
+			if (!$klaimJaspel->save()) {
+				foreach ($klaimJaspel->getMessages() as $m) {
+					$this->flashSession->error('Proses ubah klaimJaspel mengalami kesalahan.');
+				}
+			} else {
+				$namaPTambahan = $this->request->getPost('namaPTambahan');
+				$idPTambahan = $this->request->getPost('idPTambahan');
+				$nominal = $this->request->getPost('nominal', 'float');
+				$idKPTambahan = $this->request->getPost('idKPTambahan');
+				$namaPTambahanLength = count($namaPTambahan);
+
+				echo $namaPTambahanLength;
+				echo json_encode($idPTambahan);
+				echo json_encode($namaPTambahan);
+				echo json_encode($idKPTambahan);
+				echo json_encode($nominal);
+				echo "\n\n";
+
+				// cek duplikat namaPTambahan
+				$dups = array();
+				foreach(array_count_values($namaPTambahan) as $val => $c){
+					if($c > 1) {
+						$dups[] = $val;
+					}
+				}
+				if ($dups) {
+					$this->flashSession->warning('Terdapat duplikasi nama pendapatan tambahan: ' . json_encode($dups));
+					$this->response->redirect('pengajuan-jaspel/editKlaim/'.$idKlaim);
+				}
+				// die();
+
+				for ($i=0; $i < $namaPTambahanLength; $i++) { 
+			
+					$samePendapatanTambahan = PendapatanTambahan::findFirst([
+						'idPTambahan' => $idPTambahan[$i],
+						'pendapatanTambahan' => $namaPTambahan[$i]
+					]);
+					$namePendapatanTambahan = PendapatanTambahan::findFirstByPendapatanTambahan($namaPTambahan[$i]);
+
+					echo $nominal[$i];
+
+					if ($namePendapatanTambahan){ // jika namaPTambahan tidak berubah
+						echo "tester";
+						// update nominal saja
+						$kpt = KlaimPendapatanTambahan::findFirstByIdKPTambahan($idKPTambahan[$i]);
+						if (!$kpt) {
+							$kpt = new KlaimPendapatanTambahan;
+						}
+						$kpt->assign([
+							'idPTambahan' => $namePendapatanTambahan->idPTambahan,
+							'idKlaimJaspel' => $idKlaim,
+							'nominal' => $nominal[$i]
+						]);
+						// die($namaPTambahan[$i] . ' - ' . $nominal[$i]);
+						if (!$kpt->save()){
+							foreach ($kpt->getMessages() as $m) {
+								$this->flashSession->error('Proses ubah nominal KlaimPendapatanTambahan mengalami kesalahan.');
+								echo $m;
+								die("Proses ubah nominal KlaimPendapatanTambahan mengalami kesalahan.");
+							}
+						}
+					} else {
+						$newPendapatanTambahan = New PendapatanTambahan();
+						$newPendapatanTambahan->pendapatanTambahan = $namaPTambahan[$i];
+
+						// $this->flashSession->error($namaPTambahan[$i]);
+
+						if (!$newPendapatanTambahan->save()) {
+							foreach ($newPendapatanTambahan->getMessages() as $m) {
+								$this->flashSession->error('Proses pembuatan PendapatanTambahan baru mengalami kesalahan.');
+								die("Proses pembuatan PendapatanTambahan baru mengalami kesalahan");
+							}
+						} else {
+							$newKpt = New KlaimPendapatanTambahan();
+							$newKpt->assign([
+								'idPTambahan' => $newPendapatanTambahan->idPTambahan,
+								'idKlaimJaspel' => $idKlaim,
+								'nominal' => $nominal[$i]
+							]);
+							// die($namaPTambahan[$i] . ' - ' . $nominal[$i]);
+							if (!$newKpt->save()) {
+								foreach ($newKpt->getMessages() as $m) {
+									$this->flashSession->error('Proses pembuatan KlaimPendapatanTambahan baru mengalami kesalahan.');
+									die("Proses pembuatan KlaimPendapatanTambahan baru mengalami kesalahan");
+								}
+							}
+						}
+					}
+				} // for countPendapatanTambahan
+			} // $klaimJaspel->save()
+
+			$this->response->redirect("pengajuan-jaspel/editKlaim/" . $idKlaim);
+		} // isPost()
+
+		$vSebelumKlaim = "SELECT idRuangan, namaRuang, sum(totalPengajuan) jumlahTotalPengajuan FROM \Jaspel\Models\VSebelumKlaim vsk WHERE idPeriode = '".$klaimJaspel->idPeriode."' AND statusKomplit = 1 GROUP BY idRuangan"; 
+		$qVSebelumKlaim = $this->modelsManager->executeQuery($vSebelumKlaim); 
+
+		$totalPengajuanPeriode = "SELECT idPeriode, sum(totalPengajuan) totalPengajuanPeriode FROM \Jaspel\Models\VSebelumKlaim vsk WHERE idPeriode = '".$klaimJaspel->idPeriode."' AND statusKomplit = 1 GROUP BY idPeriode";
+		$qTotalPengajuanPeriode = $this->modelsManager->executeQuery($totalPengajuanPeriode);
+
+		$this->view->setVars([
+			'klaimJaspel' => $klaimJaspel,
+			'klaimPendapatanTambahan' => $klaimPendapatanTambahan,
+			'vSebelumKlaim' => $qVSebelumKlaim,
+			'totalPengajuanPeriode' => $qTotalPengajuanPeriode[0]->totalPengajuanPeriode
+		]);
+	}
+
+	public function deleteKlaimAction($idKlaim)
+	{
+		# Cari dan hapus klaim pendapatan tambahan
+		$klaimPendapatanTambahan = KlaimPendapatanTambahan::findByIdKlaimJaspel($idKlaim);
+		if ($klaimPendapatanTambahan) {
+			foreach ($klaimPendapatanTambahan as $kpt) {
+				$this->deleteKlaimTambahanAction($kpt->idKPTambahan, "1");
+				echo "1";
+			}
+		}
+		# Hapus klaim
+		$klaimJaspel = KlaimJaspel::findFirstByIdKlaim($idKlaim);
+		if (!$klaimJaspel->delete()) {
+			foreach ($klaimJaspel->getMessages() as $m) {
+				$this->flashSession->error('Proses penghapusan KlaimJaspel mengalami kesalahan.');
+				echo $m;
+				die($m);
+			}
+		}
+		$this->response->redirect("pengajuan-jaspel/edit/" . $klaimJaspel->idPeriode);
+	}
+
+	public function deleteKlaimTambahanAction($idKPTambahan, $redirect = null)
+	{
+		$klaimPendapatanTambahan = KlaimPendapatanTambahan::findFirstByIdKPTambahan($idKPTambahan);
+		if (!$klaimPendapatanTambahan->delete()) {
+			foreach ($klaimPendapatanTambahan->getMessages() as $m) {
+				$this->flashSession->error('Proses penghapusan KlaimPendapatanTambahan mengalami kesalahan.');
+				die($m);
+			}
+		}
+
+		$checkKpt = KlaimPendapatanTambahan::findFirstByIdPTambahan($klaimPendapatanTambahan->idPTambahan);
+		if ($checkKpt == null) {
+			$pendapatanTambahan = PendapatanTambahan::findFirstByIdPTambahan($klaimPendapatanTambahan->idPTambahan);
+			if (!$pendapatanTambahan->delete()) {
+				foreach ($pendapatanTambahan->getMessages() as $m) {
+					$this->flashSession->error('Proses penghapusan PendapatanTambahan mengalami kesalahan.');
+					die($m);
+				}
+			}
+		}
+		if ($redirect == null) {
+			$this->response->redirect("pengajuan-jaspel/editKlaim/" . $klaimPendapatanTambahan->idKlaimJaspel);
 		}
 	}
 

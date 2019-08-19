@@ -2,7 +2,8 @@
 {{ javascript_include("js/accounting.min.js") }}
 
 {{ content() }}
-	<div class="col-md-6 col-md-offset-3">
+<div class="row">
+	<div class="col-md-6">
 
 		<div class="box box-primary">
 		  <div class="box-header with-border">
@@ -53,6 +54,36 @@
 		<!-- /.box -->
 	</div>
 	<!-- /.col-md-6 -->
+
+	{% if klaimJaspel|length > 0 %}
+	<div class="col-md-6">
+		<div class="box box-primary">
+		  <div class="box-header with-border">
+		    <h3 class="box-title">Klaim Jaspel</h3>
+		  </div>
+		  <!-- /.box-header -->
+
+		  <div class="box-body">	
+		  	<table class="table">
+		  		{% for kj in klaimJaspel %}
+		  		<tr>
+		  			<td>
+		  				<a href="{{ url('pengajuan-jaspel/editKlaim/'~ kj.idKlaim) }}">{{ kj.tglPencairan }}</a>
+		  			</td>
+		  			<td class="">
+		  				<a href="{{url('pengajuan-jaspel/deleteKlaim/'~ kj.idKlaim)}}" class="btn btn-danger btn-sm pull-right" onclick="return confirm('Apakah Anda yakin?')">Hapus</a>
+		  			</td>
+		  		</tr>
+		  		{% endfor %}
+		  	</table>
+		  </div>
+		  <!-- /.box-body -->
+
+		</div>
+		<!-- /.box -->
+	</div> <!-- /.col-md-6 -->
+	{% endif %}
+</div>
 
 
 <div class="col-md-6">

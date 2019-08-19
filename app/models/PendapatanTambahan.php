@@ -9,5 +9,4 @@ use Phalcon\Mvc\Model;
 class PendapatanTambahan extends Model
 {
 	
-	
 }

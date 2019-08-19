@@ -134,6 +134,9 @@ return new Config([
       'edit',
       'delete',
       'createKlaim',
+      'editKlaim',
+      'deleteKlaim',
+      'deleteKlaimTambahan',
       'createPesan',
       'pendapatanPelayanan',
       'detailPendapatan'
