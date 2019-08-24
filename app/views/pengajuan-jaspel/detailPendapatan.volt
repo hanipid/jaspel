@@ -40,7 +40,16 @@ function thousandSep(val) {
 <?php $nominalJplKotor = number_format((float)$nominalJplKotor, 2, '.', '') ?>
 {% set nominalAdmin = nominalJplKotor * persentaseAdmin %}
 <?php $nominalAdmin = number_format((float)$nominalAdmin, 2, '.', '') ?>
-{% set nominalJplFix = nominalJplKotor * persentaseJplFix %}
+
+{% set url = this.request.getHeader('REFERER') %}
+<?php $is_back = stripos($url, 'editKlaim'); ?>
+
+{% if is_back %}
+  {% set nominalJplFix = jplFixKlaim %}
+{% else %}
+  {% set nominalJplFix = nominalJplKotor * persentaseJplFix %}
+{% endif %}
+
 <?php $nominalJplFix = number_format((float)$nominalJplFix, 2, '.', '') ?>
 
 
@@ -56,7 +65,11 @@ function thousandSep(val) {
       <div class="box-header with-border">
         <h3 class="box-title">Pengajuan Detail {{rjp.jenisPelayanan.namaPelayanan}} | April 2018</h3>
         <div class="box-tools pull-right">
-          {% if auth.getIdentity()['profile'] == "Super User"%}
+          {% if is_back %}
+            <script>
+              document.write('<a href="' + document.referrer + '" class="btn btn-box-tool"><i class="fa fa-times"></i></a>');
+            </script>
+          {% elseif auth.getIdentity()['profile'] == "Super User" OR auth.getIdentity()['profile'] == "Tim Jaspel" %}
             <a href="{{url('pengajuan-jaspel/pendapatanPelayanan/'~jplPendapatan.idPeriode~'/'~jplRuang.idRuangan)}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
           {% else %}
             <a href="{{url('pengajuan-jaspel/pendapatanPelayanan/'~jplPendapatan.idPeriode)}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
@@ -69,35 +82,40 @@ function thousandSep(val) {
 
         {% set nominalPengajuan = totalPengajuan*rjp.persentasePelayanan/100 %}
         <?php $nominalPengajuan = number_format((float)$nominalPengajuan, 2, '.', '') ?>
-        <span>Total Pengajuan Pelayanan: Rp. 
-        {{ text_field("totalPengajuan", "value": nominalPengajuan, "class": "rupiah", "style": "", "disabled": "disabled") }}</span>
+        {% if !is_back %}
+          <span>Total Pengajuan Pelayanan: Rp. {{ text_field("totalPengajuan", "value": nominalPengajuan, "class": "rupiah", "style": "", "disabled": "disabled") }}</span>
+        {% endif %}
 
         <div class="row">
           <div class="col-md-12">
 
-            <table style="border: 0; width: 100%;">
-              <tr>
-                <td style="width: 11%;">Direksi ({{persentaseDireksi * 100}}%):</td>
-                <td style="width: 15%;">Rp. {{ text_field("nominalDireksi", "class": "rupiah", "value": nominalDireksi, "disabled": "disabled") }}</td>
-                <td style="width: 11%;">Jasa ({{persentaseJasa * 100}}%):</td>
-                <td style="width: 15%;">Rp. {{ text_field("nominalDireksi", "class": "rupiah", "value": nominalJasa, "disabled": "disabled") }}</td>
-                <td><h4 style="margin-top: 5.4px"><span class="label label-success">(persentase dari Total Pengajuan Pelayanan)</span></h5></td>
-              </tr>
-              <tr>
-                <td>JPU ({{persentaseJpu * 100}}%):</td>
-                <td>Rp. {{ text_field("nominalJpu", "class": "rupiah", "value": nominalJpu, "disabled": "disabled") }}</td>
-                <td>JPL Kotor ({{persentaseJplKotor * 100}}%):</td>
-                <td>Rp. {{ text_field("nominalJplKotor", "class": "rupiah", "value": nominalJplKotor, "disabled": "disabled") }}</td>
-                <td><h4 style="margin-top: 5.4px"><span class="label label-success">(persentase dari Jasa)</span></h4></td>
-              </tr>
-              <tr>
-                <td>Admin ({{persentaseAdmin * 100}}%):</td>
-                <td>Rp. {{ text_field("nominalAdmin", "class": "rupiah", "value": nominalAdmin, "disabled": "disabled") }}</td>
-                <td>JPL Fix ({{persentaseJplFix * 100}}%):</td>
-                <td>Rp. {{ text_field("nominalJplFix", "class": "rupiah", "value": nominalJplFix, "disabled": "disabled") }}</td>
-                <td><h4 style="margin-top: 5.4px"><span class="label label-success">(persentase dari JPL Kotor)</span></h4></td>
-              </tr>
-            </table>
+            {% if is_back %}
+              <p>JPL FIX KLAIM: {{ text_field("jplFixKlaim", "value": jplFixKlaim, "class": "rupiah", "disabled": "disabled", "style": "width:120px; text-align: center; font-weight: 700;") }}</p>
+            {% else %}
+              <table style="border: 0; width: 100%;">
+                <tr>
+                  <td style="width: 11%;">Direksi ({{persentaseDireksi * 100}}%):</td>
+                  <td style="width: 15%;">Rp. {{ text_field("nominalDireksi", "class": "rupiah", "value": nominalDireksi, "disabled": "disabled") }}</td>
+                  <td style="width: 11%;">Jasa ({{persentaseJasa * 100}}%):</td>
+                  <td style="width: 15%;">Rp. {{ text_field("nominalDireksi", "class": "rupiah", "value": nominalJasa, "disabled": "disabled") }}</td>
+                  <td><h4 style="margin-top: 5.4px"><span class="label label-success">(persentase dari Total Pengajuan Pelayanan)</span></h5></td>
+                </tr>
+                <tr>
+                  <td>JPU ({{persentaseJpu * 100}}%):</td>
+                  <td>Rp. {{ text_field("nominalJpu", "class": "rupiah", "value": nominalJpu, "disabled": "disabled") }}</td>
+                  <td>JPL Kotor ({{persentaseJplKotor * 100}}%):</td>
+                  <td>Rp. {{ text_field("nominalJplKotor", "class": "rupiah", "value": nominalJplKotor, "disabled": "disabled") }}</td>
+                  <td><h4 style="margin-top: 5.4px"><span class="label label-success">(persentase dari Jasa)</span></h4></td>
+                </tr>
+                <tr>
+                  <td>Admin ({{persentaseAdmin * 100}}%):</td>
+                  <td>Rp. {{ text_field("nominalAdmin", "class": "rupiah", "value": nominalAdmin, "disabled": "disabled") }}</td>
+                  <td>JPL Fix ({{persentaseJplFix * 100}}%):</td>
+                  <td>Rp. {{ text_field("nominalJplFix", "class": "rupiah", "value": nominalJplFix, "disabled": "disabled") }}</td>
+                  <td><h4 style="margin-top: 5.4px"><span class="label label-success">(persentase dari JPL Kotor)</span></h4></td>
+                </tr>
+              </table>
+            {% endif %}
 
           </div>
         </div>
@@ -421,7 +439,13 @@ $(document).ready(function() {
       <div class="box-header with-border">
         <h3 class="box-title">Pengajuan Detail {{rjp.jenisPelayanan.namaPelayanan}} | April 2018</h3>
         <div class="box-tools pull-right">
-          {% if auth.getIdentity()['profile'] == "Super User"%}
+          {% set url = this.request.getHeader('REFERER') %}
+          <?php $is_back = stripos($url, 'editKlaim'); ?>
+          {% if is_back %}
+            <script>
+              document.write('<a href="' + document.referrer + '" class="btn btn-box-tool"><i class="fa fa-times"></i></a>');
+            </script>
+          {% elseif auth.getIdentity()['profile'] == "Super User" OR auth.getIdentity()['profile'] == "Tim Jaspel" %}
             <a href="{{url('pengajuan-jaspel/pendapatanPelayanan/'~jplPendapatan.idPeriode~'/'~jplRuang.idRuangan)}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
           {% else %}
             <a href="{{url('pengajuan-jaspel/pendapatanPelayanan/'~jplPendapatan.idPeriode)}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
@@ -431,40 +455,44 @@ $(document).ready(function() {
       <!-- /.box-header -->
 
       <div class="box-body">
-        {% set totalPengajuan = jplPendapatan.totalPengajuan*rjp.persentasePelayanan/100 %}
-        <?php $totalPengajuan = number_format((float)$totalPengajuan, 2, '.', '') ?>
-        <p>Jumlah: <strong>Rp.</strong> {{ text_field("totalPengajuan", "value": totalPengajuan, "class": "rupiah", "disabled": "disabled", "style": "width:120px; text-align: center; font-weight: 700;") }}</p>
-        <!-- <p>Jumlah Diterima: <strong>Rp. x.xxx.xxx</strong></p> -->
+        {% if is_back %}
+          <p>JPL FIX KLAIM: {{ text_field("jplFixKlaim", "value": jplFixKlaim, "class": "rupiah", "disabled": "disabled", "style": "width:120px; text-align: center; font-weight: 700;") }}</p>
+        {% else %}
+          {% set totalPengajuan = jplPendapatan.totalPengajuan*rjp.persentasePelayanan/100 %}
+          <?php $totalPengajuan = number_format((float)$totalPengajuan, 2, '.', '') ?>
+          <p>Jumlah: <strong>Rp.</strong> {{ text_field("totalPengajuan", "value": totalPengajuan, "class": "rupiah", "disabled": "disabled", "style": "width:120px; text-align: center; font-weight: 700;") }}</p>
+          <!-- <p>Jumlah Diterima: <strong>Rp. x.xxx.xxx</strong></p> -->
 
-        <div class="row">
-          <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-12">
 
-            <table style="border: 0; width: 100%;">
-              <tr>
-                <td style="width: 11%;">Direksi ({{persentaseDireksi * 100}}%):</td>
-                <td style="width: 15%;">Rp. {{ text_field("nominalDireksi", "class": "rupiah", "value": nominalDireksi, "disabled": "disabled") }}</td>
-                <td style="width: 11%;">Jasa ({{persentaseJasa * 100}}%):</td>
-                <td style="width: 15%;">Rp. {{ text_field("nominalDireksi", "class": "rupiah", "value": nominalJasa, "disabled": "disabled") }}</td>
-                <td><h4 style="margin-top: 5.4px"><span class="label label-success">(persentase dari Total Pengajuan Pelayanan)</span></h5></td>
-              </tr>
-              <tr>
-                <td>JPU ({{persentaseJpu * 100}}%):</td>
-                <td>Rp. {{ text_field("nominalJpu", "class": "rupiah", "value": nominalJpu, "disabled": "disabled") }}</td>
-                <td>JPL Kotor ({{persentaseJplKotor * 100}}%):</td>
-                <td>Rp. {{ text_field("nominalJplKotor", "class": "rupiah", "value": nominalJplKotor, "disabled": "disabled") }}</td>
-                <td><h4 style="margin-top: 5.4px"><span class="label label-success">(persentase dari Jasa)</span></h4></td>
-              </tr>
-              <tr>
-                <td>Admin ({{persentaseAdmin * 100}}%):</td>
-                <td>Rp. {{ text_field("nominalAdmin", "class": "rupiah", "value": nominalAdmin, "disabled": "disabled") }}</td>
-                <td>JPL Fix ({{persentaseJplFix * 100}}%):</td>
-                <td>Rp. {{ text_field("nominalJplFix", "class": "rupiah", "value": nominalJplFix, "disabled": "disabled") }}</td>
-                <td><h4 style="margin-top: 5.4px"><span class="label label-success">(persentase dari JPL Kotor)</span></h4></td>
-              </tr>
-            </table>
+              <table style="border: 0; width: 100%;">
+                <tr>
+                  <td style="width: 11%;">Direksi ({{persentaseDireksi * 100}}%):</td>
+                  <td style="width: 15%;">Rp. {{ text_field("nominalDireksi", "class": "rupiah", "value": nominalDireksi, "disabled": "disabled") }}</td>
+                  <td style="width: 11%;">Jasa ({{persentaseJasa * 100}}%):</td>
+                  <td style="width: 15%;">Rp. {{ text_field("nominalDireksi", "class": "rupiah", "value": nominalJasa, "disabled": "disabled") }}</td>
+                  <td><h4 style="margin-top: 5.4px"><span class="label label-success">(persentase dari Total Pengajuan Pelayanan)</span></h5></td>
+                </tr>
+                <tr>
+                  <td>JPU ({{persentaseJpu * 100}}%):</td>
+                  <td>Rp. {{ text_field("nominalJpu", "class": "rupiah", "value": nominalJpu, "disabled": "disabled") }}</td>
+                  <td>JPL Kotor ({{persentaseJplKotor * 100}}%):</td>
+                  <td>Rp. {{ text_field("nominalJplKotor", "class": "rupiah", "value": nominalJplKotor, "disabled": "disabled") }}</td>
+                  <td><h4 style="margin-top: 5.4px"><span class="label label-success">(persentase dari Jasa)</span></h4></td>
+                </tr>
+                <tr>
+                  <td>Admin ({{persentaseAdmin * 100}}%):</td>
+                  <td>Rp. {{ text_field("nominalAdmin", "class": "rupiah", "value": nominalAdmin, "disabled": "disabled") }}</td>
+                  <td>JPL Fix ({{persentaseJplFix * 100}}%):</td>
+                  <td>Rp. {{ text_field("nominalJplFix", "class": "rupiah", "value": nominalJplFix, "disabled": "disabled") }}</td>
+                  <td><h4 style="margin-top: 5.4px"><span class="label label-success">(persentase dari JPL Kotor)</span></h4></td>
+                </tr>
+              </table>
 
+            </div>
           </div>
-        </div>
+        {% endif %}
 
       </div>
       <!-- /.box-body -->
@@ -486,7 +514,11 @@ $(document).ready(function() {
 
       <div class="box-body">
 
-        {% set jatahDokter = nominalJplFix*persentaseDokter %}
+        {% if is_back %}
+          {% set jatahDokter = jplFixKlaim*persentaseDokter %}
+        {% else %}
+          {% set jatahDokter = nominalJplFix*persentaseDokter %}
+        {% endif %}
         <?php $jatahDokter = number_format((float)$jatahDokter, 2, '.', '') ?>
         <p>Jumlah Diterima: <strong>Rp.</strong> {{ text_field("jatahDokter", "value": jatahDokter, "class": "rupiah", "disabled": "disabled", "style": "width:120px; text-align: center; font-weight: 700;") }}</p>
         <p>
@@ -589,7 +621,11 @@ $(document).ready(function() {
 
       <div class="box-body">
 
-        {% set jatahPerawat = nominalJplFix*persentasePerawat %}
+        {% if is_back %}
+          {% set jatahPerawat = jplFixKlaim*persentasePerawat %}
+        {% else %}
+          {% set jatahPerawat = nominalJplFix*persentasePerawat %}
+        {% endif %}
         <?php $jatahPerawat = number_format((float)$jatahPerawat, 2, '.', '') ?>
         {#% set jatahPerawat = jplPendapatan.totalPengajuan*rjp.persentasePelayanan/100*rjp.persentasePerawat/100 %#}
         <?php // $jatahPerawat = number_format((float)$jatahPerawat, 2, '.', '') ?>
@@ -1217,5 +1253,6 @@ $(document).ready(function() {
 if ("{{jplRuang.statusKomplit}}" == 1 || "{{nominalJplFix}}" == 0 || "{{auth.getIdentity()['profile']}}" != "Pelayanan") {
   $(".edit").attr("disabled", "disabled")
   $("input[type='submit']").attr("disabled", "disabled")
+  $("input[data-toggle='toggle']").attr("disabled", "disabled")
 }
 </script>

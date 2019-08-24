@@ -67,13 +67,38 @@
 						var table = document.getElementById(tableID);
 						var rowCount = table.rows.length;
 						// if(rowCount < 5){							// limit the user from creating fields more than your limits
-							var row = table.insertRow(rowCount);
-							var colCount = table.rows[0].cells.length;
-							for(var i=0; i<colCount; i++) {
-								var newcell = row.insertCell(i);
-								newcell.innerHTML = table.rows[0].cells[i].innerHTML;
-								$('.rupiah').maskMoney({thousand: ',', decimal: '.', precision: 2});
-							}
+						var row = table.insertRow(rowCount);
+						var colCount = 3;
+						var newcell0 = row.insertCell(0);
+						newcell0.innerHTML = `
+							<td>
+								<label>Nama Pendapatan Tambahan</label> 
+				  			<input type='text' name='namaPTambahan[]' class='form-control' required="required" value="">
+				  			<input type="hidden" name="idPTambahan[]" value="">
+							</td>
+						`;
+						var newcell1 = row.insertCell(1);
+						newcell1.innerHTML = `
+							<td>
+								<label>Nominal</label>
+					      <input type='text' name='nominal[]' class='form-control rupiah' required="required" value="">
+					      <input type='hidden' name='idKPTambahan[]' value="">
+							</td>
+						`;
+						var newcell2 = row.insertCell(2);
+						newcell2.innerHTML = `
+							<td>
+								<a href="{{ url('pengajuan-jaspel/deleteKlaimTambahan/'~kpt.idKPTambahan) }}" class='text-danger' onclick="return confirm('Apakah Anda yakin?')">x</a>
+							</td>
+						`;
+						$('.rupiah').maskMoney({thousand: ',', decimal: '.', precision: 2});
+							// var row = table.insertRow(rowCount);
+							// var colCount = table.rows[0].cells.length;
+							// for(var i=0; i<colCount; i++) {
+							// 	var newcell = row.insertCell(i);
+							// 	newcell.innerHTML = table.rows[0].cells[i].innerHTML;
+							// 	$('.rupiah').maskMoney({thousand: ',', decimal: '.', precision: 2});
+							// }
 						// }else{
 						// 	 alert("Maximum Passenger per ticket is 5.");
 						// }
@@ -81,15 +106,12 @@
 
 					// Delete pendapatan tambahan
 					$("#tableAddPendapatanTambahan").on("click", ".deleted", function (e){
-				    // alert();
 				    e.preventDefault();
-				    var table = document.getElementById("tableAddPendapatanTambahan");
-						var rowCount = table.rows.length;
-						if(rowCount <= 1) { 						// limit the user from removing all the fields
-							alert("Cannot Remove all the Passenger.");
-						} else {
+				  	// var table = document.getElementById("tableAddPendapatanTambahan");
+						// var rowCount = table.rows.length;
+						if(confirm("Apakah Anda yakin?")) {
 							$(this).closest("tr").remove();
-						}
+						} 
 				    
 				  });
 					$(document).ready(function(){

@@ -19,7 +19,7 @@
         {% endif %#}
         
 
-        {% if auth.getIdentity()['profile'] == "Super User"%}
+        {% if auth.getIdentity()['profile'] == "Super User" OR auth.getIdentity()['profile'] == "Tim Jaspel" %}
           <a href="{{url('pengajuan-jaspel/edit/'~idPeriode)}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
         {% else %}
           {% if jplRuang.statusKomplit == 0 %}
@@ -56,13 +56,13 @@
             <td>
               {% set sarana = pp.totalPengajuan * pp.persentaseSarana / 100 %}
               <?php $nominalSarana = number_format((float)$sarana, 2, '.', '') ?>
-              Rp. {{ text_field("sarana", "value": nominalSarana, "class": "edit rupiah", "data-id-rjp": pp.idRjp, "style": "width:110px;", "disabled": "disabled") }} 
+              Rp. {{ text_field("sarana", "value": nominalSarana, "class": "edit rupiah", "data-id-rjp": pp.idRjp, "style": "width:130px;", "disabled": "disabled") }} 
               {{pp.persentaseSarana}} %
             </td>
             <td>
               {% set pelayanan = pp.totalPengajuan * pp.persentasePelayanan / 100 %}
               <?php $nominalPelayanan = number_format((float)$pelayanan, 2, '.', '') ?>
-              Rp. {{ text_field("pelayanan", "value": nominalPelayanan, "class": "edit rupiah", "data-id-rjp": pp.idRjp, "style": "width:110px;", "disabled": "disabled") }} 
+              Rp. {{ text_field("pelayanan", "value": nominalPelayanan, "class": "edit rupiah", "data-id-rjp": pp.idRjp, "style": "width:130px;", "disabled": "disabled") }} 
               {{pp.persentasePelayanan}} %
             </td>
             <!-- <td>{{jenisJaspel.konversiJaspel}} %</td> -->
@@ -70,7 +70,7 @@
               {{pp.totalPengajuan}}
             </td> -->
             <td style="width:20%;">
-              Rp. {{ text_field("totalPengajuan", "value": pp.totalPengajuan, "class": "edit rupiah", "data-id-rjp": pp.idRjp, "style": "width:110px;") }}
+              Rp. {{ text_field("totalPengajuan", "value": pp.totalPengajuan, "class": "edit rupiah", "data-id-rjp": pp.idRjp, "style": "width:130px;") }}
             </td>
             <td width="2%">{{ link_to("pengajuan-jaspel/detailPendapatan/" ~ pp.idJplPendapatan ~ "/" ~ pp.idRjp, '<i class="glyphicon glyphicon-pencil"></i> Detail', "class": "btn btn-primary") }}</td>
             {#<td width="2%">{{ link_to("pengajuan-jaspel/delete/" ~ pp.idPeriode, '<i class="glyphicon glyphicon-remove"></i> Delete', "class": "btn btn-danger", "onclick": "return confirm('Are you sure?')") }}</td>#}

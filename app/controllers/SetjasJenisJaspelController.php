@@ -79,7 +79,7 @@ class SetjasJenisJaspelController extends ControllerBase
 			}
 			$this->response->redirect('setjas-jenis-jaspel');
 		}
-		$this->view->pendapatanTambahan = PendapatanTambahan::findByIdJaspel($idJaspel);
+		// $this->view->pendapatanTambahan = PendapatanTambahan::findByIdJaspel($idJaspel);
 		$this->view->jenisJaspel = $jenisJaspel;
 		$this->view->form = new JenisJaspelForm($jenisJaspel, ['edit' => true]);
 	}

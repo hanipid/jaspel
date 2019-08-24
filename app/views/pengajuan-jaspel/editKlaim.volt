@@ -363,125 +363,202 @@
 
 
 <div class="row">
-	<div class="col-md-6">
-	  <div class="box box-primary">
-	    <div class="box-header with-border">
-	      <h3 class="box-title">Sesudah Klaim</h3>
-	      <div class="box-tools pull-right">
-	      </div>
-	    </div>
-	    <!-- /.box-header -->
+	<div class="col-md-12">
+		<div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">Pendapatan JPL Sesudah Klaim (Konversi {{jenisJaspel.konversiJaspel}}%)</a></li>
+        <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">Pendapatan Total Sebelum Klaim</a></li>
+        <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane active" id="tab_1">
 
-	    <div class="box-body">
+          <div class="box-group" id="accordion">
+		    		{# RUMUS KONVERSI #}
+		    		{# Konversi = 33% * total pendapatan #}
+		    		<?php $totalKlaim = number_format((float)$klaimJaspel->totalKlaim, 2, '.', '') ?>
+		    		<?php $totalPendapatanTambahan = number_format((float)$totalPendapatanTambahan, 2, '.', '') ?>	    		
+	          {% set totalPendapatanKonversi = jenisJaspel.konversiJaspel / 100 * (totalPendapatanTambahan + totalKlaim) %}
+		    		<?php $totalPelayananPeriode = number_format((float)$totalPelayananPeriode, 2, '.', '') ?>
+	          {% set pembagi = totalPendapatanKonversi / totalPelayananPeriode %}
+	          {#totalPendapatan<input type="text" name="wewe" class="rupiah" value="{{totalPendapatanTambahan + totalKlaim}}">
+	          <br>totalPendapatanKonversi = <input type="text" name="wewe" class="rupiah" value="{{totalPendapatanKonversi}}">
+	          <br>totalPelayananPeriode = <input type="text" name="wewe" class="rupiah" value="{{totalPelayananPeriode}}">
+	          <br>pembagi = {{pembagi}}#}
+	          {% for sebelumKlaim in vSebelumKlaim %}
+	          <div class="panel box box-info">
+	            <div class="box-header with-border">
+	              <h4 class="box-title">
+	                <a data-toggle="collapse" data-parent="#accordion" href="#collapse2{{loop.index}}" aria-expanded="false" class="">
+	                  {{ sebelumKlaim.namaRuang }}
+	                </a>
+	              </h4>
+					      <div class="box-tools pull-right">
+					      	{# Jasa Pelayanan setelah konversi #}
+					      	{% set totalKlaimPeriode = sebelumKlaim.totalPelayananRuangan * pembagi %}
+									<?php $totalKlaimPeriode = number_format((float)$totalKlaimPeriode, 2, '.', '') ?>
+					      	{# Jasa #}
+					      	{% set jasa = (persentaseJaspel.jasa / 100) * totalKlaimPeriode %}
+									<?php $jasa = number_format((float)$jasa, 2, '.', '') ?>
+					      	{# JPL #}
+					      	{% set jpl = (persentaseJaspel.jpl / 100) * jasa %}
+					      	<?php $jpl = number_format((float)$jpl, 2, '.', '') ?>
+					      	{# Admin #}
+					      	{% set admin = jpl - ((persentaseJaspel.admin / 100) * jpl) %}
+									<?php $admin = number_format((float)$admin, 2, '.', '') ?>
+					      	<h4 class="pull-right">Rp. <input type="text" class="rupiah" value="{{admin}}" style="background:none;border:none;width:150px;" disabled="disabled"></h4>
+					      </div>
+	            </div>
+	            <style type="text/css">
+	            	.table.table-hover input {
+	            		max-width: 120px;
+	            		border: 0;
+									padding: 0;
+									background: none;
+	            	}
+	            	.table.table-hover th {
+	            		text-align: center;
+	            	}
+	            	.table.table-hover td {
+	            		padding: 8px 0;
+	            	}
+	            </style>
+	            <div id="collapse2{{loop.index}}" class="panel-collapse collapse" aria-expanded="false" style="">
+	              <div class="box-body">
+	                <table class="table table-hover">
+	                	<thead>
+	                		<tr>
+	                			<th>KETERANGAN</th>
+	                			<th title="pelayanan * konversi">JP-{{jenisJaspel.namaJaspel}}</th>
+	                			<th title="JP-{{jenisJaspel.namaJaspel}} * {{persentaseJaspel.direksi}}% Direksi">DIREKSI</th>
+	                			<th title="JP-{{jenisJaspel.namaJaspel}} * {{persentaseJaspel.jasa}}% Jasa">JASA</th>
+	                			<th title="Jasa * {{persentaseJaspel.jpu}}% JPU">JPU</th>
+	                			<th title="Jasa * {{persentaseJaspel.jpl}}% JPL">JPL</th>
+	                			<th title="JPL - (JPL * {{persentaseJaspel.admin}}% Admin)">JPL-FIX</th>
+	                		</tr>
+	                	</thead>
+			            	<?php 
+	                	$qJenisJaspel = "SELECT 
+	                		*
+	                		FROM \Jaspel\Models\VSebelumKlaim WHERE idRuangan = '".$sebelumKlaim->idRuangan."' AND idPeriode = '".$klaimJaspel->idPeriode."' AND statusKomplit = 1"; 
+	                	$findJenisJaspel = $this->modelsManager->executeQuery($qJenisJaspel); 
+	                	?>
+		                <tbody>
+		                	{% for jaspel in findJenisJaspel %}
+					    				<tr {% if jaspel.statusPelayanan == "jpu" AND jaspel.pelayanan > 0 %} class="text-primary" {% endif %}>
+						    				<td>
+						    					{{jaspel.namaPelayanan}} | {{jaspel.idJplp}}
+						    				</td>
+						    				<td>
+						    					{# Jasa Pelayanan setelah konversi #}
+									      	{% set konversiPelayanan = jaspel.pelayanan * pembagi %}
+													<?php $konversiPelayanan = number_format((float)$konversiPelayanan, 2, '.', '') ?>
+						    					<span class="pull-right">Rp. <input type="text" name="konversiPelayanan" class="rupiah input-no-style" value="{{konversiPelayanan}}" disabled="disabled"></span>
+						    				</td>
+						    				<td>
+									      	{# Direksi #}
+									      	{% set direksi = (persentaseJaspel.direksi / 100) * konversiPelayanan %}
+													<?php $direksi = number_format((float)$direksi, 2, '.', '') ?>
+						    					<span class="pull-right">Rp. <input type="text" name="direksi" class="rupiah input-no-style" value="{{direksi}}" disabled="disabled"></span>
+						    				</td>
+						    				<td>
+									      	{# Jasa #}
+									      	{% set jasa = (persentaseJaspel.jasa / 100) * konversiPelayanan %}
+													<?php $jasa = number_format((float)$jasa, 2, '.', '') ?>
+						    					<span class="pull-right">Rp. <input type="text" name="jasa" class="rupiah input-no-style" value="{{jasa}}" disabled="disabled"></span>
+						    				</td>
+						    				<td>
+									      	{# JPU #}
+									      	{% if jaspel.statusPelayanan == 'jpu' %}
+									      		{% set jpu = jasa %}
+									      	{% else %}
+									      		{% set jpu = (persentaseJaspel.jpu / 100) * jasa %}
+									      	{% endif %}
+													<?php $jpu = number_format((float)$jpu, 2, '.', '') ?>
+						    					<span class="pull-right">Rp. <input type="text" name="jpu" class="rupiah input-no-style" value="{{jpu}}" disabled="disabled"></span>
+						    				</td>
+						    				<td>
+									      	{# JPL #}
+									      	{% if jaspel.statusPelayanan == 'jpu' %}
+									      		{% set jpl = 0 %}
+									      	{% else %}
+									      		{% set jpl = (persentaseJaspel.jpl / 100) * jasa %}
+									      	{% endif %}
+													<?php $jpl = number_format((float)$jpl, 2, '.', '') ?>
+						    					<span class="pull-right">Rp. <input type="text" name="jpl" class="rupiah input-no-style" value="{{jpl}}" disabled="disabled"></span>
+						    				</td>
+						    				<td>
+									      	{# JPLFIX #}
+									      	{% set jplFix = jpl - ((persentaseJaspel.admin / 100) * jpl) %}
+													<?php $jplFix = number_format((float)$jplFix, 2, '.', '') ?>
+						    					<span class="pull-right">
+							    					<form method="post" action="{{url('pengajuan-jaspel/detailPendapatan/'~jaspel.idJplp~'/'~jaspel.idRjp)}}">
+							    						<input type="hidden" name="jplFixKlaim" class="rupiah input-no-style" value="{{jplFix}}">
+							    						<button type="submit" name="detailKlaim" class="link">
+							    							Rp. <input type="text" name="jplFix" class="rupiah input-no-style" value="{{jplFix}}" disabled="disabled">
+							    						</button>
+							    					</form>
+						    					</span>
+						    				</td>
+					    				</tr>
+					    				{% endfor %}
+		                </tbody>
+				    			</table>
+	              </div>
+	            </div>
+	          </div>
+	          {% endfor %}
 
-	    	<div class="box-group" id="accordion1">
-	    		{# RUMUS KONVERSI #}
-          {% set totalPendapatan33 = 33 / 100 * (totalPendapatanTambahan + klaimJaspel.totalKlaim) %}
-          {% set pembagi = totalPendapatan33 / totalPengajuanPeriode %}
-          {% for sebelumKlaim in vSebelumKlaim %}
-          <div class="panel box box-info">
-            <div class="box-header with-border">
-              <h4 class="box-title">
-                <a data-toggle="collapse" data-parent="#accordion1" href="#collapse2{{loop.index}}" aria-expanded="false" class="">
-                  {{ sebelumKlaim.namaRuang }}
-                </a>
-              </h4>
-				      <div class="box-tools pull-right">
-				      	{% set totalKlaimPeriode = sebelumKlaim.jumlahTotalPengajuan * pembagi %}
-								<?php $totalKlaimPeriode = number_format((float)$totalKlaimPeriode, 2, '.', '') ?>
-				      	<h4 class="pull-right">Rp. <input type="text" class="rupiah" value="{{totalKlaimPeriode}}" style="background:none;border:none;width:150px;" disabled="disabled"></h4>
-				      </div>
-            </div>
-            <div id="collapse2{{loop.index}}" class="panel-collapse collapse" aria-expanded="false" style="">
-              <div class="box-body">
-                <table class="table table-hover">
-		            	<?php 
-                	$jenisJaspel = "SELECT * FROM \Jaspel\Models\VSebelumKlaim WHERE idRuangan = '".$sebelumKlaim->idRuangan."' AND idPeriode = '".$klaimJaspel->idPeriode."' AND statusKomplit = 1"; 
-                	$findJenisJaspel = $this->modelsManager->executeQuery($jenisJaspel); 
-                	?>
-                	{% for jaspel in findJenisJaspel %}
-			    				<tr>
-				    				<td>
-				    					{{jaspel.namaPelayanan}}
-				    				</td>
-				    				<td>
-				    					{% set totalKlaimJaspel = jaspel.totalPengajuan * pembagi %}
-											<?php $totalKlaimJaspel = number_format((float)$totalKlaimJaspel, 2, '.', '') ?>
-				    					<span class="pull-right">Rp. <input type="text" name="totalPengajuan" class="rupiah" value="{{totalKlaimJaspel}}" style="width: 140px;" disabled="disabled"></span>
-				    				</td>
-			    				</tr>
-			    				{% endfor %}
-			    			</table>
-              </div>
-            </div>
-          </div>
-          {% endfor %}
-
+	        </div> <!-- Accordion -->
         </div>
+        <!-- /.tab-pane -->
+        <div class="tab-pane" id="tab_2">
+          <div class="box-group" id="accordion2">
+	          <!-- we are adding the .panel class so bootstrap.js collapse plugin detects it -->
+	          {% for sebelumKlaim in vSebelumKlaim %}
+	          <div class="panel box box-info">
+	            <div class="box-header with-border">
+	              <h4 class="box-title">
+	                <a data-toggle="collapse" data-parent="#accordion2" href="#collapse{{loop.index}}" aria-expanded="false" class="">
+	                  {{ sebelumKlaim.namaRuang }}
+	                </a>
+	              </h4>
+					      <div class="box-tools pull-right">
+					      	<h4 class="pull-right">Rp. <input type="text" class="rupiah" value="{{sebelumKlaim.jumlahTotalPengajuan}}" style="background:none;border:none;width:150px;" disabled="disabled"></h4>
+					      </div>
+	            </div>
+	            <div id="collapse{{loop.index}}" class="panel-collapse collapse" aria-expanded="false" style="">
+	              <div class="box-body">
+	                <table class="table table-hover">
+			            	<?php 
+	                	$jenisJaspel = "SELECT * FROM \Jaspel\Models\VSebelumKlaim WHERE idRuangan = '".$sebelumKlaim->idRuangan."' AND idPeriode = '".$klaimJaspel->idPeriode."' AND statusKomplit = 1"; 
+	                	$findJenisJaspel = $this->modelsManager->executeQuery($jenisJaspel); 
+	                	?>
+	                	{% for jaspel in findJenisJaspel %}
+				    				<tr>
+					    				<td>
+					    					{{jaspel.namaPelayanan}}
+					    				</td>
+					    				<td>
+					    					<span class="pull-right">Rp. <input type="text" name="totalPengajuan" class="rupiah" value="{{jaspel.totalPengajuan}}" style="width: 140px;" disabled="disabled"></span>
+					    				</td>
+				    				</tr>
+				    				{% endfor %}
+				    			</table>
+	              </div>
+	            </div>
+	          </div>
+	          {% endfor %}
 
-	    </div>
-	    <!-- /.box-body -->
-	  </div>
-	  <!-- /.box -->
-	</div>
-	<!-- /.col-md-6 -->
-
-	<div class="col-md-6">
-	  <div class="box box-primary">
-	    <div class="box-header with-border">
-	      <h3 class="box-title">Sebelum Klaim</h3>
-	      <div class="box-tools pull-right">
-	      </div>
-	    </div>
-	    <!-- /.box-header -->
-
-	    <div class="box-body">
-
-	    	<div class="box-group" id="accordion2">
-          <!-- we are adding the .panel class so bootstrap.js collapse plugin detects it -->
-          {% for sebelumKlaim in vSebelumKlaim %}
-          <div class="panel box box-info">
-            <div class="box-header with-border">
-              <h4 class="box-title">
-                <a data-toggle="collapse" data-parent="#accordion2" href="#collapse{{loop.index}}" aria-expanded="false" class="">
-                  {{ sebelumKlaim.namaRuang }}
-                </a>
-              </h4>
-				      <div class="box-tools pull-right">
-				      	<h4 class="pull-right">Rp. <input type="text" class="rupiah" value="{{sebelumKlaim.jumlahTotalPengajuan}}" style="background:none;border:none;width:150px;" disabled="disabled"></h4>
-				      </div>
-            </div>
-            <div id="collapse{{loop.index}}" class="panel-collapse collapse" aria-expanded="false" style="">
-              <div class="box-body">
-                <table class="table table-hover">
-		            	<?php 
-                	$jenisJaspel = "SELECT * FROM \Jaspel\Models\VSebelumKlaim WHERE idRuangan = '".$sebelumKlaim->idRuangan."' AND idPeriode = '".$klaimJaspel->idPeriode."' AND statusKomplit = 1"; 
-                	$findJenisJaspel = $this->modelsManager->executeQuery($jenisJaspel); 
-                	?>
-                	{% for jaspel in findJenisJaspel %}
-			    				<tr>
-				    				<td>
-				    					{{jaspel.namaPelayanan}}
-				    				</td>
-				    				<td>
-				    					<span class="pull-right">Rp. <input type="text" name="totalPengajuan" class="rupiah" value="{{jaspel.totalPengajuan}}" style="width: 140px;" disabled="disabled"></span>
-				    				</td>
-			    				</tr>
-			    				{% endfor %}
-			    			</table>
-              </div>
-            </div>
-          </div>
-          {% endfor %}
-
+	        </div>
         </div>
-
-	    </div>
-	    <!-- /.box-body -->
-	  </div>
-	  <!-- /.box -->
+        <!-- /.tab-pane -->
+      </div>
+      <!-- /.tab-content -->
+    </div>
+    <!-- Tab -->
 	</div>
-	<!-- /.col-md-6 -->
+
 </div>
 
 
@@ -492,21 +569,45 @@ function addRow(tableID) {
 	var rowCount = table.rows.length;
 	// if(rowCount < 5){							// limit the user from creating fields more than your limits
 		var row = table.insertRow(rowCount);
-		var colCount = table.rows[0].cells.length;
-		for(var i=0; i<colCount; i++) {
-			var newcell = row.insertCell(i);
-			newcell.innerHTML = table.rows[0].cells[i].innerHTML;
-			Element.prototype.removeAttributes = function(...attrs) {
-			  attrs.forEach(attr => this.removeAttribute(attr))
-			}
-			table.rows[rowCount].cells[i].getElementsByTagName('input')[0].removeAttributes('disabled');
-			table.rows[rowCount].cells[i].getElementsByTagName('input')[0].removeAttributes('value');
-			table.rows[rowCount].cells[i].getElementsByTagName('input')[1].value = 0;
-			if (i == 0) {
-				table.rows[rowCount].cells[i].getElementsByTagName('input')[2].remove();
-			}
-			$('.rupiah').maskMoney({thousand: ',', decimal: '.', precision: 2});
-		}
+		var colCount = 3;
+		var newcell0 = row.insertCell(0);
+		newcell0.innerHTML = `
+			<td>
+				<label>Nama Pendapatan Tambahan</label> 
+  			<input type='text' name='namaPTambahan[]' class='form-control' required="required" value="">
+  			<input type="hidden" name="idPTambahan[]" value="">
+			</td>
+		`;
+		var newcell1 = row.insertCell(1);
+		newcell1.innerHTML = `
+			<td>
+				<label>Nominal</label>
+	      <input type='text' name='nominal[]' class='form-control rupiah' required="required" value="">
+	      <input type='hidden' name='idKPTambahan[]' value="">
+			</td>
+		`;
+		var newcell2 = row.insertCell(2);
+		newcell2.innerHTML = `
+			<td>
+				<a href="{{ url('pengajuan-jaspel/deleteKlaimTambahan/'~kpt.idKPTambahan) }}" class='text-danger' onclick="return confirm('Apakah Anda yakin?')">x</a>
+			</td>
+		`;
+		$('.rupiah').maskMoney({thousand: ',', decimal: '.', precision: 2});
+		// var colCount = table.rows[0].cells.length;
+		// for(var i=0; i<colCount; i++) {
+		// 	var newcell = row.insertCell(i);
+		// 	newcell.innerHTML = table.rows[0].cells[i].innerHTML;
+		// 	Element.prototype.removeAttributes = function(...attrs) {
+		// 	  attrs.forEach(attr => this.removeAttribute(attr))
+		// 	}
+		// 	table.rows[rowCount].cells[i].getElementsByTagName('input')[0].removeAttributes('disabled');
+		// 	table.rows[rowCount].cells[i].getElementsByTagName('input')[0].removeAttributes('value');
+		// 	table.rows[rowCount].cells[i].getElementsByTagName('input')[1].value = 0;
+		// 	if (i == 0) {
+		// 		table.rows[rowCount].cells[i].getElementsByTagName('input')[2].remove();
+		// 	}
+		// 	$('.rupiah').maskMoney({thousand: ',', decimal: '.', precision: 2});
+		// }
 
 	// }else{
 	// 	 alert("Maximum Passenger per ticket is 5.");
@@ -520,16 +621,12 @@ $("#form").submit(function(e){
 
 // Delete pendapatan tambahan
 $("#tableAddPendapatanTambahan").on("click", ".deleted", function (e){
-  // alert();
   e.preventDefault();
-  var table = document.getElementById("tableAddPendapatanTambahan");
-	var rowCount = table.rows.length;
-	if(rowCount <= 1) { 						// limit the user from removing all the fields
-		alert("Tidak bisa menghapus semua pendapatan tambahan.");
-	} else {
+	// var table = document.getElementById("tableAddPendapatanTambahan");
+	// var rowCount = table.rows.length;
+	if(confirm("Apakah Anda yakin?")) {
 		$(this).closest("tr").remove();
-	}
-  
+	} 
 });
 $(document).ready(function(){
 	$('.rupiah').maskMoney({thousand: ',', decimal: '.', precision: 2});

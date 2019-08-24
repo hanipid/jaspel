@@ -265,6 +265,9 @@ class PengajuanJaspelController extends ControllerBase
 		$klaimJaspel = KlaimJaspel::findFirstByIdKlaim($idKlaim);
 		$klaimPendapatanTambahan = KlaimPendapatanTambahan::findByIdKlaimJaspel($idKlaim);
 		$pendapatanTambahan = PendapatanTambahan::find();
+		$persentaseJaspel = PersentaseJaspel::findFirstByIdPJaspel(1);
+		$periodeJaspel = PeriodeJaspel::findFirstByIdPeriode($klaimJaspel->idPeriode);
+		$jenisJaspel = JenisJaspel::findFirstByIdJaspel($periodeJaspel->idJaspel);
 
 		if ($this->request->isPost()) {
 			$tglPencairan = $this->request->getPost('tglPencairan');
@@ -369,17 +372,19 @@ class PengajuanJaspelController extends ControllerBase
 			$this->response->redirect("pengajuan-jaspel/editKlaim/" . $idKlaim);
 		} // isPost()
 
-		$vSebelumKlaim = "SELECT idRuangan, namaRuang, sum(totalPengajuan) jumlahTotalPengajuan FROM \Jaspel\Models\VSebelumKlaim vsk WHERE idPeriode = '".$klaimJaspel->idPeriode."' AND statusKomplit = 1 GROUP BY idRuangan"; 
+		$vSebelumKlaim = "SELECT idRuangan, namaRuang, sum(pelayanan) totalPelayananRuangan, sum(totalPengajuan) jumlahTotalPengajuan FROM \Jaspel\Models\VSebelumKlaim vsk WHERE idPeriode = '".$klaimJaspel->idPeriode."' AND statusKomplit = 1 GROUP BY idRuangan"; 
 		$qVSebelumKlaim = $this->modelsManager->executeQuery($vSebelumKlaim); 
 
-		$totalPengajuanPeriode = "SELECT idPeriode, sum(totalPengajuan) totalPengajuanPeriode FROM \Jaspel\Models\VSebelumKlaim vsk WHERE idPeriode = '".$klaimJaspel->idPeriode."' AND statusKomplit = 1 GROUP BY idPeriode";
-		$qTotalPengajuanPeriode = $this->modelsManager->executeQuery($totalPengajuanPeriode);
+		$totalPelayananPeriode = "SELECT idPeriode, sum(pelayanan) pelayanan FROM \Jaspel\Models\VSebelumKlaim vsk WHERE idPeriode = '".$klaimJaspel->idPeriode."' AND statusKomplit = 1 GROUP BY idPeriode";
+		$qTotalPelayananPeriode = $this->modelsManager->executeQuery($totalPelayananPeriode);
 
 		$this->view->setVars([
 			'klaimJaspel' => $klaimJaspel,
 			'klaimPendapatanTambahan' => $klaimPendapatanTambahan,
 			'vSebelumKlaim' => $qVSebelumKlaim,
-			'totalPengajuanPeriode' => $qTotalPengajuanPeriode[0]->totalPengajuanPeriode
+			'totalPelayananPeriode' => $qTotalPelayananPeriode[0]->pelayanan,
+			'persentaseJaspel' => $persentaseJaspel,
+			'jenisJaspel' => $jenisJaspel
 		]);
 	}
 
@@ -796,6 +801,11 @@ class PengajuanJaspelController extends ControllerBase
 				'2' => $rjp->idRuangan
 			]
 		]);
+
+		$jplFixKlaim = $this->request->getPost("jplFixKlaim", "float");
+		if ($this->request->isPost() AND $jplFixKlaim) {
+			$this->view->jplFixKlaim = $jplFixKlaim;
+		}
 
 		$totalIndexDokter = 0;
 		$totalIndexPerawat = 0;
