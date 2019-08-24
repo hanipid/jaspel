@@ -1,6 +1,5 @@
 {{ javascript_include("js/jquery.maskMoney.311.min.js") }}
 
-
 {{ content() }}
 
 <div class="row">
@@ -494,9 +493,9 @@
 						    					<span class="pull-right">
 							    					<form method="post" action="{{url('pengajuan-jaspel/detailPendapatan/'~jaspel.idJplp~'/'~jaspel.idRjp)}}">
 							    						<input type="hidden" name="jplFixKlaim" class="rupiah input-no-style" value="{{jplFix}}">
-							    						<button type="submit" name="detailKlaim" class="link">
-							    							Rp. <input type="text" name="jplFix" class="rupiah input-no-style" value="{{jplFix}}" disabled="disabled">
-							    						</button>
+							    						
+							    						Rp. <input type="text" name="jplFix" class="rupiah input-no-style" value="{{jplFix}}" disabled="disabled">
+							    						<button type="submit" name="detailKlaim" class="btn btn-sm btn-primary" style="padding: 0px 4px; font-size:14px;line-height:1.4;"><i class="fa fa-list"></i></button>
 							    					</form>
 						    					</span>
 						    				</td>
