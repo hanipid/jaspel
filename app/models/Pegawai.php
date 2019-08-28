@@ -68,7 +68,12 @@ class Pegawai extends Model
   public function initialize()
   {
     $this->belongsTo('idGolongan', __NAMESPACE__ . '\Golongan', 'idGolongan', [
-      'reusable' => true
+      'reusable' => true,
+      'alias' => 'golongan'
+    ]);
+    $this->belongsTo('idJabatan', __NAMESPACE__ . '\Jabatan', 'idJabatan', [
+      'reusable' => true,
+      'alias' => 'jabatan'
     ]);
     $this->hasMany('idPegawai', __NAMESPACE__ . '\BerkasPegawai', 'idPegawai', [
       'foreignKey' => [

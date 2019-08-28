@@ -14,6 +14,8 @@ use Jaspel\Models\PendapatanTambahan;
 use Jaspel\Models\KlaimJaspel;
 use Jaspel\Models\KlaimPendapatanTambahan;
 use Jaspel\Models\VSebelumKlaim;
+use Jaspel\Models\DireksiManajemen;
+use Jaspel\Models\Pegawai;
 
 /**
  * Controller Jenis Jasa Pelayanan
@@ -154,7 +156,7 @@ class PengajuanJaspelController extends ControllerBase
 			$resetIdJplRuang = $this->request->getPost('resetIdJplRuang');
 			$jplRuang = JplRuang::findFirstById($resetIdJplRuang);
 			$jplRuang->statusKomplit = 0;
-// die($idPeriode . $idRuangan);
+
 			if (!$jplRuang->save()) {
 				foreach ($jplRUang->getMessages() as $m) {
 					$this->flashSession->error('Pengajuan error.');
@@ -378,13 +380,25 @@ class PengajuanJaspelController extends ControllerBase
 		$totalPelayananPeriode = "SELECT idPeriode, sum(pelayanan) pelayanan FROM \Jaspel\Models\VSebelumKlaim vsk WHERE idPeriode = '".$klaimJaspel->idPeriode."' AND statusKomplit = 1 GROUP BY idPeriode";
 		$qTotalPelayananPeriode = $this->modelsManager->executeQuery($totalPelayananPeriode);
 
+		$direksiManajemen = DireksiManajemen::find([
+			'statusInOut = ?1 AND statusAktif = ?2 AND (statusPosisi = ?3 OR statusPosisi = ?4)',
+			'bind' => [
+				'1' => 'in',
+				'2' => 1,
+				'3' => 1,
+				'4' => 2
+			],
+			'order' => 'statusPosisi'
+		]);
+
 		$this->view->setVars([
 			'klaimJaspel' => $klaimJaspel,
 			'klaimPendapatanTambahan' => $klaimPendapatanTambahan,
 			'vSebelumKlaim' => $qVSebelumKlaim,
 			'totalPelayananPeriode' => $qTotalPelayananPeriode[0]->pelayanan,
 			'persentaseJaspel' => $persentaseJaspel,
-			'jenisJaspel' => $jenisJaspel
+			'jenisJaspel' => $jenisJaspel,
+			'direksiManajemen' => $direksiManajemen
 		]);
 	}
 

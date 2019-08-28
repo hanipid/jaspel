@@ -1251,8 +1251,8 @@ $(document).ready(function() {
 
 <script>
 if ("{{jplRuang.statusKomplit}}" == 1 || "{{nominalJplFix}}" == 0 || "{{auth.getIdentity()['profile']}}" != "Pelayanan") {
-  $(".edit").attr("disabled", "disabled")
-  $("input[type='submit']").attr("disabled", "disabled")
-  $("input[data-toggle='toggle']").attr("disabled", "disabled")
+  // $(".edit").attr("disabled", "disabled")
+  // $("input[type='submit']").attr("disabled", "disabled")
+  // $("input[data-toggle='toggle']").attr("disabled", "disabled")
 }
 </script>

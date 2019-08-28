@@ -132,7 +132,7 @@ $(document).ready(function() {
   });
 
   if ("{{jplRuang.statusKomplit}}" == 1 || "{{auth.getIdentity()['profile']}}" != "Pelayanan") {
-    $(".edit").attr("disabled", "disabled")
+    // $(".edit").attr("disabled", "disabled")
   }
 });
 </script>

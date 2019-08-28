@@ -1,5 +1,19 @@
 {{ javascript_include("js/jquery.maskMoney.311.min.js") }}
 
+	            <style type="text/css">
+	            	.table.table-hover input {
+	            		max-width: 120px;
+	            		border: 0;
+									padding: 0;
+									background: none;
+	            	}
+	            	.table.table-hover th {
+	            		text-align: center;
+	            	}
+	            	.table.table-hover td {
+	            		padding: 8px 0;
+	            	}
+	            </style>
 {{ content() }}
 
 <div class="row">
@@ -367,9 +381,11 @@
       <ul class="nav nav-tabs">
         <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">Pendapatan JPL Sesudah Klaim (Konversi {{jenisJaspel.konversiJaspel}}%)</a></li>
         <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">Pendapatan Total Sebelum Klaim</a></li>
+        <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false">Direksi</a></li>
         <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>
       </ul>
       <div class="tab-content">
+
         <div class="tab-pane active" id="tab_1">
 
           <div class="box-group" id="accordion">
@@ -384,6 +400,7 @@
 	          <br>totalPendapatanKonversi = <input type="text" name="wewe" class="rupiah" value="{{totalPendapatanKonversi}}">
 	          <br>totalPelayananPeriode = <input type="text" name="wewe" class="rupiah" value="{{totalPelayananPeriode}}">
 	          <br>pembagi = {{pembagi}}#}
+	          {% set totalDireksi = 0 %}
 	          {% for sebelumKlaim in vSebelumKlaim %}
 	          <div class="panel box box-info">
 	            <div class="box-header with-border">
@@ -408,20 +425,6 @@
 					      	<h4 class="pull-right">Rp. <input type="text" class="rupiah" value="{{admin}}" style="background:none;border:none;width:150px;" disabled="disabled"></h4>
 					      </div>
 	            </div>
-	            <style type="text/css">
-	            	.table.table-hover input {
-	            		max-width: 120px;
-	            		border: 0;
-									padding: 0;
-									background: none;
-	            	}
-	            	.table.table-hover th {
-	            		text-align: center;
-	            	}
-	            	.table.table-hover td {
-	            		padding: 8px 0;
-	            	}
-	            </style>
 	            <div id="collapse2{{loop.index}}" class="panel-collapse collapse" aria-expanded="false" style="">
 	              <div class="box-body">
 	                <table class="table table-hover">
@@ -442,7 +445,7 @@
 	                		FROM \Jaspel\Models\VSebelumKlaim WHERE idRuangan = '".$sebelumKlaim->idRuangan."' AND idPeriode = '".$klaimJaspel->idPeriode."' AND statusKomplit = 1"; 
 	                	$findJenisJaspel = $this->modelsManager->executeQuery($qJenisJaspel); 
 	                	?>
-		                <tbody>
+	                	<tbody>
 		                	{% for jaspel in findJenisJaspel %}
 					    				<tr {% if jaspel.statusPelayanan == "jpu" AND jaspel.pelayanan > 0 %} class="text-primary" {% endif %}>
 						    				<td>
@@ -458,6 +461,7 @@
 									      	{# Direksi #}
 									      	{% set direksi = (persentaseJaspel.direksi / 100) * konversiPelayanan %}
 													<?php $direksi = number_format((float)$direksi, 2, '.', '') ?>
+						    					{% set totalDireksi += direksi %}
 						    					<span class="pull-right">Rp. <input type="text" name="direksi" class="rupiah input-no-style" value="{{direksi}}" disabled="disabled"></span>
 						    				</td>
 						    				<td>
@@ -511,6 +515,7 @@
 	        </div> <!-- Accordion -->
         </div>
         <!-- /.tab-pane -->
+
         <div class="tab-pane" id="tab_2">
           <div class="box-group" id="accordion2">
 	          <!-- we are adding the .panel class so bootstrap.js collapse plugin detects it -->
@@ -552,6 +557,41 @@
 	        </div>
         </div>
         <!-- /.tab-pane -->
+
+        <div class="tab-pane" id="tab_3">
+        	<table class="table table-hover">
+        		<thead>
+        			<tr>
+        				<th>Nama</th>
+        				<th>Jabatan</th>
+        				<th>BPJS {{totalDireksi}}</th>
+        				<th>Pajak 15%</th>
+        				<th>Jumlah Diterima</th>
+        			</tr>
+        		</thead>
+
+        		<tbody>
+        			{% for dm in direksiManajemen %}
+        			<tr>
+        				<td>{{ dm.pegawai.namaPegawai }}</td>
+        				<td>{{ dm.pegawai.jabatan.namaJabatan }}</td>
+        				<td>
+        					{% set direksi = totalDireksi * dm.nilaiPersentase / 100 %}
+									<?php $direksi = number_format((float)$direksi, 2, '.', '') ?>
+        					Rp. <input type="text" name="direksi" class="rupiah input-no-style" value="{{ direksi }}" disabled="disabled">
+        				</td>
+        				<td>
+        					{% set pajak = direksi * dm.pegawai.golongan.pajak / 100 %}
+									<?php $pajak = number_format((float)$pajak, 2, '.', '') ?>
+        					<input type="text" name="pajak" class="rupiah input-no-style" value="{{ pajak }}" disabled="disabled">
+        				</td>
+        				<td><input type="text" name="pajak" class="rupiah input-no-style" value="{{ direksi - pajak }}" disabled="disabled"></td>
+        			</tr>
+        			{% endfor %}
+        		</tbody>
+        	</table>
+        </div>
+
       </div>
       <!-- /.tab-content -->
     </div>
