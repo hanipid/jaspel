@@ -382,6 +382,7 @@
         <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">Pendapatan JPL Sesudah Klaim (Konversi {{jenisJaspel.konversiJaspel}}%)</a></li>
         <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">Pendapatan Total Sebelum Klaim</a></li>
         <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false">Direksi</a></li>
+        <li class=""><a href="#tab_4" data-toggle="tab" aria-expanded="false">Admin / Manajemen</a></li>
         <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>
       </ul>
       <div class="tab-content">
@@ -564,33 +565,87 @@
         			<tr>
         				<th>Nama</th>
         				<th>Jabatan</th>
-        				<th>BPJS {{totalDireksi}}</th>
+        				<th>BPJS</th>
         				<th>Pajak 15%</th>
         				<th>Jumlah Diterima</th>
         			</tr>
         		</thead>
 
         		<tbody>
-        			{% for dm in direksiManajemen %}
+        			{% set listPegawaiDireksi = [] %}
+        			{% set listDireksi = [] %}
+        			{% for d in dataDireksi %}
         			<tr>
-        				<td>{{ dm.pegawai.namaPegawai }}</td>
-        				<td>{{ dm.pegawai.jabatan.namaJabatan }}</td>
+        				<td>{{ d.pegawai.namaPegawai }}</td>
+        				<td>{{ d.pegawai.jabatan.namaJabatan }}</td>
         				<td>
-        					{% set direksi = totalDireksi * dm.nilaiPersentase / 100 %}
+        					{% set direksi = totalDireksi * d.nilaiPersentase / 100 %}
 									<?php $direksi = number_format((float)$direksi, 2, '.', '') ?>
         					Rp. <input type="text" name="direksi" class="rupiah input-no-style" value="{{ direksi }}" disabled="disabled">
         				</td>
         				<td>
-        					{% set pajak = direksi * dm.pegawai.golongan.pajak / 100 %}
+        					{% set pajak = direksi * d.pegawai.golongan.pajak / 100 %}
 									<?php $pajak = number_format((float)$pajak, 2, '.', '') ?>
-        					<input type="text" name="pajak" class="rupiah input-no-style" value="{{ pajak }}" disabled="disabled">
+        					Rp. <input type="text" name="pajak" class="rupiah input-no-style" value="{{ pajak }}" disabled="disabled">
         				</td>
-        				<td><input type="text" name="pajak" class="rupiah input-no-style" value="{{ direksi - pajak }}" disabled="disabled"></td>
+        				<td>Rp. <input type="text" name="total" class="rupiah input-no-style" value="{{ direksi - pajak }}" disabled="disabled"></td>
+        			</tr>
+        			<?php 
+        				if ($d->statusPosisi == 2) {
+        					array_push($listPegawaiDireksi, $d->idPegawai); 
+        					array_push($listDireksi, $direksi); 
+        				}
+        			?>
+        			{% endfor %}
+        		</tbody>
+        	</table>
+        </div>
+        <!-- /.tab-pane -->
+{{ stylesheet_link("vendor/almasaeed2010/adminlte/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css") }}
+        <div class="tab-pane" id="tab_4">
+        	<table id="tabel-manajemen" class="table table-hover">
+        		<thead>
+        			<tr>
+        				<th>Nama</th>
+        				<th>Jabatan</th>
+        				<th>BPJS</th>
+        				<th>Direksi</th>
+        				<th>Jumlah Diterima</th>
+        			</tr>
+        		</thead>
+
+        		<tbody>
+        			{% set totalAdmin = ((totalPelayananPeriode * persentaseJaspel.jasa / 100) * persentaseJaspel.jpl / 100) * persentaseJaspel.admin / 100 %}
+        			{% set i = 0 %}
+        			{% for m in dataManajemen %}
+        			<tr>
+        				<td>{{ m.pegawai.namaPegawai }} {{m.idPegawai}}</td>
+        				<td>{{ m.pegawai.jabatan.namaJabatan }}</td>
+        				<td>
+        					{% set manajemen = totalAdmin * m.nilaiPersentase / 100 %}
+									<?php $manajemen = number_format((float)$manajemen, 2, '.', '') ?>
+        					Rp. <input type="text" name="manajemen" class="rupiah input-no-style" value="{{ manajemen }}" disabled="disabled">
+        				</td>
+        				<td>
+        					<?php if(in_array($m->idPegawai, $listPegawaiDireksi)) { ?>
+	        					{% set direksi = totalDireksi * m.nilaiPersentase / 100 %}
+										<?php $direksi = number_format((float)$direksi, 2, '.', '') ?>
+	        					Rp. <input type="text" name="direksi" class="rupiah input-no-style" value="{{ listDireksi[i] }}" disabled="disabled">
+        					<?php $i++; } else { echo "-"; } ?>
+        				</td>
+        				<td>
+        					<?php if(in_array($m->idPegawai, $listPegawaiDireksi)) { ?>
+        						Rp. <input type="text" name="pajak" class="rupiah input-no-style" value="{{ manajemen + listDireksi[i - 1] }}" disabled="disabled">
+        					<?php } else { ?>
+        						Rp. <input type="text" name="pajak" class="rupiah input-no-style" value="{{ manajemen }}" disabled="disabled">
+        					<?php } ?>
+        				</td>
         			</tr>
         			{% endfor %}
         		</tbody>
         	</table>
         </div>
+        <!-- /.tab-pane -->
 
       </div>
       <!-- /.tab-content -->
@@ -602,7 +657,14 @@
 
 
 
+{{ javascript_include("vendor/almasaeed2010/adminlte/bower_components/datatables.net/js/jquery.dataTables.min.js") }}
+{{ javascript_include("vendor/almasaeed2010/adminlte/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js") }}
 <script>
+$(document).ready(function() {
+  $('#tabel-manajemen').DataTable({
+    	"order": []
+    });
+});
 function addRow(tableID) {
 	var table = document.getElementById(tableID);
 	var rowCount = table.rows.length;

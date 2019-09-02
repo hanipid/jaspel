@@ -380,13 +380,23 @@ class PengajuanJaspelController extends ControllerBase
 		$totalPelayananPeriode = "SELECT idPeriode, sum(pelayanan) pelayanan FROM \Jaspel\Models\VSebelumKlaim vsk WHERE idPeriode = '".$klaimJaspel->idPeriode."' AND statusKomplit = 1 GROUP BY idPeriode";
 		$qTotalPelayananPeriode = $this->modelsManager->executeQuery($totalPelayananPeriode);
 
-		$direksiManajemen = DireksiManajemen::find([
+		$direksi = DireksiManajemen::find([
 			'statusInOut = ?1 AND statusAktif = ?2 AND (statusPosisi = ?3 OR statusPosisi = ?4)',
 			'bind' => [
 				'1' => 'in',
 				'2' => 1,
 				'3' => 1,
 				'4' => 2
+			],
+			'order' => 'statusPosisi'
+		]);
+
+		$manajemen = DireksiManajemen::find([
+			'statusInOut = ?1 AND statusAktif = ?2 AND statusPosisi = ?3',
+			'bind' => [
+				'1' => 'in',
+				'2' => 1,
+				'3' => 3,
 			],
 			'order' => 'statusPosisi'
 		]);
@@ -398,7 +408,8 @@ class PengajuanJaspelController extends ControllerBase
 			'totalPelayananPeriode' => $qTotalPelayananPeriode[0]->pelayanan,
 			'persentaseJaspel' => $persentaseJaspel,
 			'jenisJaspel' => $jenisJaspel,
-			'direksiManajemen' => $direksiManajemen
+			'dataDireksi' => $direksi,
+			'dataManajemen' => $manajemen
 		]);
 	}
 

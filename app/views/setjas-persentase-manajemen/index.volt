@@ -1,3 +1,4 @@
+{{ stylesheet_link("vendor/almasaeed2010/adminlte/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css") }}
 {{ content() }}
 
 <div class="col-md-12">
@@ -12,12 +13,14 @@
 
     <div class="box-body">
 
-      <table class="table table-bordered table-striped" align="center">
+      <table id="table1" class="table dataTable">
         <thead>
           <tr>
             <th width="4%" class="text-center">#</th>
             <th>Nama</th>
             <th width="10%">Persentase</th>
+            <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -50,3 +53,12 @@
   <!-- /.box -->
 </div>
 <!-- /.col-md-12 -->
+
+
+{{ javascript_include("vendor/almasaeed2010/adminlte/bower_components/datatables.net/js/jquery.dataTables.min.js") }}
+{{ javascript_include("vendor/almasaeed2010/adminlte/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js") }}
+<script>
+$(document).ready(function() {
+  $('#table1').DataTable();
+});
+</script>
