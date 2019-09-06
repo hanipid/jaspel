@@ -6,7 +6,7 @@
       <div class="box-header with-border">
         <h3 class="box-title">{{manajemen.pegawai.namaPegawai|capitalize}}</h3>
         <div class="box-tools pull-right">
-          <a href="{{url('setjas-persentase-direksi')}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
+          <a href="{{url('setjas-persentase-manajemen')}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
         </div>
       </div>
       <!-- /.box-header -->

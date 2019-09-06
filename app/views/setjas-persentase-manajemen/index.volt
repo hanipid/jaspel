@@ -11,6 +11,12 @@
     </div>
     <!-- /.box-header -->
 
+
+          {% set persentase1 = 0 %}
+          {% for m in manajemen %}
+          {% set persentase1 += m.nilaiPersentase %}
+          {% endfor %}
+
     <div class="box-body">
 
       <table id="table1" class="table dataTable">
@@ -18,14 +24,13 @@
           <tr>
             <th width="4%" class="text-center">#</th>
             <th>Nama</th>
-            <th width="10%">Persentase</th>
+            <th width="10%">{{persentase1}}%</th>
             <th></th>
             <th></th>
           </tr>
         </thead>
         <tbody>
           
-          {% set persentase1 = 0 %}
           {% for m in manajemen %}
           <tr>
             <td class="text-center">{{loop.index}}</td>
@@ -34,7 +39,7 @@
             <td width="2%">{{ link_to("setjas-persentase-manajemen/edit/" ~ m.id, '<i class="glyphicon glyphicon-pencil"></i> Edit', "class": "btn btn-primary") }}</td>
             <td width="2%">{{ link_to("setjas-persentase-manajemen/delete/" ~ m.id, '<i class="glyphicon glyphicon-remove"></i> Non Aktif', "class": "btn btn-danger", "onclick": "return confirm('Are you sure?')") }}</td>
           </tr>
-          {% set persentase1 += m.nilaiPersentase %}
+          {#% set persentase1 += m.nilaiPersentase %#}
           {% endfor %}
       
         </tbody>
