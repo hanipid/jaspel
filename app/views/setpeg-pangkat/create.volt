@@ -8,7 +8,7 @@
       <div class="box-header with-border">
         <h3 class="box-title">Form Data Pangkat</h3>
         <div class="box-tools pull-right">
-          <a href="{{url('setpeg-golongan')}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
+          <a href="{{url('setpeg-pangkat')}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
         </div>
       </div>
       <!-- /.box-header -->
