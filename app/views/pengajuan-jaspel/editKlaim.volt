@@ -1,7 +1,8 @@
 {{ javascript_include("js/jquery.maskMoney.311.min.js") }}
 
 	            <style type="text/css">
-	            	.table.table-hover input {
+	            	.table.table-hover input,
+	            	.input-no-style {
 	            		max-width: 120px;
 	            		border: 0;
 									padding: 0;
@@ -54,8 +55,6 @@
 
 		    	<h4>Pendapatan Tambahan</h4>
 
-
-
 		    	<input type="button" value="Tambah Data" class="btn" onClick="addRow('tableAddPendapatanTambahan')" /> 
 
 		    	<table id="tableAddPendapatanTambahan">
@@ -83,6 +82,11 @@
 
 		    	</table>
 					<div id="formInputGroup"></div>
+		    	
+		    	<hr>
+
+		    	<h4>Total Pendapatan</h4>
+		    	{{ text_field("totalKlaim", "class": "rupiah input-no-style", "value": klaimJaspel.totalKlaim + totalPendapatanTambahan, "style": "font-size: 32px; max-width: 100%;", "disabled": "disabled") }}
 
 		    </div>
 		    <!-- /.box-body -->
@@ -566,7 +570,7 @@
         				<th>Nama</th>
         				<th>Jabatan</th>
         				<th>BPJS</th>
-        				<th>Pajak 15%</th>
+        				<th>Pajak</th>
         				<th>Jumlah Diterima</th>
         			</tr>
         		</thead>
@@ -574,6 +578,7 @@
         		<tbody>
         			{% set listPegawaiDireksi = [] %}
         			{% set listDireksi = [] %}
+        			{% set totalPenerimaanDireksi = 0 %}
         			{% for d in dataDireksi %}
         			<tr>
         				<td>{{ d.pegawai.namaPegawai }}</td>
@@ -596,8 +601,16 @@
         					array_push($listDireksi, $direksi); 
         				}
         			?>
+        			{% set totalPenerimaanDireksi += (direksi - pajak) %}
         			{% endfor %}
         		</tbody>
+
+        		<tfoot>
+        			<tr>
+        				<th colspan="4"></th>
+        				<th>Rp. <input type="text" name="totalPenerimaanDireksi" class="rupiah input-no-style" value="{{ totalPenerimaanDireksi }}" disabled="disabled"></th>
+        			</tr>
+        		</tfoot>
         	</table>
         </div>
         <!-- /.tab-pane -->
@@ -608,8 +621,7 @@
         			<tr>
         				<th>Nama</th>
         				<th>Jabatan</th>
-        				<th>BPJS</th>
-        				<th>Direksi</th>
+        				<th>Persentase</th>
         				<th>Jumlah Diterima</th>
         			</tr>
         		</thead>
@@ -617,16 +629,18 @@
         		<tbody>
         			{% set totalAdmin = ((totalPelayananPeriode * persentaseJaspel.jasa / 100) * persentaseJaspel.jpl / 100) * persentaseJaspel.admin / 100 %}
         			{% set i = 0 %}
+        			{% set totalManajemen = 0 %}
         			{% for m in dataManajemen %}
         			<tr>
-        				<td>{{ m.pegawai.namaPegawai }} {{m.idPegawai}}</td>
+        				<td>{{ m.pegawai.namaPegawai }}</td>
         				<td>{{ m.pegawai.jabatan.namaJabatan }}</td>
-        				<td>
+        				<td class="text-center">{{ m.nilaiPersentase }}%</td>
+        				<td class="text-center">
         					{% set manajemen = totalAdmin * m.nilaiPersentase / 100 %}
 									<?php $manajemen = number_format((float)$manajemen, 2, '.', '') ?>
-        					Rp. <input type="text" name="manajemen" class="rupiah input-no-style" value="{{ manajemen }}" disabled="disabled">
+        					Rp. <input type="text" name="manajemen" class="rupiah input-no-style" value="{{ manajemen }}" disabled="disabled" data-thousands="," data-decimal="." data-precision="2">
         				</td>
-        				<td>
+        				{#<td>
         					<?php if(in_array($m->idPegawai, $listPegawaiDireksi)) { ?>
 	        					{% set direksi = totalDireksi * m.nilaiPersentase / 100 %}
 										<?php $direksi = number_format((float)$direksi, 2, '.', '') ?>
@@ -639,10 +653,18 @@
         					<?php } else { ?>
         						Rp. <input type="text" name="pajak" class="rupiah input-no-style" value="{{ manajemen }}" disabled="disabled">
         					<?php } ?>
-        				</td>
+        				</td>#}
         			</tr>
+        			{% set totalManajemen += manajemen %}
         			{% endfor %}
         		</tbody>
+
+        		<tfoot>
+        			<tr>
+        				<th colspan="3"></th>
+        				<th>Rp. <input type="text" name="totalManajemen" class="rupiah input-no-style" value="{{ totalManajemen }}" disabled="disabled"></th>
+        			</tr>
+        		</tfooter>
         	</table>
         </div>
         <!-- /.tab-pane -->
@@ -662,8 +684,11 @@
 <script>
 $(document).ready(function() {
   $('#tabel-manajemen').DataTable({
-    	"order": []
-    });
+  	"order": []
+  });
+	$("#tabel-manajemen").on( 'page.dt', function () {
+	  $('.rupiah').maskMoney({thousand: ',', decimal: '.', precision: 2});
+	});
 });
 function addRow(tableID) {
 	var table = document.getElementById(tableID);
@@ -729,6 +754,7 @@ $("#tableAddPendapatanTambahan").on("click", ".deleted", function (e){
 		$(this).closest("tr").remove();
 	} 
 });
+
 $(document).ready(function(){
 	$('.rupiah').maskMoney({thousand: ',', decimal: '.', precision: 2});
 	$('.rupiah').each(function(){ // function to apply mask on load!
