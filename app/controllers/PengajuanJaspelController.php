@@ -401,6 +401,31 @@ class PengajuanJaspelController extends ControllerBase
 			'order' => 'statusPosisi'
 		]);
 
+		$pegawaiJpu = "SELECT 
+		p.idPegawai idPegawai,
+		p.namaPegawai namaPegawai, 
+		pr.idRuangan idRuangan, 
+    r.namaRuang namaRuang,
+		g.namaGolongan namaGolongan, 
+		(p.indexIB+p.indexIK+p.indexIR+p.indexIE+p.indexIP+p.indexPerform+p.skorTambahan) indexPegawai 
+		FROM \Jaspel\Models\PegawaiRuangan pr 
+		JOIN \Jaspel\Models\Pegawai p ON pr.idPegawai=p.idPegawai 
+		JOIN \Jaspel\Models\Golongan g ON g.idGolongan=p.idGolongan 
+    JOIN \Jaspel\Models\Ruangan r ON r.id=pr.idRuangan
+		WHERE pr.statusInOut = 'in' 
+		AND pr.statusAktif = 1 
+		ORDER BY pr.idRUangan ASC, p.namaPegawai ASC";
+		$pegawaiJpu = $this->modelsManager->executeQuery($pegawaiJpu);
+
+		$totalIndexPegawai = "SELECT 
+		sum(p.indexIB+p.indexIK+p.indexIR+p.indexIE+p.indexIP+p.indexPerform+p.skorTambahan) totalIndexPegawai 
+		FROM \Jaspel\Models\PegawaiRuangan pr 
+		JOIN \Jaspel\Models\Pegawai p ON pr.idPegawai=p.idPegawai 
+		JOIN \Jaspel\Models\Golongan g ON g.idGolongan=p.idGolongan 
+		WHERE pr.statusInOut = 'in' 
+		AND pr.statusAktif = 1";
+		$totalIndexPegawai = $this->modelsManager->executeQuery($totalIndexPegawai)[0]->totalIndexPegawai;
+
 		$this->view->setVars([
 			'klaimJaspel' => $klaimJaspel,
 			'klaimPendapatanTambahan' => $klaimPendapatanTambahan,
@@ -409,7 +434,9 @@ class PengajuanJaspelController extends ControllerBase
 			'persentaseJaspel' => $persentaseJaspel,
 			'jenisJaspel' => $jenisJaspel,
 			'dataDireksi' => $direksi,
-			'dataManajemen' => $manajemen
+			'dataManajemen' => $manajemen,
+			'totalIndexPegawai' => $totalIndexPegawai,
+			'pegawaiJpu' => $pegawaiJpu
 		]);
 	}
 

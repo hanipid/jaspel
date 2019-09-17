@@ -387,6 +387,7 @@
         <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">Pendapatan Total Sebelum Klaim</a></li>
         <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false">Direksi</a></li>
         <li class=""><a href="#tab_4" data-toggle="tab" aria-expanded="false">Admin / Manajemen</a></li>
+        <li class=""><a href="#tab_5" data-toggle="tab" aria-expanded="false">JPU</a></li>
         <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>
       </ul>
       <div class="tab-content">
@@ -406,11 +407,12 @@
 	          <br>totalPelayananPeriode = <input type="text" name="wewe" class="rupiah" value="{{totalPelayananPeriode}}">
 	          <br>pembagi = {{pembagi}}#}
 	          {% set totalDireksi = 0 %}
+	          {% set totalJpu = 0 %}
 	          {% for sebelumKlaim in vSebelumKlaim %}
 	          <div class="panel box box-info">
 	            <div class="box-header with-border">
 	              <h4 class="box-title">
-	                <a data-toggle="collapse" data-parent="#accordion" href="#collapse2{{loop.index}}" aria-expanded="false" class="">
+	                <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{loop.index}}" aria-expanded="false" class="">
 	                  {{ sebelumKlaim.namaRuang }}
 	                </a>
 	              </h4>
@@ -430,7 +432,7 @@
 					      	<h4 class="pull-right">Rp. <input type="text" class="rupiah" value="{{admin}}" style="background:none;border:none;width:150px;" disabled="disabled"></h4>
 					      </div>
 	            </div>
-	            <div id="collapse2{{loop.index}}" class="panel-collapse collapse" aria-expanded="false" style="">
+	            <div id="collapse{{loop.index}}" class="panel-collapse collapse" aria-expanded="false" style="">
 	              <div class="box-body">
 	                <table class="table table-hover">
 	                	<thead>
@@ -484,6 +486,7 @@
 									      	{% endif %}
 													<?php $jpu = number_format((float)$jpu, 2, '.', '') ?>
 						    					<span class="pull-right">Rp. <input type="text" name="jpu" class="rupiah input-no-style" value="{{jpu}}" disabled="disabled"></span>
+						    					{% set totalJpu += jpu %}
 						    				</td>
 						    				<td>
 									      	{# JPL #}
@@ -528,7 +531,7 @@
 	          <div class="panel box box-info">
 	            <div class="box-header with-border">
 	              <h4 class="box-title">
-	                <a data-toggle="collapse" data-parent="#accordion2" href="#collapse{{loop.index}}" aria-expanded="false" class="">
+	                <a data-toggle="collapse" data-parent="#accordion2" href="#collapseB{{loop.index}}" aria-expanded="false" class="">
 	                  {{ sebelumKlaim.namaRuang }}
 	                </a>
 	              </h4>
@@ -536,7 +539,7 @@
 					      	<h4 class="pull-right">Rp. <input type="text" class="rupiah" value="{{sebelumKlaim.jumlahTotalPengajuan}}" style="background:none;border:none;width:150px;" disabled="disabled"></h4>
 					      </div>
 	            </div>
-	            <div id="collapse{{loop.index}}" class="panel-collapse collapse" aria-expanded="false" style="">
+	            <div id="collapseB{{loop.index}}" class="panel-collapse collapse" aria-expanded="false" style="">
 	              <div class="box-body">
 	                <table class="table table-hover">
 			            	<?php 
@@ -638,7 +641,7 @@
         				<td class="text-center">
         					{% set manajemen = totalAdmin * m.nilaiPersentase / 100 %}
 									<?php $manajemen = number_format((float)$manajemen, 2, '.', '') ?>
-        					Rp. <input type="text" name="manajemen" class="rupiah input-no-style" value="{{ manajemen }}" disabled="disabled" data-thousands="," data-decimal="." data-precision="2">
+        					{{ manajemen }}
         				</td>
         				{#<td>
         					<?php if(in_array($m->idPegawai, $listPegawaiDireksi)) { ?>
@@ -669,6 +672,63 @@
         </div>
         <!-- /.tab-pane -->
 
+        <div class="tab-pane" id="tab_5">
+        	<table id="tabel-jpu" class="table table-hover">
+        		<thead>
+        			<tr>
+        				<th>Nama</th>
+        				<th>Golongan</th>
+        				<th>Ruangan</th>
+        				<th>Index</th>
+        				<th>JPU Diterima</th>
+        			</tr>
+        		</thead>
+
+        		<tbody>
+        			{% set totalAdmin = ((totalPelayananPeriode * persentaseJaspel.jasa / 100) * persentaseJaspel.jpl / 100) * persentaseJaspel.admin / 100 %}
+        			{% set i = 0 %}
+        			{% set totalJpuPegawai = 0 %}
+        			{% for pj in pegawaiJpu %}
+        			<tr>
+        				<td>{{ pj.namaPegawai }}</td>
+        				<td>{{ pj.namaGolongan }}</td>
+        				<td>{{ pj.namaRuang }}</td>
+        				<?php if (isset($m->pegawai->indexIB) or isset($m->pegawai->indexIK) or isset($m->pegawai->indexIR) or isset($m->pegawai->indexIE) or isset($m->pegawai->indexIP) or isset($m->pegawai->indexPerform) or isset($m->pegawai->skorTambahan)) { ?>
+        				<?php } ?>
+        				<td class="text-center">{{ pj.indexPegawai }}</td>
+        				{#}
+	            	<?php 
+              	$findJplPegawai = "
+              	SELECT sum(peg.nilaiPendapatan) nominal 
+              	FROM \Jaspel\Models\JplPegawai peg 
+              	JOIN \Jaspel\Models\JplPendapatan pen 
+              		ON pen.id = peg.idJplPendapatan 
+              	WHERE peg.idPegawai = '". $pj->idPegawai ."' 
+              		AND pen.idPeriode = ". $klaimJaspel->idPeriode; 
+              	$findJplPegawai = $this->modelsManager->executeQuery($findJplPegawai); 
+              	#}
+              	?>
+        				<td class="text-center rp">
+        					{#{ findJplPegawai[0].nominal }#}
+        					{% set jpuPegawai = totalJpu * pj.indexPegawai / totalIndexPegawai %}
+        					{{ jpuPegawai }}
+        				</td>
+        			</tr>
+        			{% set totalJpuPegawai += jpuPegawai %}
+        			{% endfor %}
+        		</tbody>
+
+        		<tfoot>
+        			<tr>
+        				<th colspan="3"></th>
+        				<th>{{totalIndexPegawai}}</th>
+        				<th>Rp. <input type="text" name="totalJpuPegawai" class="rupiah input-no-style" value="{{ totalJpuPegawai }}" disabled="disabled"></th>
+        			</tr>
+        		</tfooter>
+        	</table>
+        </div>
+        <!-- /.tab-pane -->
+
       </div>
       <!-- /.tab-content -->
     </div>
@@ -682,14 +742,25 @@
 {{ javascript_include("vendor/almasaeed2010/adminlte/bower_components/datatables.net/js/jquery.dataTables.min.js") }}
 {{ javascript_include("vendor/almasaeed2010/adminlte/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js") }}
 <script>
-$(document).ready(function() {
-  $('#tabel-manajemen').DataTable({
-  	"order": []
-  });
-	$("#tabel-manajemen").on( 'page.dt', function () {
-	  $('.rupiah').maskMoney({thousand: ',', decimal: '.', precision: 2});
-	});
+$('#tabel-manajemen').DataTable({
+	"order": [],
+  "columns": [
+  	{},{},{},
+  	{
+		  "render": $.fn.dataTable.render.number( ',', '.', 2, 'Rp. ' )
+		}
+  ]
 });
+$('#tabel-jpu').DataTable({
+	"order": [],
+  "columns": [
+  	{},{},{},{},
+  	{
+		  "render": $.fn.dataTable.render.number( ',', '.', 2, 'Rp. ' )
+		}
+  ]
+});
+
 function addRow(tableID) {
 	var table = document.getElementById(tableID);
 	var rowCount = table.rows.length;
@@ -719,25 +790,6 @@ function addRow(tableID) {
 			</td>
 		`;
 		$('.rupiah').maskMoney({thousand: ',', decimal: '.', precision: 2});
-		// var colCount = table.rows[0].cells.length;
-		// for(var i=0; i<colCount; i++) {
-		// 	var newcell = row.insertCell(i);
-		// 	newcell.innerHTML = table.rows[0].cells[i].innerHTML;
-		// 	Element.prototype.removeAttributes = function(...attrs) {
-		// 	  attrs.forEach(attr => this.removeAttribute(attr))
-		// 	}
-		// 	table.rows[rowCount].cells[i].getElementsByTagName('input')[0].removeAttributes('disabled');
-		// 	table.rows[rowCount].cells[i].getElementsByTagName('input')[0].removeAttributes('value');
-		// 	table.rows[rowCount].cells[i].getElementsByTagName('input')[1].value = 0;
-		// 	if (i == 0) {
-		// 		table.rows[rowCount].cells[i].getElementsByTagName('input')[2].remove();
-		// 	}
-		// 	$('.rupiah').maskMoney({thousand: ',', decimal: '.', precision: 2});
-		// }
-
-	// }else{
-	// 	 alert("Maximum Passenger per ticket is 5.");
-	// }
 }
 
 $("#form").submit(function(e){
