@@ -633,6 +633,7 @@
         			{% set totalAdmin = ((totalPelayananPeriode * persentaseJaspel.jasa / 100) * persentaseJaspel.jpl / 100) * persentaseJaspel.admin / 100 %}
         			{% set i = 0 %}
         			{% set totalManajemen = 0 %}
+        			{% set totalPersentase = 0 %}
         			{% for m in dataManajemen %}
         			<tr>
         				<td>{{ m.pegawai.namaPegawai }}</td>
@@ -659,12 +660,14 @@
         				</td>#}
         			</tr>
         			{% set totalManajemen += manajemen %}
+        			{% set totalPersentase += m.nilaiPersentase %}
         			{% endfor %}
         		</tbody>
 
         		<tfoot>
         			<tr>
-        				<th colspan="3"></th>
+        				<th colspan="2"></th>
+        				<th>{{totalPersentase}}%</th>
         				<th>Rp. <input type="text" name="totalManajemen" class="rupiah input-no-style" value="{{ totalManajemen }}" disabled="disabled"></th>
         			</tr>
         		</tfooter>
