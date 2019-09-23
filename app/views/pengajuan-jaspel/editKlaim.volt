@@ -684,6 +684,7 @@
         				<th>Ruangan</th>
         				<th>Index</th>
         				<th>JPU Diterima</th>
+        				<th>JPL Diterima</th>
         			</tr>
         		</thead>
 
@@ -691,6 +692,7 @@
         			{% set totalAdmin = ((totalPelayananPeriode * persentaseJaspel.jasa / 100) * persentaseJaspel.jpl / 100) * persentaseJaspel.admin / 100 %}
         			{% set i = 0 %}
         			{% set totalJpuPegawai = 0 %}
+        			{% set totalJpl = 0 %}
         			{% for pj in pegawaiJpu %}
         			<tr>
         				<td>{{ pj.namaPegawai }}</td>
@@ -716,8 +718,12 @@
         					{% set jpuPegawai = totalJpu * pj.indexPegawai / totalIndexPegawai %}
         					{{ jpuPegawai }}
         				</td>
+        				<td class="text-center rp">
+        					{{pj.jpl}}
+        				</td>
         			</tr>
         			{% set totalJpuPegawai += jpuPegawai %}
+        			{% set totalJpl += pj.jpl %}
         			{% endfor %}
         		</tbody>
 
@@ -725,7 +731,14 @@
         			<tr>
         				<th colspan="3"></th>
         				<th>{{totalIndexPegawai}}</th>
-        				<th>Rp. <input type="text" name="totalJpuPegawai" class="rupiah input-no-style" value="{{ totalJpuPegawai }}" disabled="disabled"></th>
+        				<th>
+									<?php $totalJpuPegawai = number_format((float)$totalJpuPegawai, 2, '.', '') ?>
+        					Rp. <input type="text" name="totalJpuPegawai" class="rupiah input-no-style" value="{{ totalJpuPegawai }}" disabled="disabled">
+        				</th>
+        				<th>
+									<?php $totalJpl = number_format((float)$totalJpl, 2, '.', '') ?>
+									Rp. <input type="text" name="totalJpl" class="rupiah input-no-style" value="{{ totalJpl }}" disabled="disabled">
+								</th>
         			</tr>
         		</tfooter>
         	</table>
@@ -758,6 +771,9 @@ $('#tabel-jpu').DataTable({
 	"order": [],
   "columns": [
   	{},{},{},{},
+  	{
+		  "render": $.fn.dataTable.render.number( ',', '.', 2, 'Rp. ' )
+		},
   	{
 		  "render": $.fn.dataTable.render.number( ',', '.', 2, 'Rp. ' )
 		}

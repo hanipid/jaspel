@@ -407,14 +407,28 @@ class PengajuanJaspelController extends ControllerBase
 		pr.idRuangan idRuangan, 
     r.namaRuang namaRuang,
 		g.namaGolongan namaGolongan, 
-		(p.indexIB+p.indexIK+p.indexIR+p.indexIE+p.indexIP+p.indexPerform+p.skorTambahan) indexPegawai 
+		(p.indexIB+p.indexIK+p.indexIR+p.indexIE+p.indexIP+p.indexPerform+p.skorTambahan) indexPegawai,
+        rjp.kategori,
+        rjp.metode,
+        rjp.id idRjp,
+        jpen.totalPengajuan,
+        jpeg.nilaiPendapatan,
+        IF( rjp.metode = 'persentase', jpeg.nilaiPendapatan/100*jpen.totalPengajuan, IF( rjp.metode = 'index', jpeg.nilaiPendapatan/( SELECT SUM(jp.nilaiPendapatan) FROM \Jaspel\Models\JplPegawai jp WHERE jp.idJplPendapatan=jpen.id )*jpen.totalPengajuan, jpeg.nilaiPendapatan ) ) jpl
 		FROM \Jaspel\Models\PegawaiRuangan pr 
 		JOIN \Jaspel\Models\Pegawai p ON pr.idPegawai=p.idPegawai 
 		JOIN \Jaspel\Models\Golongan g ON g.idGolongan=p.idGolongan 
     JOIN \Jaspel\Models\Ruangan r ON r.id=pr.idRuangan
+    JOIN \Jaspel\Models\RuanganJenisPelayanan rjp ON rjp.idRuangan=pr.idRuangan
+    JOIN \Jaspel\Models\JplPendapatan jpen ON (jpen.idRuanganJenisPelayanan=rjp.id)
+    JOIN \Jaspel\Models\JplPegawai jpeg ON (jpeg.idPegawai=p.idPegawai AND jpen.id=jpeg.idJplPendapatan)
 		WHERE pr.statusInOut = 'in' 
-		AND pr.statusAktif = 1 
-		ORDER BY pr.idRUangan ASC, p.namaPegawai ASC";
+		AND pr.statusAktif = 1  
+        AND jpen.idPeriode = 1  
+ORDER BY 
+rjp.id ASC,
+r.namaRuang ASC,
+rjp.metode ASC
+";
 		$pegawaiJpu = $this->modelsManager->executeQuery($pegawaiJpu);
 
 		$totalIndexPegawai = "SELECT 
