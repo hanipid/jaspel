@@ -423,7 +423,7 @@ class PengajuanJaspelController extends ControllerBase
     JOIN \Jaspel\Models\JplPegawai jpeg ON (jpeg.idPegawai=p.idPegawai AND jpen.id=jpeg.idJplPendapatan)
 		WHERE pr.statusInOut = 'in' 
 		AND pr.statusAktif = 1  
-        AND jpen.idPeriode = 1  
+        AND jpen.idPeriode = '".$klaimJaspel->idPeriode."'  
 ORDER BY 
 rjp.id ASC,
 r.namaRuang ASC,
