@@ -2,12 +2,14 @@
 
 <div class="login-box">
   <div class="login-logo">
-    <a href="#"><strong>SIPJASPEL</strong></a>
-    <p>RSUD MARDI WALUYO</p>
+    <a href="#"><strong>SI REMUN SANAN</strong></a>
+    <p>(Sistem Informasi Remunerasi Jasa Pelayanan)</p>
+    {#<a href="#"><strong>SIPJASPEL</strong></a>
+    <p>RSUD MARDI WALUYO</p>#}
   </div>
   <!-- /.login-logo -->
   <div class="login-box-body">
-    <p class="login-box-msg">Lengkapi form di bawah ini untuk mengakses JASPEL</p>
+    <p class="login-box-msg">Lengkapi form di bawah ini untuk mengakses SI REMUN SANAN</p>
 
     {{ form() }}
       <div class="form-group has-feedback">

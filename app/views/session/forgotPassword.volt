@@ -2,8 +2,10 @@
 
 <div class="login-box">
   <div class="login-logo">
-    <a href="{{url('session/login')}}"><strong>SIPJASPEL</strong></a>
-    <p>RSUD MARDI WALUYO</p>
+    <a href="#"><strong>SI REMUN SANAN</strong></a>
+    <p>(Sistem Informasi Remunerasi Jasa Pelayanan)</p>
+    {#<a href="{{url('session/login')}}"><strong>SIPJASPEL</strong></a>
+    <p>RSUD MARDI WALUYO</p>#}
   </div>
   <!-- /.login-logo -->
   <div class="login-box-body">
