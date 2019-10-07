@@ -1,6 +1,6 @@
 <style type="text/css">
 .login-page {
-	background: url('{{url("img/bg-login-1.jpg")}}');
+	background: url('{{url("img/bg-login-2.jpg")}}');
 	background-size: cover;
 	background-position: center center;
 }
@@ -51,7 +51,7 @@
 </style>
 
 <body class="hold-transition login-page">
-	<!-- <img src="{{url("img/bg-login-1.jpg")}}" class="bg-login"> -->
+	<!-- <img src="{{url("img/bg-login-2.jpg")}}" class="bg-login"> -->
 	<!-- <img src="{{url("img/logo-sti.jpg")}}" class="logo-sti">
 	<img src="{{url("img/logo-rsud.png")}}" class="logo-rsud"> -->
 	<p><?php $this->flashSession->output() ?></p>

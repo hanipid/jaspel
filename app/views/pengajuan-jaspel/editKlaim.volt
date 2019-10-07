@@ -110,6 +110,59 @@
 	    <!-- /.box-header -->
 
 	    <div class="box-body" style="max-height:371px; overflow: auto;">
+
+	    	<div class="row">
+	    		<div class="col-md-4">
+	    			<button class="btn btn-lg btn-block btn-danger" data-toggle="modal" data-target="#modal-direksi">DIREKSI</button>
+	    			<p>Rp</p>
+
+	    			<div class="modal fade" id="modal-direksi">
+		          <div class="modal-dialog">
+		            <div class="modal-content">
+		              <div class="modal-header">
+		                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		                  <span aria-hidden="true">×</span></button>
+		                <h4 class="modal-title">Default Modal</h4>
+		              </div>
+		              <div class="modal-body">
+		                <p>One fine body…</p>
+		              </div>
+		              <div class="modal-footer">
+		                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+		                <button type="button" class="btn btn-primary">Save changes</button>
+		              </div>
+		            </div>
+		            <!-- /.modal-content -->
+		          </div>
+		          <!-- /.modal-dialog -->
+		        </div>
+	    		</div>
+
+	    		<div class="col-md-4">
+	    			<button class="btn btn-lg btn-block btn-warning">JASA</button>
+	    			<p>Rp</p>
+	    		</div>
+
+	    		<div class="col-md-4">
+	    			<button class="btn btn-lg btn-block btn-info">JPU</button>
+	    			<p>Rp</p>
+	    		</div>
+
+	    		<div class="col-md-4">
+	    			<button class="btn btn-lg btn-block btn-success">JPL</button>
+	    			<p>Rp</p>
+	    		</div>
+
+	    		<div class="col-md-4">
+	    			<button class="btn btn-lg btn-block btn-primary">ADMIN</button>
+	    			<p>Rp</p>
+	    		</div>
+
+	    		<div class="col-md-4">
+	    			<button class="btn btn-lg btn-block btn-default">UPLOAD</button>
+	    			<p>Rp</p>
+	    		</div>
+	    	</div>
 	    	
 	    	<table class="table table-hover table-striped">
 	    		<thead>
@@ -693,7 +746,7 @@
         			{% set i = 0 %}
         			{% set totalJpuPegawai = 0 %}
         			{% set totalJpl = 0 %}
-        			{% for pj in pegawaiJpu %}
+        			{#% for pj in pegawaiJpu %}
         			<tr>
         				<td>{{ pj.namaPegawai }}</td>
         				<td>{{ pj.namaGolongan }}</td>
@@ -701,20 +754,8 @@
         				<?php if (isset($m->pegawai->indexIB) or isset($m->pegawai->indexIK) or isset($m->pegawai->indexIR) or isset($m->pegawai->indexIE) or isset($m->pegawai->indexIP) or isset($m->pegawai->indexPerform) or isset($m->pegawai->skorTambahan)) { ?>
         				<?php } ?>
         				<td class="text-center">{{ pj.indexPegawai }}</td>
-        				{#}
-	            	<?php 
-              	$findJplPegawai = "
-              	SELECT sum(peg.nilaiPendapatan) nominal 
-              	FROM \Jaspel\Models\JplPegawai peg 
-              	JOIN \Jaspel\Models\JplPendapatan pen 
-              		ON pen.id = peg.idJplPendapatan 
-              	WHERE peg.idPegawai = '". $pj->idPegawai ."' 
-              		AND pen.idPeriode = ". $klaimJaspel->idPeriode; 
-              	$findJplPegawai = $this->modelsManager->executeQuery($findJplPegawai); 
-              	#}
               	?>
         				<td class="text-center rp">
-        					{#{ findJplPegawai[0].nominal }#}
         					{% set jpuPegawai = totalJpu * pj.indexPegawai / totalIndexPegawai %}
         					{{ jpuPegawai }}
         				</td>
@@ -724,7 +765,7 @@
         			</tr>
         			{% set totalJpuPegawai += jpuPegawai %}
         			{% set totalJpl += pj.jpl %}
-        			{% endfor %}
+        			{% endfor %#}
         		</tbody>
 
         		<tfoot>
