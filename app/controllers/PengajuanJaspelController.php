@@ -16,6 +16,9 @@ use Jaspel\Models\KlaimPendapatanTambahan;
 use Jaspel\Models\VSebelumKlaim;
 use Jaspel\Models\DireksiManajemen;
 use Jaspel\Models\Pegawai;
+use Jaspel\Models\VJplDireksi;
+use Jaspel\Models\VKlaimJaspel;
+use Jaspel\Models\VJplKlaim;
 
 /**
  * Controller Jenis Jasa Pelayanan
@@ -440,7 +443,34 @@ rjp.metode ASC
 		AND pr.statusAktif = 1";
 		$totalIndexPegawai = $this->modelsManager->executeQuery($totalIndexPegawai)[0]->totalIndexPegawai;
 
+		$vKlaimJaspel = VKlaimJaspel::findFirstByIdKlaim($idKlaim);
+
+		$jplDireksi = VJplDireksi::find([
+			"idKlaim = ?1 AND statusPosisi < ?2",
+			"bind" => [
+				"1" => $idKlaim,
+				"2" => 3
+			]
+		]);
+		$totDireksi = 0;
+		foreach ($jplDireksi as $jd) {
+			$totDireksi += $jd->pendapatanDireksi;
+		}
+
+		$jplAdmin = VJplDireksi::find([
+			"idKlaim = ?1 AND statusPosisi = ?2",
+			"bind" => [
+				"1" => $idKlaim,
+				"2" => 3
+			]
+		]);
+		$totAdmin = 0;
+		foreach ($jplAdmin as $ja) {
+			$totAdmin += $ja->pendapatanDireksi;
+		}
+
 		$this->view->setVars([
+			'idKlaim' => $idKlaim,
 			'klaimJaspel' => $klaimJaspel,
 			'klaimPendapatanTambahan' => $klaimPendapatanTambahan,
 			'vSebelumKlaim' => $qVSebelumKlaim,
@@ -450,7 +480,10 @@ rjp.metode ASC
 			'dataDireksi' => $direksi,
 			'dataManajemen' => $manajemen,
 			'totalIndexPegawai' => $totalIndexPegawai,
-			'pegawaiJpu' => $pegawaiJpu
+			'pegawaiJpu' => $pegawaiJpu,
+			'vKlaimJaspel' => $vKlaimJaspel,
+			'totDireksi' => $totDireksi,
+			'totAdmin' => $totAdmin
 		]);
 	}
 
@@ -499,6 +532,46 @@ rjp.metode ASC
 		if ($redirect == null) {
 			$this->response->redirect("pengajuan-jaspel/editKlaim/" . $klaimPendapatanTambahan->idKlaimJaspel);
 		}
+	}
+
+	public function showDireksiAction($idKlaim, $posisi)
+	{
+		if ($posisi == 1) {
+			$direksi = VJplDireksi::find([
+				"idKlaim = ?1 AND statusPosisi < ?2",
+				"bind" => [
+					"1" => $idKlaim,
+					"2" => 3
+				]
+			]);
+		} elseif ($posisi == 2) {
+			$direksi = VJplDireksi::find([
+				"idKlaim = ?1 AND statusPosisi = ?2",
+				"bind" => [
+					"1" => $idKlaim,
+					"2" => 3
+				]
+			]);
+		} else {
+			$this->response->redirect("pengajuan-jaspel/editKlaim/" . $idKlaim);
+		}
+			
+		$periodeJaspel = PeriodeJaspel::findFirstByIdPeriode($direksi[0]->idPeriode);
+		$this->view->setVars([
+			'direksi' => $direksi,
+			'idKlaim' => $idKlaim,
+			'periodeJaspel'=> $periodeJaspel,
+			'posisi' => $posisi
+		]);
+	}
+
+	public function showJplAction($idKlaim)
+	{
+		$vJplKlaim = VJplKlaim::findByIdKlaim($idKlaim);
+
+		$this->view->setVars([
+			"vJplKlaim" => $vJplKlaim
+		]);
 	}
 
 	public function createPesan()

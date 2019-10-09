@@ -139,7 +139,10 @@ return new Config([
       'deleteKlaimTambahan',
       'createPesan',
       'pendapatanPelayanan',
-      'detailPendapatan'
+      'detailPendapatan',
+      'showDireksi',
+      'showJpl',
+      'showJpu'
     ],
     
     'pegawai-ruangan' => [

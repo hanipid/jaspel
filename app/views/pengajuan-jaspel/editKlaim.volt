@@ -1,20 +1,20 @@
 {{ javascript_include("js/jquery.maskMoney.311.min.js") }}
 
-	            <style type="text/css">
-	            	.table.table-hover input,
-	            	.input-no-style {
-	            		max-width: 120px;
-	            		border: 0;
-									padding: 0;
-									background: none;
-	            	}
-	            	.table.table-hover th {
-	            		text-align: center;
-	            	}
-	            	.table.table-hover td {
-	            		padding: 8px 0;
-	            	}
-	            </style>
+<style type="text/css">
+	.table.table-hover input,
+	.input-no-style {
+		max-width: 120px;
+		border: 0;
+		padding: 0;
+		background: none;
+	}
+	.table.table-hover th {
+		text-align: center;
+	}
+	.table.table-hover td {
+		padding: 8px 0;
+	}
+</style>
 {{ content() }}
 
 <div class="row">
@@ -113,8 +113,11 @@
 
 	    	<div class="row">
 	    		<div class="col-md-4">
-	    			<button class="btn btn-lg btn-block btn-danger" data-toggle="modal" data-target="#modal-direksi">DIREKSI</button>
-	    			<p>Rp</p>
+	    			<a href="{{url('pengajuan-jaspel/showDireksi/'~idKlaim~'/1')}}" class="btn btn-lg btn-block btn-danger">DIREKSI</a>
+	    			<p class="text-center">
+	    				<?php $totDireksi = number_format((float)$totDireksi, 2, '.', '') ?>
+						  Rp. <input type="text" name="totDireksi" class="rupiah input-no-style" value="{{totDireksi}}" disabled="disabled">
+	    			</p>
 
 	    			<div class="modal fade" id="modal-direksi">
 		          <div class="modal-dialog">
@@ -140,22 +143,34 @@
 
 	    		<div class="col-md-4">
 	    			<button class="btn btn-lg btn-block btn-warning">JASA</button>
-	    			<p>Rp</p>
+	    			<p class="text-center">
+	    				<?php $totJasa = number_format((float)$vKlaimJaspel->totJasa, 2, '.', '') ?>
+						  Rp. <input type="text" name="totJasa" class="rupiah input-no-style" value="{{totJasa}}" disabled="disabled">
+	    			</p>
 	    		</div>
 
 	    		<div class="col-md-4">
 	    			<button class="btn btn-lg btn-block btn-info">JPU</button>
-	    			<p>Rp</p>
+	    			<p class="text-center">
+	    				<?php $totJpu = number_format((float)$vKlaimJaspel->totJpu, 2, '.', '') ?>
+						  Rp. <input type="text" name="totJpu" class="rupiah input-no-style" value="{{totJpu}}" disabled="disabled">
+	    			</p>
 	    		</div>
 
 	    		<div class="col-md-4">
-	    			<button class="btn btn-lg btn-block btn-success">JPL</button>
-	    			<p>Rp</p>
+	    			<a href="{{url('pengajuan-jaspel/showJpl/'~idKlaim)}}" class="btn btn-lg btn-block btn-success">JPL</a>
+	    			<p class="text-center">
+	    				<?php $totJpl = number_format((float)$vKlaimJaspel->totJpl, 2, '.', '') ?>
+						  Rp. <input type="text" name="totJpl" class="rupiah input-no-style" value="{{totJpl}}" disabled="disabled">
+	    			</p>
 	    		</div>
 
 	    		<div class="col-md-4">
-	    			<button class="btn btn-lg btn-block btn-primary">ADMIN</button>
-	    			<p>Rp</p>
+	    			<a href="{{url('pengajuan-jaspel/showDireksi/'~idKlaim~'/2')}}" class="btn btn-lg btn-block btn-primary">ADMIN</a>
+	    			<p class="text-center">
+	    				<?php $totAdmin = number_format((float)$totAdmin, 2, '.', '') ?>
+						  Rp. <input type="text" name="totAdmin" class="rupiah input-no-style" value="{{totAdmin}}" disabled="disabled">
+	    			</p>
 	    		</div>
 
 	    		<div class="col-md-4">
@@ -461,6 +476,7 @@
 	          <br>pembagi = {{pembagi}}#}
 	          {% set totalDireksi = 0 %}
 	          {% set totalJpu = 0 %}
+	          {% set totj = 0 %}
 	          {% for sebelumKlaim in vSebelumKlaim %}
 	          <div class="panel box box-info">
 	            <div class="box-header with-border">
@@ -483,6 +499,7 @@
 					      	{% set admin = jpl - ((persentaseJaspel.admin / 100) * jpl) %}
 									<?php $admin = number_format((float)$admin, 2, '.', '') ?>
 					      	<h4 class="pull-right">Rp. <input type="text" class="rupiah" value="{{admin}}" style="background:none;border:none;width:150px;" disabled="disabled"></h4>
+					      	{% set totj += admin %}
 					      </div>
 	            </div>
 	            <div id="collapse{{loop.index}}" class="panel-collapse collapse" aria-expanded="false" style="">
@@ -580,6 +597,7 @@
         <div class="tab-pane" id="tab_2">
           <div class="box-group" id="accordion2">
 	          <!-- we are adding the .panel class so bootstrap.js collapse plugin detects it -->
+	          {% set totalPengajuan = 0 %}
 	          {% for sebelumKlaim in vSebelumKlaim %}
 	          <div class="panel box box-info">
 	            <div class="box-header with-border">
@@ -588,6 +606,7 @@
 	                  {{ sebelumKlaim.namaRuang }}
 	                </a>
 	              </h4>
+	              {% set totalPengajuan += sebelumKlaim.jumlahTotalPengajuan %}
 					      <div class="box-tools pull-right">
 					      	<h4 class="pull-right">Rp. <input type="text" class="rupiah" value="{{sebelumKlaim.jumlahTotalPengajuan}}" style="background:none;border:none;width:150px;" disabled="disabled"></h4>
 					      </div>
@@ -620,6 +639,7 @@
         <!-- /.tab-pane -->
 
         <div class="tab-pane" id="tab_3">
+        	{{totalPengajuan}}
         	<table class="table table-hover">
         		<thead>
         			<tr>
