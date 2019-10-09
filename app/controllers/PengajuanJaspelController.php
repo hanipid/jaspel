@@ -19,6 +19,7 @@ use Jaspel\Models\Pegawai;
 use Jaspel\Models\VJplDireksi;
 use Jaspel\Models\VKlaimJaspel;
 use Jaspel\Models\VJplKlaim;
+use Jaspel\Models\VJpuKlaim;
 
 /**
  * Controller Jenis Jasa Pelayanan
@@ -570,7 +571,18 @@ rjp.metode ASC
 		$vJplKlaim = VJplKlaim::findByIdKlaim($idKlaim);
 
 		$this->view->setVars([
+			'idKlaim' => $idKlaim,
 			"vJplKlaim" => $vJplKlaim
+		]);
+	}
+
+	public function showJpuAction($idKlaim)
+	{
+		$vJpuKlaim = VJpuKlaim::findByIdKlaim($idKlaim);
+
+		$this->view->setVars([
+			'idKlaim' => $idKlaim,
+			"vJpuKlaim" => $vJpuKlaim
 		]);
 	}
 

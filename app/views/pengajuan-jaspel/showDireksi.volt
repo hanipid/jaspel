@@ -85,10 +85,6 @@
         	</table>
 		    </div>
 		    <!-- /.box-body -->
-
-		    <div class="box-footer">
-		    	{{ submit_button("Save", "class": "btn btn-primary") }}
-		    </div>
 		  </div>
 		  <!-- /.box -->
 		</form>

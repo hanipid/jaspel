@@ -82,11 +82,6 @@
 
 		    	</table>
 					<div id="formInputGroup"></div>
-		    	
-		    	<hr>
-
-		    	<h4>Total Pendapatan</h4>
-		    	{{ text_field("totalKlaim", "class": "rupiah input-no-style", "value": klaimJaspel.totalKlaim + totalPendapatanTambahan, "style": "font-size: 32px; max-width: 100%;", "disabled": "disabled") }}
 
 		    </div>
 		    <!-- /.box-body -->
@@ -109,10 +104,18 @@
 	    </div>
 	    <!-- /.box-header -->
 
-	    <div class="box-body" style="max-height:371px; overflow: auto;">
+	    <div class="box-body"><!--  style="max-height:371px; overflow: auto;"> -->
 
 	    	<div class="row">
-	    		<div class="col-md-4">
+	    		<div class="col-md-12">
+			    	<h4>Total Pendapatan</h4>
+			    	{{ text_field("totalKlaim", "class": "rupiah input-no-style", "value": klaimJaspel.totalKlaim + totalPendapatanTambahan, "style": "font-size: 32px; max-width: 100%;", "disabled": "disabled") }}
+			    	<hr>
+			    	<h4>Total Pendapatan Konversi</h4>
+			    	{{ text_field("totalKlaim", "class": "rupiah input-no-style", "value": vKlaimJaspel.pendapatanKonversi, "style": "font-size: 32px; max-width: 100%;", "disabled": "disabled") }}
+			    	<hr>
+	    		</div>
+	    		<div class="col-md-6">
 	    			<a href="{{url('pengajuan-jaspel/showDireksi/'~idKlaim~'/1')}}" class="btn btn-lg btn-block btn-danger">DIREKSI</a>
 	    			<p class="text-center">
 	    				<?php $totDireksi = number_format((float)$totDireksi, 2, '.', '') ?>
@@ -141,7 +144,7 @@
 		        </div>
 	    		</div>
 
-	    		<div class="col-md-4">
+	    		<div class="col-md-6">
 	    			<button class="btn btn-lg btn-block btn-warning">JASA</button>
 	    			<p class="text-center">
 	    				<?php $totJasa = number_format((float)$vKlaimJaspel->totJasa, 2, '.', '') ?>
@@ -149,15 +152,15 @@
 	    			</p>
 	    		</div>
 
-	    		<div class="col-md-4">
-	    			<button class="btn btn-lg btn-block btn-info">JPU</button>
+	    		<div class="col-md-6">
+	    			<a href="{{url('pengajuan-jaspel/showJpu/'~idKlaim)}}" class="btn btn-lg btn-block btn-info">JPU</a>
 	    			<p class="text-center">
 	    				<?php $totJpu = number_format((float)$vKlaimJaspel->totJpu, 2, '.', '') ?>
 						  Rp. <input type="text" name="totJpu" class="rupiah input-no-style" value="{{totJpu}}" disabled="disabled">
 	    			</p>
 	    		</div>
 
-	    		<div class="col-md-4">
+	    		<div class="col-md-6">
 	    			<a href="{{url('pengajuan-jaspel/showJpl/'~idKlaim)}}" class="btn btn-lg btn-block btn-success">JPL</a>
 	    			<p class="text-center">
 	    				<?php $totJpl = number_format((float)$vKlaimJaspel->totJpl, 2, '.', '') ?>
@@ -165,7 +168,7 @@
 	    			</p>
 	    		</div>
 
-	    		<div class="col-md-4">
+	    		<div class="col-md-6">
 	    			<a href="{{url('pengajuan-jaspel/showDireksi/'~idKlaim~'/2')}}" class="btn btn-lg btn-block btn-primary">ADMIN</a>
 	    			<p class="text-center">
 	    				<?php $totAdmin = number_format((float)$totAdmin, 2, '.', '') ?>
@@ -173,13 +176,13 @@
 	    			</p>
 	    		</div>
 
-	    		<div class="col-md-4">
+	    		<div class="col-md-6">
 	    			<button class="btn btn-lg btn-block btn-default">UPLOAD</button>
 	    			<p>Rp</p>
 	    		</div>
 	    	</div>
 	    	
-	    	<table class="table table-hover table-striped">
+	    	{#<table class="table table-hover table-striped">
 	    		<thead>
 	    			<tr>
 	    				<th>No.</th>
@@ -198,7 +201,7 @@
 	    				<td>  1,910,346</td>
 	    			</tr>
 	    		</tbody>
-	    	</table>
+	    	</table>#}
 
 	    	<div class="modal fade" id="modalDetailUpload">
           <div class="modal-dialog modal-lg">

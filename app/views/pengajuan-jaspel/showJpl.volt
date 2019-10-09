@@ -23,7 +23,7 @@
 		  <div class="box box-primary">
 		    <div class="box-header with-border">
 		      <h3 class="box-title">
-		      	
+		      	JPL
 		      </h3>
 		      <div class="box-tools pull-right">
             <a href="{{url('pengajuan-jaspel/editKlaim/'~idKlaim)}}" class="btn btn-box-tool"><i class="fa fa-times"></i></a>
@@ -134,10 +134,6 @@
 	        {% endfor %}
 		    </div>
 		    <!-- /.box-body -->
-
-		    <div class="box-footer">
-		    	{{ submit_button("Save", "class": "btn btn-primary") }}
-		    </div>
 		  </div>
 		  <!-- /.box -->
 		</form>
