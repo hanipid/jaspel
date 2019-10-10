@@ -43,6 +43,7 @@
 		    		</thead>
 
 		    		<tbody>
+		    			{% set totalIndexPegawai = 0 %}
 		    			{% for jpu in vJpuKlaim %}
 			    			<tr>
 			    				<td>{{jpu.namaPegawai}}</td>
@@ -53,8 +54,18 @@
 			    					Rp. <input type="text" name="jpuPegawai" class="rupiah input-no-style" value="{{jpuPegawai}}" disabled="disabled">
 			    				</td>
 			    			</tr>
+			    			{% set totalIndexPegawai += jpu.indexPegawai %}
 			    		{% endfor %}
 		    		</tbody>
+
+				    <tfoot>
+				    	<tr>
+				    		<th colspan="2"></th>
+				    		<th>{{totalIndexPegawai}}</th>
+				    		<th><?php $totJpu = number_format((float)$vKlaimJaspel->totJpu, 2, '.', '') ?>
+			    					Rp. <input type="text" name="totJpu" class="rupiah input-no-style" value="{{totJpu}}" disabled="disabled"></th>
+				    	</tr>
+				    </tfoot>
 		    	</table>
 		    </div>
 		    <!-- /.box-body -->

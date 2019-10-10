@@ -578,10 +578,12 @@ rjp.metode ASC
 
 	public function showJpuAction($idKlaim)
 	{
+		$vKlaimJaspel = VKlaimJaspel::findFirstByIdKlaim($idKlaim);
 		$vJpuKlaim = VJpuKlaim::findByIdKlaim($idKlaim);
 
 		$this->view->setVars([
 			'idKlaim' => $idKlaim,
+			"vKlaimJaspel" => $vKlaimJaspel,
 			"vJpuKlaim" => $vJpuKlaim
 		]);
 	}
