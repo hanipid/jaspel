@@ -33,6 +33,9 @@
 	  overflow: auto;
 	  height: 900px;
 	}
+
+	.fixed_header tbody::-webkit-scrollbar { width: 0 !important }
+
 	.fixed_header thead tr {
 	   display: block;
 	}
