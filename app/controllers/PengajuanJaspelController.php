@@ -19,6 +19,7 @@ use Jaspel\Models\Pegawai;
 use Jaspel\Models\VJplDireksi;
 use Jaspel\Models\VKlaimJaspel;
 use Jaspel\Models\VJplKlaim;
+use Jaspel\Models\VJplFix;
 use Jaspel\Models\VJpuKlaim;
 
 /**
@@ -568,11 +569,10 @@ rjp.metode ASC
 
 	public function showJplAction($idKlaim)
 	{
-		$vJplKlaim = VJplKlaim::findByIdKlaim($idKlaim);
-
+		$vJplFix = VJplFix::findByIdKlaim($idKlaim);
 		$this->view->setVars([
 			'idKlaim' => $idKlaim,
-			"vJplKlaim" => $vJplKlaim
+			"vJplFix" => $vJplFix
 		]);
 	}
 
