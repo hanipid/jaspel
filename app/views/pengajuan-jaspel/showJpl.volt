@@ -69,7 +69,9 @@
 		    <!-- /.box-header -->
 
 		    <div class="box-body">
-		    	<table class="table table-bordered table-responsive table-hover fixed_header" id="example1">
+		    	<!-- Table with collapsible rows by Bootstrap 4 -->
+		    	<!-- https://www.bootply.com/glebkema/Qyh5hbEMdU# -->
+		    	<table class="table table-bordered table-responsive table-hover fixed_header">
 				    <thead>
 			        <tr>
 			        	<th>Keterangan</th>
