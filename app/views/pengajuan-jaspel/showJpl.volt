@@ -69,6 +69,8 @@
 		    <!-- /.box-header -->
 
 		    <div class="box-body">
+		    	<h3 class="text-center">PENDAPATAN {{periodeJaspel.jenisJaspel.namaJaspel|uppercase}} RSUD MARDI WALUYO KOTA BLITAR</h3>
+		    	<h3 class="text-center" style="text-transform: uppercase;">{{tanggal.indo(periodeJaspel.startPeriode)['bulan']}} TAHUN {{tanggal.indo(periodeJaspel.startPeriode)['tahun']}}</h3>
 		    	<!-- Table with collapsible rows by Bootstrap 4 -->
 		    	<!-- https://www.bootply.com/glebkema/Qyh5hbEMdU# -->
 		    	<table class="table table-bordered table-responsive table-hover fixed_header">

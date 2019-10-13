@@ -32,6 +32,8 @@
 		    <!-- /.box-header -->
 
 		    <div class="box-body">
+		    	<h3 class="text-center">PENDAPATAN {{periodeJaspel.jenisJaspel.namaJaspel|uppercase}} RSUD MARDI WALUYO KOTA BLITAR</h3>
+		    	<h3 class="text-center" style="text-transform: uppercase;">{{tanggal.indo(periodeJaspel.startPeriode)['bulan']}} TAHUN {{tanggal.indo(periodeJaspel.startPeriode)['tahun']}}</h3>
 		    	<table class="table" id="tabel-jpu">
 		    		<thead>
 		    			<tr>

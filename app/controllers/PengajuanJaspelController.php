@@ -21,6 +21,7 @@ use Jaspel\Models\VKlaimJaspel;
 use Jaspel\Models\VJplKlaim;
 use Jaspel\Models\VJplFix;
 use Jaspel\Models\VJpuKlaim;
+use Jaspel\Tanggal\Tanggal;
 
 /**
  * Controller Jenis Jasa Pelayanan
@@ -379,71 +380,71 @@ class PengajuanJaspelController extends ControllerBase
 			$this->response->redirect("pengajuan-jaspel/editKlaim/" . $idKlaim);
 		} // isPost()
 
-		$vSebelumKlaim = "SELECT idRuangan, namaRuang, sum(pelayanan) totalPelayananRuangan, sum(totalPengajuan) jumlahTotalPengajuan FROM \Jaspel\Models\VSebelumKlaim vsk WHERE idPeriode = '".$klaimJaspel->idPeriode."' AND statusKomplit = 1 GROUP BY idRuangan"; 
-		$qVSebelumKlaim = $this->modelsManager->executeQuery($vSebelumKlaim); 
+		// $vSebelumKlaim = "SELECT idRuangan, namaRuang, sum(pelayanan) totalPelayananRuangan, sum(totalPengajuan) jumlahTotalPengajuan FROM \Jaspel\Models\VSebelumKlaim vsk WHERE idPeriode = '".$klaimJaspel->idPeriode."' AND statusKomplit = 1 GROUP BY idRuangan"; 
+		// $qVSebelumKlaim = $this->modelsManager->executeQuery($vSebelumKlaim); 
 
-		$totalPelayananPeriode = "SELECT idPeriode, sum(pelayanan) pelayanan FROM \Jaspel\Models\VSebelumKlaim vsk WHERE idPeriode = '".$klaimJaspel->idPeriode."' AND statusKomplit = 1 GROUP BY idPeriode";
-		$qTotalPelayananPeriode = $this->modelsManager->executeQuery($totalPelayananPeriode);
+		// $totalPelayananPeriode = "SELECT idPeriode, sum(pelayanan) pelayanan FROM \Jaspel\Models\VSebelumKlaim vsk WHERE idPeriode = '".$klaimJaspel->idPeriode."' AND statusKomplit = 1 GROUP BY idPeriode";
+		// $qTotalPelayananPeriode = $this->modelsManager->executeQuery($totalPelayananPeriode);
 
-		$direksi = DireksiManajemen::find([
-			'statusInOut = ?1 AND statusAktif = ?2 AND (statusPosisi = ?3 OR statusPosisi = ?4)',
-			'bind' => [
-				'1' => 'in',
-				'2' => 1,
-				'3' => 1,
-				'4' => 2
-			],
-			'order' => 'statusPosisi'
-		]);
+		// $direksi = DireksiManajemen::find([
+		// 	'statusInOut = ?1 AND statusAktif = ?2 AND (statusPosisi = ?3 OR statusPosisi = ?4)',
+		// 	'bind' => [
+		// 		'1' => 'in',
+		// 		'2' => 1,
+		// 		'3' => 1,
+		// 		'4' => 2
+		// 	],
+		// 	'order' => 'statusPosisi'
+		// ]);
 
-		$manajemen = DireksiManajemen::find([
-			'statusInOut = ?1 AND statusAktif = ?2 AND statusPosisi = ?3',
-			'bind' => [
-				'1' => 'in',
-				'2' => 1,
-				'3' => 3,
-			],
-			'order' => 'statusPosisi'
-		]);
+		// $manajemen = DireksiManajemen::find([
+		// 	'statusInOut = ?1 AND statusAktif = ?2 AND statusPosisi = ?3',
+		// 	'bind' => [
+		// 		'1' => 'in',
+		// 		'2' => 1,
+		// 		'3' => 3,
+		// 	],
+		// 	'order' => 'statusPosisi'
+		// ]);
 
-		$pegawaiJpu = "SELECT 
-		p.idPegawai idPegawai,
-		p.namaPegawai namaPegawai, 
-		pr.idRuangan idRuangan, 
-    r.namaRuang namaRuang,
-		g.namaGolongan namaGolongan, 
-		(p.indexIB+p.indexIK+p.indexIR+p.indexIE+p.indexIP+p.indexPerform+p.skorTambahan) indexPegawai,
-        rjp.kategori,
-        rjp.metode,
-        rjp.id idRjp,
-        jpen.totalPengajuan,
-        jpeg.nilaiPendapatan,
-        IF( rjp.metode = 'persentase', jpeg.nilaiPendapatan/100*jpen.totalPengajuan, IF( rjp.metode = 'index', jpeg.nilaiPendapatan/( SELECT SUM(jp.nilaiPendapatan) FROM \Jaspel\Models\JplPegawai jp WHERE jp.idJplPendapatan=jpen.id )*jpen.totalPengajuan, jpeg.nilaiPendapatan ) ) jpl
-		FROM \Jaspel\Models\PegawaiRuangan pr 
-		JOIN \Jaspel\Models\Pegawai p ON pr.idPegawai=p.idPegawai 
-		JOIN \Jaspel\Models\Golongan g ON g.idGolongan=p.idGolongan 
-    JOIN \Jaspel\Models\Ruangan r ON r.id=pr.idRuangan
-    JOIN \Jaspel\Models\RuanganJenisPelayanan rjp ON rjp.idRuangan=pr.idRuangan
-    JOIN \Jaspel\Models\JplPendapatan jpen ON (jpen.idRuanganJenisPelayanan=rjp.id)
-    JOIN \Jaspel\Models\JplPegawai jpeg ON (jpeg.idPegawai=p.idPegawai AND jpen.id=jpeg.idJplPendapatan)
-		WHERE pr.statusInOut = 'in' 
-		AND pr.statusAktif = 1  
-        AND jpen.idPeriode = '".$klaimJaspel->idPeriode."'  
-ORDER BY 
-rjp.id ASC,
-r.namaRuang ASC,
-rjp.metode ASC
-";
-		$pegawaiJpu = $this->modelsManager->executeQuery($pegawaiJpu);
+		// $pegawaiJpu = "SELECT 
+		// 		p.idPegawai idPegawai,
+		// 		p.namaPegawai namaPegawai, 
+		// 		pr.idRuangan idRuangan, 
+		//     r.namaRuang namaRuang,
+		// 		g.namaGolongan namaGolongan, 
+		// 		(p.indexIB+p.indexIK+p.indexIR+p.indexIE+p.indexIP+p.indexPerform+p.skorTambahan) indexPegawai,
+  //       rjp.kategori,
+  //       rjp.metode,
+  //       rjp.id idRjp,
+  //       jpen.totalPengajuan,
+  //       jpeg.nilaiPendapatan,
+  //       IF( rjp.metode = 'persentase', jpeg.nilaiPendapatan/100*jpen.totalPengajuan, IF( rjp.metode = 'index', jpeg.nilaiPendapatan/( SELECT SUM(jp.nilaiPendapatan) FROM \Jaspel\Models\JplPegawai jp WHERE jp.idJplPendapatan=jpen.id )*jpen.totalPengajuan, jpeg.nilaiPendapatan ) ) jpl
+		// 		FROM \Jaspel\Models\PegawaiRuangan pr 
+		// 		JOIN \Jaspel\Models\Pegawai p ON pr.idPegawai=p.idPegawai 
+		// 		JOIN \Jaspel\Models\Golongan g ON g.idGolongan=p.idGolongan 
+		//     JOIN \Jaspel\Models\Ruangan r ON r.id=pr.idRuangan
+		//     JOIN \Jaspel\Models\RuanganJenisPelayanan rjp ON rjp.idRuangan=pr.idRuangan
+		//     JOIN \Jaspel\Models\JplPendapatan jpen ON (jpen.idRuanganJenisPelayanan=rjp.id)
+		//     JOIN \Jaspel\Models\JplPegawai jpeg ON (jpeg.idPegawai=p.idPegawai AND jpen.id=jpeg.idJplPendapatan)
+		// 		WHERE pr.statusInOut = 'in' 
+		// 		AND pr.statusAktif = 1  
+  //       AND jpen.idPeriode = '".$klaimJaspel->idPeriode."'  
+		// 		ORDER BY 
+		// 		rjp.id ASC,
+		// 		r.namaRuang ASC,
+		// 		rjp.metode ASC
+		// 		";
+		// $pegawaiJpu = $this->modelsManager->executeQuery($pegawaiJpu);
 
-		$totalIndexPegawai = "SELECT 
-		sum(p.indexIB+p.indexIK+p.indexIR+p.indexIE+p.indexIP+p.indexPerform+p.skorTambahan) totalIndexPegawai 
-		FROM \Jaspel\Models\PegawaiRuangan pr 
-		JOIN \Jaspel\Models\Pegawai p ON pr.idPegawai=p.idPegawai 
-		JOIN \Jaspel\Models\Golongan g ON g.idGolongan=p.idGolongan 
-		WHERE pr.statusInOut = 'in' 
-		AND pr.statusAktif = 1";
-		$totalIndexPegawai = $this->modelsManager->executeQuery($totalIndexPegawai)[0]->totalIndexPegawai;
+		// $totalIndexPegawai = "SELECT 
+		// sum(p.indexIB+p.indexIK+p.indexIR+p.indexIE+p.indexIP+p.indexPerform+p.skorTambahan) totalIndexPegawai 
+		// FROM \Jaspel\Models\PegawaiRuangan pr 
+		// JOIN \Jaspel\Models\Pegawai p ON pr.idPegawai=p.idPegawai 
+		// JOIN \Jaspel\Models\Golongan g ON g.idGolongan=p.idGolongan 
+		// WHERE pr.statusInOut = 'in' 
+		// AND pr.statusAktif = 1";
+		// $totalIndexPegawai = $this->modelsManager->executeQuery($totalIndexPegawai)[0]->totalIndexPegawai;
 
 		$vKlaimJaspel = VKlaimJaspel::findFirstByIdKlaim($idKlaim);
 
@@ -475,14 +476,14 @@ rjp.metode ASC
 			'idKlaim' => $idKlaim,
 			'klaimJaspel' => $klaimJaspel,
 			'klaimPendapatanTambahan' => $klaimPendapatanTambahan,
-			'vSebelumKlaim' => $qVSebelumKlaim,
-			'totalPelayananPeriode' => $qTotalPelayananPeriode[0]->pelayanan,
-			'persentaseJaspel' => $persentaseJaspel,
-			'jenisJaspel' => $jenisJaspel,
-			'dataDireksi' => $direksi,
-			'dataManajemen' => $manajemen,
-			'totalIndexPegawai' => $totalIndexPegawai,
-			'pegawaiJpu' => $pegawaiJpu,
+			// 'vSebelumKlaim' => $qVSebelumKlaim,
+			// 'totalPelayananPeriode' => $qTotalPelayananPeriode[0]->pelayanan,
+			// 'persentaseJaspel' => $persentaseJaspel,
+			// 'jenisJaspel' => $jenisJaspel,
+			// 'dataDireksi' => $direksi,
+			// 'dataManajemen' => $manajemen,
+			// 'totalIndexPegawai' => $totalIndexPegawai,
+			// 'pegawaiJpu' => $pegawaiJpu,
 			'vKlaimJaspel' => $vKlaimJaspel,
 			'totDireksi' => $totDireksi,
 			'totAdmin' => $totAdmin
@@ -544,7 +545,8 @@ rjp.metode ASC
 				"bind" => [
 					"1" => $idKlaim,
 					"2" => 3
-				]
+				],
+				"order" => "statusPosisi, nilaiPersentase"
 			]);
 		} elseif ($posisi == 2) {
 			$direksi = VJplDireksi::find([
@@ -552,39 +554,50 @@ rjp.metode ASC
 				"bind" => [
 					"1" => $idKlaim,
 					"2" => 3
-				]
+				],
+				"order" => "statusPosisi desc"
 			]);
 		} else {
 			$this->response->redirect("pengajuan-jaspel/editKlaim/" . $idKlaim);
 		}
-			
+
+		$tanggal = new Tanggal();			
 		$periodeJaspel = PeriodeJaspel::findFirstByIdPeriode($direksi[0]->idPeriode);
 		$this->view->setVars([
 			'direksi' => $direksi,
 			'idKlaim' => $idKlaim,
 			'periodeJaspel'=> $periodeJaspel,
-			'posisi' => $posisi
+			'posisi' => $posisi,
+			'tanggal' => $tanggal
 		]);
 	}
 
 	public function showJplAction($idKlaim)
 	{
+		$tanggal = new Tanggal();
 		$vJplFix = VJplFix::findByIdKlaim($idKlaim);
+		$periodeJaspel = PeriodeJaspel::findFirstByIdPeriode($vJplFix[0]->idPeriode);
 		$this->view->setVars([
 			'idKlaim' => $idKlaim,
-			"vJplFix" => $vJplFix
+			"vJplFix" => $vJplFix,
+			'periodeJaspel'=> $periodeJaspel,
+			'tanggal' => $tanggal
 		]);
 	}
 
 	public function showJpuAction($idKlaim)
 	{
+		$tanggal = new Tanggal();
 		$vKlaimJaspel = VKlaimJaspel::findFirstByIdKlaim($idKlaim);
 		$vJpuKlaim = VJpuKlaim::findByIdKlaim($idKlaim);
+		$periodeJaspel = PeriodeJaspel::findFirstByIdPeriode($vKlaimJaspel->idPeriode);
 
 		$this->view->setVars([
 			'idKlaim' => $idKlaim,
 			"vKlaimJaspel" => $vKlaimJaspel,
-			"vJpuKlaim" => $vJpuKlaim
+			"vJpuKlaim" => $vJpuKlaim,
+			"periodeJaspel" => $periodeJaspel,
+			'tanggal' => $tanggal
 		]);
 	}
 

@@ -36,6 +36,8 @@
 		    <!-- /.box-header -->
 
 		    <div class="box-body">
+		    	<h3 class="text-center">PENDAPATAN {{periodeJaspel.jenisJaspel.namaJaspel|uppercase}} RSUD MARDI WALUYO KOTA BLITAR</h3>
+		    	<h3 class="text-center" style="text-transform: uppercase;">{{tanggal.indo(periodeJaspel.startPeriode)['bulan']}} TAHUN {{tanggal.indo(periodeJaspel.startPeriode)['tahun']}}</h3>
 		    	<table class="table table-hover" id="tabel-direksi">
         		<thead>
         			<tr>
@@ -50,27 +52,49 @@
         		<tbody>
         			{% set totalSebelumPajak = 0 %}
         			{% set totalPajak = 0 %}
+        			{% set totalPersenPajak = 0 %}
         			{% set totalDiterima = 0 %}
+					    {% set t1 = "" %}
+					    {% set t2 = "" %}
         			{% for d in direksi %}
-        			<tr>
-        				<td>{{ d.namaPegawai }}</td>
-        				<td>{{ d.namaJabatan }}</td>
-        				<td>
-									<?php $direksi = number_format((float)$d->pendapatanDireksi, 2, '.', '') ?>
-        					Rp. <input type="text" name="direksi" class="rupiah input-no-style" value="{{ direksi }}" disabled="disabled">
-        				</td>
-        				<td>
-        					{% set pajak = direksi * d.pajak / 100 %}
-									<?php $pajak = number_format((float)$pajak, 2, '.', '') ?>
-        					Rp. <input type="text" name="pajak" class="rupiah input-no-style" value="{{ pajak }}" disabled="disabled">
-        				</td>
-        				<td>Rp. <input type="text" name="total" class="rupiah input-no-style" value="{{ direksi - pajak }}" disabled="disabled"></td>
-        				{% set diterima = direksi - pajak %}
-								<?php $diterima = number_format((float)$diterima, 2, '.', '') ?>
-        			</tr>
-        			{% set totalSebelumPajak += direksi %}
-        			{% set totalPajak += pajak %}
-        			{% set totalDiterima += diterima %}
+					    	{% set t1 = d.statusPosisi %}
+					    	{% if t2 != t1 %}
+					    		{% set i += 1 %}
+					        <tr>
+					          <td style="font-weight: 700;">
+					          	{% if d.statusPosisi == 1 %}
+					          		First Direksi
+					          	{% else %}
+					          		Second Direksi
+					          	{% endif %}
+					          </td>
+					          <td></td>
+					          <td></td>
+					          <td></td>
+					          <td></td>
+					        </tr>
+							    {% set t2 = t1 %}
+							  {% endif %}
+	        			<tr>
+	        				<td>{{ d.namaPegawai }}</td>
+	        				<td>{{ d.jabatan.namaJabatan }}</td>
+	        				<td>
+										<?php $direksi = number_format((float)$d->pendapatanDireksi, 2, '.', '') ?>
+	        					Rp. <input type="text" name="direksi" class="rupiah input-no-style" value="{{ direksi }}" disabled="disabled">
+	        				</td>
+	        				<td>
+	        					{% set pajak = direksi * d.nilaiPersentase / 100 %}
+										<?php $pajak = number_format((float)$pajak, 2, '.', '') ?>
+	        					Rp. <input type="text" name="pajak" class="rupiah input-no-style" value="{{ pajak }}" disabled="disabled"> ({{d.nilaiPersentase}}%)
+	        				</td>
+	        				<td>Rp. <input type="text" name="total" class="rupiah input-no-style" value="{{ direksi - pajak }}" disabled="disabled"></td>
+	        				{% set diterima = direksi - pajak %}
+									<?php $diterima = number_format((float)$diterima, 2, '.', '') ?>
+	        			</tr>
+	        			{% set totalSebelumPajak += direksi %}
+	        			{% set totalPajak += pajak %}
+	        			{% set totalPersenPajak += d.nilaiPersentase %}
+	        			{% set totalDiterima += diterima %}
         			{% endfor %}
         		</tbody>
 
@@ -78,7 +102,7 @@
         			<tr>
         				<th colspan="2"></th>
         				<th>Rp. <input type="text" name="totalSebelumPajak" class="rupiah input-no-style" value="{{ totalSebelumPajak }}" disabled="disabled"></th>
-        				<th>Rp. <input type="text" name="totalPajak" class="rupiah input-no-style" value="{{ totalPajak }}" disabled="disabled"></th>
+        				<th>Rp. <input type="text" name="totalPajak" class="rupiah input-no-style" value="{{ totalPajak }}" disabled="disabled"> ({{totalPersenPajak}}%)</th>
         				<th>Rp. <input type="text" name="totalDiterima" class="rupiah input-no-style" value="{{ totalDiterima }}" disabled="disabled"></th>
         			</tr>
         		</tfoot>
@@ -103,6 +127,19 @@ $(document).ready(function(){
 	  $(this).maskMoney('mask');
 	  $(this).focus();
 	});
-	$('#tabel-direksi').DataTable();
 });
 </script>
+{% if posisi == 1 %}
+	<script>
+	$(document).ready(function(){
+		$('#tabel-direksi').DataTable( {
+	    "bSort": false,
+	    "bPaginate": false
+	  } );
+	});
+	</script>
+{% else %}
+	<script>
+		$('#tabel-direksi').DataTable();
+	</script>
+{% endif %}

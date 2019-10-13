@@ -98,7 +98,7 @@
 	<div class="col-md-6">
 	  <div class="box box-primary">
 	    <div class="box-header with-border">
-	      <h3 class="box-title">Upload</h3>
+	      <h3 class="box-title"></h3>
 	      <div class="box-tools pull-right">
 	      </div>
 	    </div>
@@ -203,7 +203,7 @@
 	    		</tbody>
 	    	</table>#}
 
-	    	<div class="modal fade" id="modalDetailUpload">
+	    	{#<div class="modal fade" id="modalDetailUpload">
           <div class="modal-dialog modal-lg">
             <div class="modal-content">
               <div class="modal-header">
@@ -439,7 +439,7 @@
             <!-- /.modal-content -->
           </div>
           <!-- /.modal-dialog -->
-        </div>
+        </div>#}
 
 	    </div>
 	    <!-- /.box-body -->
@@ -449,7 +449,7 @@
 	<!-- /.col-md-6 -->
 </div>
 
-
+{#
 <div class="row">
 	<div class="col-md-12">
 		<div class="nav-tabs-custom">
@@ -466,17 +466,17 @@
         <div class="tab-pane active" id="tab_1">
 
           <div class="box-group" id="accordion">
-		    		{# RUMUS KONVERSI #}
-		    		{# Konversi = 33% * total pendapatan #}
+		    		 <!-- RUMUS KONVERSI --> 
+		    		 <!-- Konversi = 33% * total pendapatan --> 
 		    		<?php $totalKlaim = number_format((float)$klaimJaspel->totalKlaim, 2, '.', '') ?>
 		    		<?php $totalPendapatanTambahan = number_format((float)$totalPendapatanTambahan, 2, '.', '') ?>	    		
 	          {% set totalPendapatanKonversi = jenisJaspel.konversiJaspel / 100 * (totalPendapatanTambahan + totalKlaim) %}
 		    		<?php $totalPelayananPeriode = number_format((float)$totalPelayananPeriode, 2, '.', '') ?>
 	          {% set pembagi = totalPendapatanKonversi / totalPelayananPeriode %}
-	          {#totalPendapatan<input type="text" name="wewe" class="rupiah" value="{{totalPendapatanTambahan + totalKlaim}}">
+	          <!-- totalPendapatan<input type="text" name="wewe" class="rupiah" value="{{totalPendapatanTambahan + totalKlaim}}">
 	          <br>totalPendapatanKonversi = <input type="text" name="wewe" class="rupiah" value="{{totalPendapatanKonversi}}">
 	          <br>totalPelayananPeriode = <input type="text" name="wewe" class="rupiah" value="{{totalPelayananPeriode}}">
-	          <br>pembagi = {{pembagi}}#}
+	          <br>pembagi = {{pembagi}} -->
 	          {% set totalDireksi = 0 %}
 	          {% set totalJpu = 0 %}
 	          {% set totj = 0 %}
@@ -489,16 +489,16 @@
 	                </a>
 	              </h4>
 					      <div class="box-tools pull-right">
-					      	{# Jasa Pelayanan setelah konversi #}
+					      	<!-- Jasa Pelayanan setelah konversi -->
 					      	{% set totalKlaimPeriode = sebelumKlaim.totalPelayananRuangan * pembagi %}
 									<?php $totalKlaimPeriode = number_format((float)$totalKlaimPeriode, 2, '.', '') ?>
-					      	{# Jasa #}
+					      	<!-- Jasa --> 
 					      	{% set jasa = (persentaseJaspel.jasa / 100) * totalKlaimPeriode %}
 									<?php $jasa = number_format((float)$jasa, 2, '.', '') ?>
-					      	{# JPL #}
+					      	<!-- JPL -->
 					      	{% set jpl = (persentaseJaspel.jpl / 100) * jasa %}
 					      	<?php $jpl = number_format((float)$jpl, 2, '.', '') ?>
-					      	{# Admin #}
+					      	<!-- Admin -->
 					      	{% set admin = jpl - ((persentaseJaspel.admin / 100) * jpl) %}
 									<?php $admin = number_format((float)$admin, 2, '.', '') ?>
 					      	<h4 class="pull-right">Rp. <input type="text" class="rupiah" value="{{admin}}" style="background:none;border:none;width:150px;" disabled="disabled"></h4>
@@ -532,26 +532,26 @@
 						    					{{jaspel.namaPelayanan}} | {{jaspel.idJplp}}
 						    				</td>
 						    				<td>
-						    					{# Jasa Pelayanan setelah konversi #}
+						    					<!-- Jasa Pelayanan setelah konversi --> 
 									      	{% set konversiPelayanan = jaspel.pelayanan * pembagi %}
 													<?php $konversiPelayanan = number_format((float)$konversiPelayanan, 2, '.', '') ?>
 						    					<span class="pull-right">Rp. <input type="text" name="konversiPelayanan" class="rupiah input-no-style" value="{{konversiPelayanan}}" disabled="disabled"></span>
 						    				</td>
 						    				<td>
-									      	{# Direksi #}
+									      	<!-- Direksi -->
 									      	{% set direksi = (persentaseJaspel.direksi / 100) * konversiPelayanan %}
 													<?php $direksi = number_format((float)$direksi, 2, '.', '') ?>
 						    					{% set totalDireksi += direksi %}
 						    					<span class="pull-right">Rp. <input type="text" name="direksi" class="rupiah input-no-style" value="{{direksi}}" disabled="disabled"></span>
 						    				</td>
 						    				<td>
-									      	{# Jasa #}
+									      	<!-- Jasa -->
 									      	{% set jasa = (persentaseJaspel.jasa / 100) * konversiPelayanan %}
 													<?php $jasa = number_format((float)$jasa, 2, '.', '') ?>
 						    					<span class="pull-right">Rp. <input type="text" name="jasa" class="rupiah input-no-style" value="{{jasa}}" disabled="disabled"></span>
 						    				</td>
 						    				<td>
-									      	{# JPU #}
+									      	<!-- JPU -->
 									      	{% if jaspel.statusPelayanan == 'jpu' %}
 									      		{% set jpu = jasa %}
 									      	{% else %}
@@ -562,7 +562,7 @@
 						    					{% set totalJpu += jpu %}
 						    				</td>
 						    				<td>
-									      	{# JPL #}
+									      	<!-- JPL -->
 									      	{% if jaspel.statusPelayanan == 'jpu' %}
 									      		{% set jpl = 0 %}
 									      	{% else %}
@@ -572,7 +572,7 @@
 						    					<span class="pull-right">Rp. <input type="text" name="jpl" class="rupiah input-no-style" value="{{jpl}}" disabled="disabled"></span>
 						    				</td>
 						    				<td>
-									      	{# JPLFIX #}
+									      	<!-- JPLFIX -->
 									      	{% set jplFix = jpl - ((persentaseJaspel.admin / 100) * jpl) %}
 													<?php $jplFix = number_format((float)$jplFix, 2, '.', '') ?>
 						    					<span class="pull-right">
@@ -693,7 +693,7 @@
         	</table>
         </div>
         <!-- /.tab-pane -->
-{{ stylesheet_link("vendor/almasaeed2010/adminlte/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css") }}
+				{{ stylesheet_link("vendor/almasaeed2010/adminlte/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css") }}
         <div class="tab-pane" id="tab_4">
         	<table id="tabel-manajemen" class="table table-hover">
         		<thead>
@@ -720,7 +720,7 @@
 									<?php $manajemen = number_format((float)$manajemen, 2, '.', '') ?>
         					{{ manajemen }}
         				</td>
-        				{#<td>
+        				<!-- <td>
         					<?php if(in_array($m->idPegawai, $listPegawaiDireksi)) { ?>
 	        					{% set direksi = totalDireksi * m.nilaiPersentase / 100 %}
 										<?php $direksi = number_format((float)$direksi, 2, '.', '') ?>
@@ -733,7 +733,7 @@
         					<?php } else { ?>
         						Rp. <input type="text" name="pajak" class="rupiah input-no-style" value="{{ manajemen }}" disabled="disabled">
         					<?php } ?>
-        				</td>#}
+        				</td> -->
         			</tr>
         			{% set totalManajemen += manajemen %}
         			{% set totalPersentase += m.nilaiPersentase %}
@@ -769,7 +769,7 @@
         			{% set i = 0 %}
         			{% set totalJpuPegawai = 0 %}
         			{% set totalJpl = 0 %}
-        			{#% for pj in pegawaiJpu %}
+        			<!-- {% for pj in pegawaiJpu %}
         			<tr>
         				<td>{{ pj.namaPegawai }}</td>
         				<td>{{ pj.namaGolongan }}</td>
@@ -788,7 +788,7 @@
         			</tr>
         			{% set totalJpuPegawai += jpuPegawai %}
         			{% set totalJpl += pj.jpl %}
-        			{% endfor %#}
+        			{% endfor %} -->
         		</tbody>
 
         		<tfoot>
@@ -816,7 +816,7 @@
 	</div>
 
 </div>
-
+#}
 
 
 {{ javascript_include("vendor/almasaeed2010/adminlte/bower_components/datatables.net/js/jquery.dataTables.min.js") }}
