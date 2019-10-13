@@ -42,7 +42,7 @@ function thousandSep(val) {
 <?php $nominalAdmin = number_format((float)$nominalAdmin, 2, '.', '') ?>
 
 {% set url = this.request.getHeader('REFERER') %}
-<?php $is_back = stripos($url, 'editKlaim'); ?>
+<?php $is_back = stripos($url, 'showJpl'); ?>
 
 {% if is_back %}
   {% set nominalJplFix = jplFixKlaim %}
@@ -440,7 +440,7 @@ $(document).ready(function() {
         <h3 class="box-title">Pengajuan Detail {{rjp.jenisPelayanan.namaPelayanan}} | April 2018</h3>
         <div class="box-tools pull-right">
           {% set url = this.request.getHeader('REFERER') %}
-          <?php $is_back = stripos($url, 'editKlaim'); ?>
+          <?php #$is_back = stripos($url, 'editKlaim'); ?>
           {% if is_back %}
             <script>
               document.write('<a href="' + document.referrer + '" class="btn btn-box-tool"><i class="fa fa-times"></i></a>');
@@ -455,7 +455,7 @@ $(document).ready(function() {
       <!-- /.box-header -->
 
       <div class="box-body">
-        {% if is_back %}
+        {% if is_back %} 
           <p>JPL FIX KLAIM: {{ text_field("jplFixKlaim", "value": jplFixKlaim, "class": "rupiah", "disabled": "disabled", "style": "width:120px; text-align: center; font-weight: 700;") }}</p>
         {% else %}
           {% set totalPengajuan = jplPendapatan.totalPengajuan*rjp.persentasePelayanan/100 %}

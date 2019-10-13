@@ -1,4 +1,5 @@
 {{ javascript_include("js/jquery.maskMoney.311.min.js") }}
+{{ stylesheet_link("vendor/almasaeed2010/adminlte/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css") }}
 <style type="text/css">
 	.table.table-hover input,
 	.input-no-style {
@@ -51,6 +52,10 @@
 	  width: 248px;
 	}
 
+	.col-24 {
+		width: 24px !important;
+	}
+
 </style>
 {{ content() }}
 
@@ -73,7 +78,7 @@
 		    	<h3 class="text-center" style="text-transform: uppercase;">{{tanggal.indo(periodeJaspel.startPeriode)['bulan']}} TAHUN {{tanggal.indo(periodeJaspel.startPeriode)['tahun']}}</h3>
 		    	<!-- Table with collapsible rows by Bootstrap 4 -->
 		    	<!-- https://www.bootply.com/glebkema/Qyh5hbEMdU# -->
-		    	<table class="table table-bordered table-responsive table-hover fixed_header">
+		    	<table class="table table-bordered table-responsive table-hover fixed_header" id="tabel-jpl">
 				    <thead>
 			        <tr>
 			        	<th>Keterangan</th>
@@ -82,6 +87,7 @@
 			        	<th>Pelayanan</th>
 			        	<th>Konversi</th>
 			        	<th>JPL Setelah Klaim</th>
+			        	<th class="col-24"></th>
 			        </tr>
 				    </thead>
 				    {% set t1 = "" %}
@@ -98,30 +104,37 @@
 					          <td></td>
 					          <td></td>
 					          <td></td>
+					          <td class="col-24"></td>
 					        </tr>
 						    {% set t2 = t1 %}
 						  {% endif %}
-			        <tr class="collapse group-of-rows-{{i}}">
+			        <tr class="{% if jfr.statusPelayanan == "jpu" AND jfr.persenPelayanan > 0 %} text-primary {% endif %}collapse group-of-rows-{{i}}">
 		            <td>{{jfr.namaPelayanan}}</td>
 		            <td>
 		            	<?php $pengajuanPelayanan = number_format((float)$jfr->pengajuanPelayanan, 2, '.', '') ?>
-		            	<input type="text" name="pengajuanPelayanan" class="rupiah input-no-style" value="{{pengajuanPelayanan}}" disabled="disabled">
+		            	{{pengajuanPelayanan}}
 		            </td>
 		            <td>
 		            	<?php $persenSarana = number_format((float)$jfr->persenSarana, 2, '.', '') ?>
-		            	<input type="text" name="persenSarana" class="rupiah input-no-style" value="{{persenSarana}}" disabled="disabled">
+		            	{{persenSarana}}
 		            </td>
 		            <td>
 		            	<?php $persenPelayanan = number_format((float)$jfr->persenPelayanan, 2, '.', '') ?>
-		            	<input type="text" name="persenPelayanan" class="rupiah input-no-style" value="{{persenPelayanan}}" disabled="disabled">
+		            	{{persenPelayanan}}
 		            </td>
 		            <td>
 		            	<?php $PelKonversi = number_format((float)$jfr->PelKonversi, 2, '.', '') ?>
-		            	<input type="text" name="PelKonversi" class="rupiah input-no-style" value="{{PelKonversi}}" disabled="disabled">
+		            	{{PelKonversi}}
 		            </td>
 		            <td>
 		            	<?php $fixJpl = number_format((float)$jfr->fixJpl, 2, '.', '') ?>
-		            	<input type="text" name="fixJpl" class="rupiah input-no-style" value="{{fixJpl}}" disabled="disabled">
+		            	{{fixJpl}}
+		            </td>
+		            <td class="col-24">
+		            	<form method="post" action="{{url('pengajuan-jaspel/detailPendapatan/'~jfr.idJplp~'/'~jfr.idRjp)}}">
+		    						<input type="hidden" name="jplFixKlaim" class="input-no-style" value="{{fixJpl}}">
+		    						<button type="submit" name="detailKlaim" class="btn btn-sm btn-primary" style="padding: 0px 4px; font-size:14px;line-height:1.4;"><i class="fa fa-list"></i></button>
+		    					</form>
 		            </td>
 			        </tr>
 				    {% endfor %}
@@ -136,6 +149,9 @@
 	<!-- /.col-md-6 -->
 </div>
 
+
+{{ javascript_include("vendor/almasaeed2010/adminlte/bower_components/datatables.net/js/jquery.dataTables.min.js") }}
+{{ javascript_include("vendor/almasaeed2010/adminlte/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js") }}
 <script>
 $(document).ready(function(){
 	$('.rupiah').maskMoney({thousand: ',', decimal: '.', precision: 2, prefix: 'Rp. '});
@@ -144,6 +160,29 @@ $(document).ready(function(){
 	  $(this).val(v);
 	  $(this).maskMoney('mask');
 	  $(this).focus();
+	});
+	$('#tabel-jpl').DataTable({
+		"order": [],
+	  "columns": [
+	  	{},
+	  	{
+			  "render": $.fn.dataTable.render.number( ',', '.', 2, 'Rp. ' )
+			},
+			{
+			  "render": $.fn.dataTable.render.number( ',', '.', 2, 'Rp. ' )
+			},
+	  	{
+			  "render": $.fn.dataTable.render.number( ',', '.', 2, 'Rp. ' )
+			},
+			{
+			  "render": $.fn.dataTable.render.number( ',', '.', 2, 'Rp. ' )
+			},
+	  	{
+			  "render": $.fn.dataTable.render.number( ',', '.', 2, 'Rp. ' )
+			},{}
+	  ],
+	  "bSort": false,
+	  "bPaginate": false
 	});
 });
 </script>

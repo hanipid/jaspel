@@ -45,6 +45,7 @@
         				<th>Jabatan</th>
         				<th>{{periodeJaspel.jenisJaspel.namaJaspel}}</th>
         				<th>Pajak</th>
+        				<th>%</th>
         				<th>Jumlah Diterima</th>
         			</tr>
         		</thead>
@@ -58,7 +59,7 @@
 					    {% set t2 = "" %}
         			{% for d in direksi %}
 					    	{% set t1 = d.statusPosisi %}
-					    	{% if t2 != t1 %}
+					    	{% if t2 != t1 AND posisi == 1 %}
 					    		{% set i += 1 %}
 					        <tr>
 					          <td style="font-weight: 700;">
@@ -72,6 +73,7 @@
 					          <td></td>
 					          <td></td>
 					          <td></td>
+					          <td></td>
 					        </tr>
 							    {% set t2 = t1 %}
 							  {% endif %}
@@ -80,14 +82,15 @@
 	        				<td>{{ d.jabatan.namaJabatan }}</td>
 	        				<td>
 										<?php $direksi = number_format((float)$d->pendapatanDireksi, 2, '.', '') ?>
-	        					Rp. <input type="text" name="direksi" class="rupiah input-no-style" value="{{ direksi }}" disabled="disabled">
+	        					{{direksi}}
 	        				</td>
 	        				<td>
 	        					{% set pajak = direksi * d.nilaiPersentase / 100 %}
 										<?php $pajak = number_format((float)$pajak, 2, '.', '') ?>
-	        					Rp. <input type="text" name="pajak" class="rupiah input-no-style" value="{{ pajak }}" disabled="disabled"> ({{d.nilaiPersentase}}%)
+	        					{{pajak}} 
 	        				</td>
-	        				<td>Rp. <input type="text" name="total" class="rupiah input-no-style" value="{{ direksi - pajak }}" disabled="disabled"></td>
+	        				<td>({{d.nilaiPersentase}}%)</td>
+	        				<td>{{direksi - pajak}}</td>
 	        				{% set diterima = direksi - pajak %}
 									<?php $diterima = number_format((float)$diterima, 2, '.', '') ?>
 	        			</tr>
@@ -102,7 +105,8 @@
         			<tr>
         				<th colspan="2"></th>
         				<th>Rp. <input type="text" name="totalSebelumPajak" class="rupiah input-no-style" value="{{ totalSebelumPajak }}" disabled="disabled"></th>
-        				<th>Rp. <input type="text" name="totalPajak" class="rupiah input-no-style" value="{{ totalPajak }}" disabled="disabled"> ({{totalPersenPajak}}%)</th>
+        				<th>Rp. <input type="text" name="totalPajak" class="rupiah input-no-style" value="{{ totalPajak }}" disabled="disabled"></th>
+        				<th>({{totalPersenPajak}}%)</th>
         				<th>Rp. <input type="text" name="totalDiterima" class="rupiah input-no-style" value="{{ totalDiterima }}" disabled="disabled"></th>
         			</tr>
         		</tfoot>
@@ -127,19 +131,52 @@ $(document).ready(function(){
 	  $(this).maskMoney('mask');
 	  $(this).focus();
 	});
+
+	var status = true
+	if ({{posisi}} == 1) {
+		status = false
+	}
+
+	$('#tabel-direksi').DataTable({
+		"order": [],
+	  "columns": [
+	  	{},{},
+	  	{
+			  "render": $.fn.dataTable.render.number( ',', '.', 2, 'Rp. ' )
+			},
+			{
+			  "render": $.fn.dataTable.render.number( ',', '.', 2, 'Rp. ' )
+			},{}
+			,
+	  	{
+			  "render": $.fn.dataTable.render.number( ',', '.', 2, 'Rp. ' )
+			}
+	  ],
+	  "pageLength": 15,
+	  "bSort": status,
+	  "bPaginate": status
+	});
 });
 </script>
-{% if posisi == 1 %}
+{#% if posisi == 1 %}
 	<script>
 	$(document).ready(function(){
 		$('#tabel-direksi').DataTable( {
 	    "bSort": false,
-	    "bPaginate": false
+	    "bPaginate": false,
 	  } );
 	});
 	</script>
 {% else %}
 	<script>
-		$('#tabel-direksi').DataTable();
+		$('#tabel-direksi').DataTable({
+			"order": [],
+		  "columns": [
+		  	{},{},{},
+		  	{
+				  "render": $.fn.dataTable.render.number( ',', '.', 2, 'Rp. ' )
+				}
+		  ]
+		});
 	</script>
-{% endif %}
+{% endif %#}
