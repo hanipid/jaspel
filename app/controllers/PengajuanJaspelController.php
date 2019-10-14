@@ -134,8 +134,13 @@ class PengajuanJaspelController extends ControllerBase
 			'idPeriode' => $idPeriode,
 			'statusKomplit' => 1
 		]);
+		if ($periodeJaspel->statusPeriode == 0) {
+			$disabled = 0;
+		} else {
+			$disabled = 1;
+		}
 		$this->view->setVars([
-			'form' => new PengajuanJaspelForm($periodeJaspel),
+			'form' => new PengajuanJaspelForm($periodeJaspel, $disabled),
 			'jplRuang0' => $jplRuang0,
 			'jplRuang1' => $jplRuang1,
 			'periodeJaspel' => $periodeJaspel,
@@ -472,6 +477,11 @@ class PengajuanJaspelController extends ControllerBase
 			$totAdmin += $ja->pendapatanDireksi;
 		}
 
+		$tanggal = new Tanggal();			
+
+		$periodeJaspel = PeriodeJaspel::findFirstByIdPeriode($vKlaimJaspel->idPeriode);
+
+
 		$this->view->setVars([
 			'idKlaim' => $idKlaim,
 			'klaimJaspel' => $klaimJaspel,
@@ -486,7 +496,9 @@ class PengajuanJaspelController extends ControllerBase
 			// 'pegawaiJpu' => $pegawaiJpu,
 			'vKlaimJaspel' => $vKlaimJaspel,
 			'totDireksi' => $totDireksi,
-			'totAdmin' => $totAdmin
+			'totAdmin' => $totAdmin,
+			'tanggal' => $tanggal,
+			'periodeJaspel' => $periodeJaspel
 		]);
 	}
 

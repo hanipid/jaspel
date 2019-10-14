@@ -18,6 +18,17 @@
 {{ content() }}
 
 <div class="row">
+	<div class="col-md-12">
+		<div class="box box-primary">
+			<div class="box-body">
+	    	<h3 class="text-center">PENDAPATAN {{periodeJaspel.jenisJaspel.namaJaspel|uppercase}} RSUD MARDI WALUYO KOTA BLITAR</h3>
+	    	<h3 class="text-center" style="text-transform: uppercase;">{{tanggal.indo(periodeJaspel.startPeriode)['bulan']}} TAHUN {{tanggal.indo(periodeJaspel.startPeriode)['tahun']}}</h3>
+	    </div>
+	  </div>
+	</div>
+</div>
+
+<div class="row">
 	<div class="col-md-6">
 		<form method="post" action="" id="form">
 		  <div class="box box-primary">

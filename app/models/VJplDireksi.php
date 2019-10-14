@@ -12,5 +12,9 @@ class VJplDireksi extends \Phalcon\Mvc\Model
       'reusable' => true,
       'alias' => 'jabatan'
     ]);
+    $this->belongsTo('idGolongan', __NAMESPACE__ . '\Golongan', 'idGolongan', [
+      'reusable' => true,
+      'alias' => 'golongan'
+    ]);
   }
 }

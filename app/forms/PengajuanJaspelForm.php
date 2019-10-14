@@ -15,10 +15,19 @@ class PengajuanJaspelForm extends Form
 
     public function initialize($entity = null, $options = null)
     {
-        $idJaspel = new Select('idJaspel', JenisJaspel::findByStatus('aktif'),[
-            'using' => [ 'idJaspel', 'namaJaspel' ],
-            'class' => 'form-control'
-        ]);
+        if ($options == 1) {
+            $idJaspel = new Select('idJaspel', JenisJaspel::findByStatus('aktif'),[
+                'using' => [ 'idJaspel', 'namaJaspel' ],
+                'class' => 'form-control',
+                'disabled' => 'disabled'
+            ]); 
+        } else {
+            $idJaspel = new Select('idJaspel', JenisJaspel::findByStatus('aktif'),[
+                'using' => [ 'idJaspel', 'namaJaspel' ],
+                'class' => 'form-control'
+            ]); 
+        }
+            
         $this->add($idJaspel);
 
         $startPeriode = new Date('startPeriode', [
