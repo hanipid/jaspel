@@ -174,7 +174,7 @@
 	    		<div class="col-md-6">
 	    			<a href="{{url('pengajuan-jaspel/showJpl/'~idKlaim)}}" class="btn btn-lg btn-block btn-success">JPL</a>
 	    			<p class="text-center">
-	    				<?php $totJpl = number_format((float)$vKlaimJaspel->totJpl, 2, '.', '') ?>
+	    				<?php $totJpl = number_format((float)$vKlaimJaspel->jplFix, 2, '.', '') ?>
 						  Rp. <input type="text" name="totJpl" class="rupiah input-no-style" value="{{totJpl}}" disabled="disabled">
 	    			</p>
 	    		</div>

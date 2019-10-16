@@ -107,6 +107,7 @@
 	  		</thead>
 
 	  		<tbody>
+	  			{% set totalPengajuanKomplit = 0 %}
 	  			{% for jr1 in jplRuang1 %}
 	  			<tr>
 	  				<td>
@@ -126,8 +127,16 @@
 	  					</span>
 	  				</td>
 	  			</tr>
+	  			{% set totalPengajuanKomplit += jr1.totalPengajuan %}
 	  			{% endfor %}
 	  		</tbody>
+
+	  		<tfoot>
+	  			<tr>
+	  				<th>Total Pengajuan</th>
+	  				<th><span class="accountingRupiah1">{{totalPengajuanKomplit}}</span></th>
+	  			</tr>
+	  		</tfoot>
 	  	</table>
 
 	  </div>
@@ -159,6 +168,7 @@
 	  		</thead>
 
 	  		<tbody>
+	  			{% set totalPengajuan = 0 %}
 	  			{% for jr0 in jplRuang0 %}
 	  			<tr>
 	  				<td>
@@ -172,8 +182,16 @@
 	  					</span>
 	  				</td>
 	  			</tr>
+	  			{% set totalPengajuan += jr0.totalPengajuan %}
 	  			{% endfor %}
 	  		</tbody>
+
+	  		{#<tfoot>
+	  			<tr>
+	  				<th>Total Pengajuan</th>
+	  				<th class="accountingRupiah1">{{totalPengajuan}}</th>
+	  			</tr>
+	  		</tfoot>#}
 	  	</table>
 
 	  </div>
@@ -226,5 +244,6 @@ $(document).ready(function() {
   $('#example2').DataTable().$('.accountingRupiah').each(function(){ // function to apply mask on load!
     $(this).text(accounting.formatMoney(Number($(this).text()), "Rp. ", 2, ".", ","))
   })
+  $('.accountingRupiah1').text(accounting.formatMoney(Number($('.accountingRupiah1').text()), "Rp. ", 2, ".", ","))
 });
 </script>
