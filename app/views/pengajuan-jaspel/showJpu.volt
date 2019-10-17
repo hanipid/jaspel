@@ -14,6 +14,13 @@
 	.table.table-hover td {
 		padding: 8px 0;
 	}
+
+	.table>thead>tr>th {
+		background: #1f3852;
+		color: #eee;
+		text-align: center;
+		vertical-align: middle;
+	}
 </style>
 {{ content() }}
 

@@ -29,7 +29,7 @@
 </div>
 
 <div class="row">
-	<div class="col-md-6">
+	<div class="col-md-5">
 		<form method="post" action="" id="form">
 		  <div class="box box-primary">
 		    <div class="box-header with-border">
@@ -106,7 +106,7 @@
 	</div>
 	<!-- /.col-md-6 -->
 
-	<div class="col-md-6">
+	<div class="col-md-7">
 	  <div class="box box-primary">
 	    <div class="box-header with-border">
 	      <h3 class="box-title"></h3>
@@ -122,10 +122,179 @@
 			    	<h4>Total Pendapatan</h4>
 			    	{{ text_field("totalKlaim", "class": "rupiah input-no-style", "value": klaimJaspel.totalKlaim + totalPendapatanTambahan, "style": "font-size: 32px; max-width: 100%;", "disabled": "disabled") }}
 			    	<hr>
-			    	<h4>Total Pendapatan Konversi</h4>
-			    	{{ text_field("totalKlaim", "class": "rupiah input-no-style", "value": vKlaimJaspel.pendapatanKonversi, "style": "font-size: 32px; max-width: 100%;", "disabled": "disabled") }}
-			    	<hr>
+			    	<style>
+							/*Now the CSS*/
+							* {margin: 0; padding: 0;}
+
+							.tree-diagram ul {
+							    padding-top: 20px; position: relative;
+								
+								transition: all 0.5s;
+								-webkit-transition: all 0.5s;
+								-moz-transition: all 0.5s;
+							}
+
+							.tree-diagram li {
+								float: left; text-align: center;
+								list-style-type: none;
+								position: relative;
+								padding: 20px 5px 0 5px;
+								
+								transition: all 0.5s;
+								-webkit-transition: all 0.5s;
+								-moz-transition: all 0.5s;
+							}
+
+							/*We will use ::before and ::after to draw the connectors*/
+
+							.tree-diagram li::before, .tree-diagram li::after{
+								content: '';
+								position: absolute; top: 0; right: 50%;
+								border-top: 1px solid #ccc;
+								width: 50%; height: 20px;
+							}
+							.tree-diagram li::after{
+								right: auto; left: 50%;
+								border-left: 1px solid #ccc;
+							}
+
+							/*We need to remove left-right connectors from elements without 
+							any siblings*/
+							.tree-diagram li:only-child::after, .tree-diagram li:only-child::before {
+								display: none;
+							}
+
+							/*Remove space from the top of single children*/
+							.tree-diagram li:only-child{ padding-top: 0;}
+
+							/*Remove left connector from first child and 
+							right connector from last child*/
+							.tree-diagram li:first-child::before, .tree-diagram li:last-child::after{
+								border: 0 none;
+							}
+							/*Adding back the vertical connector to the last nodes*/
+							.tree-diagram li:last-child::before{
+								border-right: 1px solid #ccc;
+								border-radius: 0 5px 0 0;
+								-webkit-border-radius: 0 5px 0 0;
+								-moz-border-radius: 0 5px 0 0;
+							}
+							.tree-diagram li:first-child::after{
+								border-radius: 5px 0 0 0;
+								-webkit-border-radius: 5px 0 0 0;
+								-moz-border-radius: 5px 0 0 0;
+							}
+
+							/*Time to add downward connectors from parents*/
+							.tree-diagram ul ul::before{
+								content: '';
+								position: absolute; top: 0; left: 50%;
+								border-left: 1px solid #ccc;
+								width: 0; height: 20px;
+							}
+
+							.tree-diagram li a{
+								border: 1px solid #ccc;
+								padding: 5px 10px;
+								text-decoration: none;
+								color: #666;
+								font-family: arial, verdana, tahoma;
+								font-size: 11px;
+								display: inline-block;
+								
+								border-radius: 5px;
+								-webkit-border-radius: 5px;
+								-moz-border-radius: 5px;
+								
+								transition: all 0.5s;
+								-webkit-transition: all 0.5s;
+								-moz-transition: all 0.5s;
+							}
+
+							/*Time for some hover effects*/
+							/*We will apply the hover effect the the lineage of the element also*/
+							.tree-diagram li a:hover, .tree-diagram li a:hover+ul li a {
+								background: #c8e4f8; color: #000; border: 1px solid #94a0b4;
+							}
+							/*Connector styles on hover*/
+							.tree-diagram li a:hover+ul li::after, 
+							.tree-diagram li a:hover+ul li::before, 
+							.tree-diagram li a:hover+ul::before, 
+							.tree-diagram li a:hover+ul ul::before{
+								border-color:  #94a0b4;
+							}
+
+							/*Thats all. I hope you enjoyed it.
+							Thanks :)*/
+			    	</style>
+						<!------ Include the above in your HEAD tag ---------->
+
+						<!--
+						We will create a family tree using just CSS(3)
+						The markup will be simple nested lists
+						-->
+						<div class="tree-diagram">
+						  <ul>
+								<li>
+									<button class="btn btn-default btn-lg" data-toggle="collapse" data-target=".child-tree-diagram" aria-expanded="false" aria-controls="child-tree-diagram">
+										<h4>Total Pendapatan Konversi</h4>
+			    					{{ text_field("totalKlaim", "class": "rupiah input-no-style", "value": vKlaimJaspel.pendapatanKonversi, "style": "font-size: 32px; max-width: 100%; text-align:center;", "disabled": "disabled") }}
+									</button>
+									<ul class="child-tree-diagram collapse">
+										<li>
+											<p style="margin-bottom:0px;">{{vKlaimJaspel.persenDireksi}}%</p>
+											<button href="#" class="btn btn-danger btn-lg">Direksi</button>
+						    			<p class="text-center">
+						    				<?php $totDireksi = number_format((float)$totDireksi, 2, '.', '') ?>
+											  Rp. <input type="text" name="totDireksi" class="rupiah input-no-style" value="{{totDireksi}}" disabled="disabled">
+						    			</p>
+										</li>
+										<li>
+											<p style="margin-bottom:0px;">{{vKlaimJaspel.persenJasa}}%</p>
+											<button href="#" class="btn btn-warning btn-lg">Jasa</button>
+											<p>
+												<?php $totJasa = number_format((float)$vKlaimJaspel->totJasa, 2, '.', '') ?>
+							  				Rp. <input type="text" name="totJasa" class="rupiah input-no-style" value="{{totJasa}}" disabled="disabled">
+											</p>
+											<ul>
+												<li>
+													<p style="margin-bottom:0px;">{{vKlaimJaspel.persenJpu}}%</p>
+													<button href="#" class="btn btn-info btn-lg">JPU</button>
+													<p class="text-center">
+								    				<?php $totJpu = number_format((float)$vKlaimJaspel->totJpu, 2, '.', '') ?>
+													  Rp. <input type="text" name="totJpu" class="rupiah input-no-style" value="{{totJpu}}" disabled="disabled">
+								    			</p>
+												</li>
+												<li>
+													<ul>
+														<li>
+															<p style="margin-bottom:0px;">{{vKlaimJaspel.persenAdmin}}%</p>
+															<button href="#" class="btn btn-primary btn-lg">Admin</button>
+															<p>
+																<?php $totAdmin = number_format((float)$totAdmin, 2, '.', '') ?>
+							  								Rp. <input type="text" name="totAdmin" class="rupiah input-no-style" value="{{totAdmin}}" disabled="disabled">
+															</p>
+														</li>
+														<li>
+															<p style="margin-bottom:0px;">{{vKlaimJaspel.persenJpl}}%</p>
+															<button href="#" class="btn btn-success btn-lg">JPL</button>
+										    			<p class="text-center">
+										    				<?php $totJpl = number_format((float)$vKlaimJaspel->jplFix, 2, '.', '') ?>
+															  Rp. <input type="text" name="totJpl" class="rupiah input-no-style" value="{{totJpl}}" disabled="disabled">
+										    			</p>
+														</li>
+													</ul>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
 	    		</div>
+	    	</div> <!-- /.row -->
+	    	<hr>
+	    	<div class="row">
 	    		<div class="col-md-6">
 	    			<a href="{{url('pengajuan-jaspel/showDireksi/'~idKlaim~'/1')}}" class="btn btn-lg btn-block btn-danger">DIREKSI</a>
 	    			<p class="text-center">

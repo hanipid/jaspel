@@ -53,7 +53,17 @@
 	}
 
 	.col-24 {
-		width: 24px !important;
+		width: 28px !important;
+	}
+
+	.table>thead>tr>th {
+		background: #1f3852;
+		color: #eee;
+		text-align: center;
+		vertical-align: middle;
+	}
+	table.table-bordered.dataTable th:last-child, table.table-bordered.dataTable th:last-child, table.table-bordered.dataTable td:last-child, table.table-bordered.dataTable td:last-child {
+		border-right-width: 1px;
 	}
 
 </style>
@@ -78,9 +88,24 @@
 		    	<h3 class="text-center" style="text-transform: uppercase;">{{tanggal.indo(periodeJaspel.startPeriode)['bulan']}} TAHUN {{tanggal.indo(periodeJaspel.startPeriode)['tahun']}}</h3>
 		    	<!-- Table with collapsible rows by Bootstrap 4 -->
 		    	<!-- https://www.bootply.com/glebkema/Qyh5hbEMdU# -->
-		    	<table class="table table-bordered table-responsive table-hover fixed_header" id="tabel-jpl">
+		    	<table class="table table-bordered table-responsive table-hover " id="tabel-jpl">
 				    <thead>
+				    	<tr>
+			        	<th rowspan="3">Poli / Ruang</th>
+			        	<th colspan="4">Pendapatan</th>
+			        	<th rowspan="3">JPL Setelah Klaim</th>
+			        	<th rowspan="3"></th>
+			        </tr>
 			        <tr>
+			        	<th rowspan="2">JPL Sebelum Klaim</th>
+			        	<th colspan="2">Jasa</th>
+			        	<th rowspan="2">Konversi xx%</th>
+			        </tr>
+			        <tr>
+			        	<th>Sarana</th>
+			        	<th>Pelayanan</th>
+			        </tr>
+			        {#<tr>
 			        	<th>Keterangan</th>
 			        	<th>JPL Sebelum Klaim</th>
 			        	<th>Sarana</th>
@@ -88,7 +113,7 @@
 			        	<th>Konversi</th>
 			        	<th>JPL Setelah Klaim</th>
 			        	<th class="col-24"></th>
-			        </tr>
+			        </tr>#}
 				    </thead>
 				    {% set t1 = "" %}
 				    {% set t2 = "" %}

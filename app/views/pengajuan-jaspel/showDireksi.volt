@@ -14,6 +14,13 @@
 	.table.table-hover td {
 		padding: 8px 0;
 	}
+
+	.table>thead>tr>th {
+		background: #1f3852;
+		color: #eee;
+		text-align: center;
+		vertical-align: middle;
+	}
 </style>
 {{ content() }}
 
@@ -62,7 +69,6 @@
         			{% for d in direksi %}
 					    	{% set t1 = d.statusPosisi %}
 					    	{% if t2 != t1 AND posisi == 1 %}
-					    		{% set i += 1 %}
 					        <tr>
 					          <td style="font-weight: 700;">
 					          	{% if d.statusPosisi == 1 %}
