@@ -138,7 +138,7 @@
 								float: left; text-align: center;
 								list-style-type: none;
 								position: relative;
-								padding: 20px 5px 0 5px;
+								padding: 20px 0px 0 0px;
 								
 								transition: all 0.5s;
 								-webkit-transition: all 0.5s;
