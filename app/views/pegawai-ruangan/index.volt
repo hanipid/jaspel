@@ -40,8 +40,8 @@
       <table id="dataTable" class="table table-bordered table-striped" align="center">
         <thead>
           <tr>
-            <th width="4%" class="text-center">#</th>
             <th>Nama</th>
+            <th>Posisi</th>
             <th>Ruangan</th>
             {#<th></th>#}
             <th></th>
@@ -51,8 +51,10 @@
           
           {% for pr in pegawaiRuangan %}
           <tr>
-            <td class="text-center">{{loop.index}}</td>
             <td>{{pr.pegawai.gelarDepan}} {{pr.pegawai.namaPegawai|capitalize}} {{pr.pegawai.gelarBelakang}}</td>
+            <td>
+              {% if pr.pegawai.posisiStatus == "dokter" %} Dokter {% else %} Bukan Dokter {% endif %}
+            </td>
             <td>{% if pr.ruangan.namaRuang is defined %} {{pr.ruangan.namaRuang|capitalize}} {% endif %}</td>
             {#<td width="2%">{{ link_to("pegawai-ruangan/edit/" ~ pr.id, '<i class="glyphicon glyphicon-pencil"></i> Edit', "class": "btn btn-primary btn-sm") }}</td>#}
             
@@ -83,6 +85,8 @@
 
 <script>
 $(document).ready(function() {
-  $('#dataTable').dataTable();
+  $('#dataTable').dataTable({
+    'order': [[1, 'DESC']]
+  });
 });
 </script>
