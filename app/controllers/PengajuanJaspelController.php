@@ -100,7 +100,8 @@ class PengajuanJaspelController extends ControllerBase
 			JOIN \Jaspel\Models\Ruangan r
 			  ON jr.idRuangan = r.id
 
-			WHERE jr.idPeriode = :idPeriode:
+			WHERE jp.idPeriode = :idPeriode:
+				AND jr.idPeriode = :idPeriode:
 				AND jr.statusKomplit = :statusKomplit:
 			GROUP BY r.id
 			');
@@ -126,7 +127,8 @@ class PengajuanJaspelController extends ControllerBase
 			JOIN \Jaspel\Models\Ruangan r
 			  ON jr.idRuangan = r.id
 
-			WHERE jr.idPeriode = :idPeriode:
+			WHERE jp.idPeriode = :idPeriode:
+				AND jr.idPeriode = :idPeriode:
 				AND jr.statusKomplit = :statusKomplit:
 			GROUP BY r.id
 			');
