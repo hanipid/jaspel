@@ -37,13 +37,17 @@
           focusable;
 
       // Array of Indexable/Tab-able items
-      focusable = form.find('input,select,button,textarea,span').filter(':visible');
+      // focusable = form.find('input,select,button,textarea,span').filter(':visible');
+      focusable = form.find(`input,
+        select,button,textarea,
+        span:not(.glyphicon,.input-group-addon,.info-box-icon)`).filter(':visible');
+      console.log(focusable);
 
       function enterKey(){
         if (e.which === 13 && !self.is('textarea')) { // [Enter] key
 
           // If not a regular hyperlink/button/textarea
-          if ($.inArray(self, focusable) && (!self.is('a')) && (!self.is('button'))){
+          if ($.inArray(self, focusable) && (!self.is('a')) && (!self.is('button')) && (!self.is('input[type="submit"]'))){
             // Then prevent the default [Enter] key behaviour from submitting the form
             e.preventDefault();
           } // Otherwise follow the link/button as by design, or put new line in textarea
