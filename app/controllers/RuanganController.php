@@ -117,6 +117,8 @@ class RuanganController extends ControllerBase
 			$namaPelayanan = $this->request->getPost('namaPelayanan');
 			$persentaseSarana = $this->request->getPost('persentaseSarana');
 			$persentasePelayanan = $this->request->getPost('persentasePelayanan');
+			$persentaseJpu = $this->request->getPost('persentaseJpu');
+			$persentaseJpl = $this->request->getPost('persentaseJpl');
 			$persentasePerawat = $this->request->getPost('persentasePerawat');
 
 			$jenisPelayanan = JenisPelayanan::findFirstByNamaPelayanan($namaPelayanan);
@@ -140,6 +142,8 @@ class RuanganController extends ControllerBase
 				'idJenisPelayanan'		=> $jenisPelayanan->id,
 				'persentaseSarana'		=> $persentaseSarana,
 				'persentasePelayanan'	=> $persentasePelayanan,
+				'persentaseJpu'				=> $persentaseJpu,
+				'persentaseJpl'				=> $persentaseJpl,
 				'persentasePerawat'		=> $persentasePerawat,
 				'statusAktif'					=> 1
 			]);
@@ -186,6 +190,8 @@ class RuanganController extends ControllerBase
 
 			$ruanganJenisPelayanan->persentaseSarana		= $this->request->getPost('persentaseSarana');
 			$ruanganJenisPelayanan->persentasePelayanan	= $this->request->getPost('persentasePelayanan');
+			$ruanganJenisPelayanan->persentaseJpu 			= $this->request->getPost('persentaseJpu');
+			$ruanganJenisPelayanan->persentaseJpl 			= $this->request->getPost('persentaseJpl');
 			$ruanganJenisPelayanan->persentasePerawat		= $this->request->getPost('persentasePerawat');
 
 			if (!$ruanganJenisPelayanan->save()) {

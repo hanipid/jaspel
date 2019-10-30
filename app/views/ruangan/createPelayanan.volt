@@ -43,6 +43,24 @@
               <span class="input-group-addon">%</span>
             </div>
           </div>
+
+          <hr>
+
+          <div class="form-group col-md-6">
+            <label for="persentaseJpu">JPU</label>
+            <div class="input-group">
+              {{ text_field("persentaseJpu", "class": "form-control") }}
+              <span class="input-group-addon">%</span>
+            </div>
+          </div>
+          
+          <div class="form-group col-md-6">
+            <label for="persentaseJpl">JPL</label>
+            <div class="input-group">
+              {{ text_field("persentaseJpl", "class": "form-control") }}
+              <span class="input-group-addon">%</span>
+            </div>
+          </div>
         </div>
 
           

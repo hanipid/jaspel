@@ -5,6 +5,26 @@
 input[disabled="disabled"] {
   background: #ebebe4;
 }
+
+/* JUST COMMON TABLE STYLES... */
+table { border-collapse: collapse; width: 100%; }
+th, td { background: #fff; padding: 8px 16px; }
+
+
+.table-scrolled {
+  overflow: auto;
+  max-height: 500px;
+}
+
+.table-scrolled thead th {
+  position: sticky;
+  top: 0;
+}
+
+.table-scrolled tfoot th {
+  position: sticky;
+  bottom: 0;
+}
 </style>
 {{ stylesheet_link("css/bootstrap-toggle.min.css") }}
 {{ javascript_include("js/jquery.maskMoney.311.min.js") }}
@@ -23,8 +43,8 @@ function thousandSep(val) {
 
 {% set persentaseDireksi      = persentaseJaspel.direksi / 100 %}
 {% set persentaseJasa         = persentaseJaspel.jasa / 100 %}
-{% set persentaseJpu          = persentaseJaspel.jpu / 100 %}
-{% set persentaseJplKotor     = persentaseJaspel.jpl / 100 %}
+{% set persentaseJpu          = rjp.persentaseJpu / 100 %}
+{% set persentaseJplKotor     = rjp.persentaseJpl / 100 %}
 {% set persentaseAdmin        = persentaseJaspel.admin / 100 %}
 {% set persentaseJplFix       = persentaseJaspel.jasaFix / 100 %}
 {% set persentasePelayanan    = rjp.persentasePelayanan / 100 %}
@@ -129,68 +149,69 @@ function thousandSep(val) {
           <span class="pull-left">Selisih: Rp. {{ text_field("totalIndex", "class": "rupiah", "disabled": "disabled") }}</span>
         {% endif %}
         
-
-        <table class="table table-striped table-hover" id="table">
-          <thead>
-            <tr>
-              <th>No.</th>
-              <th>Nama</th>
-              {% if rjp.metode != "manual" %}
-              <th class="text-center">{{rjp.metode|capitalize}}</th>
-              {% endif %}
-              <th>Nominal</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {% for jp in jplPegawai %}
-            <tr>
-              <td>{{loop.index}}</td>
-              <td>{{ jp.pegawai.gelarDepan }} {{jp.pegawai.namaPegawai}} {{ jp.pegawai.gelarBelakang }}</td>
-              {% if rjp.metode != "manual" %}
-              <td class="text-center">
-                {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit index nilaiPendapatan"~jp.id, "data-id-jpl-pegawai": jp.id, "style": "width:54px; text-align: center;") }}
-                <!-- <span class="edit" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}">{{jp.nilaiPendapatan}}</span> -->
-                {% if rjp.metode == "persentase" %}
-                %
+        <div class="table-scrolled">
+          <table class="table table-striped table-hover" id="table">
+            <thead>
+              <tr>
+                <th>No.</th>
+                <th>Nama</th>
+                {% if rjp.metode != "manual" %}
+                <th class="text-center">{{rjp.metode|capitalize}}</th>
                 {% endif %}
-              </td>
-              {% endif %}
-              <td>Rp. 
-                {% if rjp.metode == "persentase" %}
-                  {% set rumusNominalPersentase = jp.nilaiPendapatan / 100 * nominalJplFix %}
-                  <?php $nominalPersentase = number_format((float)$rumusNominalPersentase, 2, '.', '') ?>
-                  <?php $hNominalPersentase = number_format((float)$rumusNominalPersentase, 10, '.', '') ?>
-                  {{ text_field("nominal"~jp.id, "value": nominalPersentase, "class": "nominal rupiah", "disabled": "disabled", "data-id-jpl-pegawai": jp.id, "style": "width:109px; text-align: center;") }}
-                  {{ hidden_field("hNominal"~jp.id, "value": hNominalPersentase, "class": "hiddenNominal rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;", "data-precision": "10") }}
-                {% elseif rjp.metode == "index" %}
-                  {% set rumusNominalIndex = jp.nilaiPendapatan / totalIndex * nominalJplFix %}
-                  <?php $nominalIndex = number_format((float)$rumusNominalIndex, 2, '.', '') ?>
-                  <?php $hNominalIndex = number_format((float)$rumusNominalIndex, 10, '.', '') ?>
-                  {{ text_field("nominal"~jp.id, "value": nominalIndex, "class": "nominal rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;") }}
-                  {{ hidden_field("hNominal"~jp.id, "value": hNominalIndex, "class": "hiddenNominal rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;", "data-precision": "10") }}
-                {% else %}
-                  {% set nilaiPendapatan = jp.nilaiPendapatan %}
-                  <?php $nilaiPendapatan = number_format((float)$nilaiPendapatan, 2, '.', '') ?>
-                  {{ text_field("nominal"~jp.id, "value": nilaiPendapatan, "class": "edit nominal rupiah", "data-id-jpl-pegawai": jp.id, "style": "width:109px; text-align: center;") }}
-                {% endif %}
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
+                <th>Nominal</th>
+              </tr>
+            </thead>
 
-          <tfoot>
-            <tr class="total">
-              <th>Total</th>
-              <th></th>
-              {% if rjp.metode != "manual" %}
-              <th id="totalIndexPersentase" class="text-center">{{ totalIndex }}{% if rjp.metode == "persentase" %}%{% endif %}</th>
-              {% endif %}
-              <th>Rp. {{ text_field("total", "class": "rupiah", "disabled": "disabled", "style": "width:120px; text-align: center; font-weight: 700;") }}
-                <!-- Rp. <span id="total"></span> --></th>
-            </tr>
-          </tfoot>
-        </table>
+            <tbody>
+              {% for jp in jplPegawai %}
+              <tr>
+                <td>{{loop.index}}</td>
+                <td>{{ jp.pegawai.gelarDepan }} {{jp.pegawai.namaPegawai}} {{ jp.pegawai.gelarBelakang }}</td>
+                {% if rjp.metode != "manual" %}
+                <td class="text-center">
+                  {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit index nilaiPendapatan"~jp.id, "data-id-jpl-pegawai": jp.id, "style": "width:54px; text-align: center;") }}
+                  <!-- <span class="edit" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}">{{jp.nilaiPendapatan}}</span> -->
+                  {% if rjp.metode == "persentase" %}
+                  %
+                  {% endif %}
+                </td>
+                {% endif %}
+                <td>
+                  {% if rjp.metode == "persentase" %}
+                    {% set rumusNominalPersentase = jp.nilaiPendapatan / 100 * nominalJplFix %}
+                    <?php $nominalPersentase = number_format((float)$rumusNominalPersentase, 2, '.', '') ?>
+                    <?php $hNominalPersentase = number_format((float)$rumusNominalPersentase, 10, '.', '') ?>
+                    {{ text_field("nominal"~jp.id, "value": nominalPersentase, "class": "nominal rupiah", "disabled": "disabled", "data-id-jpl-pegawai": jp.id, "style": "width:109px; text-align: center;") }}
+                    {{ hidden_field("hNominal"~jp.id, "value": hNominalPersentase, "class": "hiddenNominal rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;", "data-precision": "10") }}
+                  {% elseif rjp.metode == "index" %}
+                    {% set rumusNominalIndex = jp.nilaiPendapatan / totalIndex * nominalJplFix %}
+                    <?php $nominalIndex = number_format((float)$rumusNominalIndex, 2, '.', '') ?>
+                    <?php $hNominalIndex = number_format((float)$rumusNominalIndex, 10, '.', '') ?>
+                    {{ text_field("nominal"~jp.id, "value": nominalIndex, "class": "nominal rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;") }}
+                    {{ hidden_field("hNominal"~jp.id, "value": hNominalIndex, "class": "hiddenNominal rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;", "data-precision": "10") }}
+                  {% else %}
+                    {% set nilaiPendapatan = jp.nilaiPendapatan %}
+                    <?php $nilaiPendapatan = number_format((float)$nilaiPendapatan, 2, '.', '') ?>
+                    {{ text_field("nominal"~jp.id, "value": nilaiPendapatan, "class": "edit nominal rupiah", "data-id-jpl-pegawai": jp.id, "style": "width:109px; text-align: center;") }}
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+
+            <tfoot>
+              <tr class="total">
+                <th>Total</th>
+                <th></th>
+                {% if rjp.metode != "manual" %}
+                <th id="totalIndexPersentase" class="text-center">{{ totalIndex }}{% if rjp.metode == "persentase" %}%{% endif %}</th>
+                {% endif %}
+                <th>Rp. {{ text_field("total", "class": "rupiah", "disabled": "disabled", "style": "width:120px; text-align: center; font-weight: 700;") }}
+                  <!-- Rp. <span id="total"></span> --></th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
 
       </div>
       <!-- /.box-body -->
@@ -532,71 +553,73 @@ $(document).ready(function() {
           {% endif %}
         </p>
 
-        <table class="table table-striped table-hover">
-          <thead>
-            <tr>
-              <th>No.</th>
-              <th>Nama</th>
-              {% if rjp.metode != "manual" %}
-              <th>{{rjp.metode|capitalize}}</th>
-              {% endif %}
-              <th style="width: 148px;">Nominal</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {% set i = 1 %}
-            {% for jp in jplPegawai if jp.pegawai.posisiStatus == "dokter" %}
-            <tr>
-              <td>{{i}}</td>
-              {% set i += 1 %}
-              <td>{{ jp.pegawai.gelarDepan }} {{jp.pegawai.namaPegawai}} {{ jp.pegawai.gelarBelakang }}</td>
-              {% if rjp.metode != "manual" %}
-              <td width="83px">
-                {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit indexDokter nilaiPendapatan"~jp.id, "data-id-jpl-pegawai": jp.id, "data-status-pegawai": "dokter", "data-persentase-pegawai": rjp.persentaseDokter, "style": "width:54px; text-align: center;") }}
-                <!-- <span class="edit indexDokter" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}" data-status-pegawai="dokter" data-persentase-pegawai="{{rjp.persentaseDokter}}">{{jp.nilaiPendapatan}}</span> -->
-                {% if rjp.metode == "persentase" %}
-                %
+        <div class="table-scrolled">
+          <table class="table table-striped table-hover">
+            <thead>
+              <tr>
+                <th>No.</th>
+                <th>Nama</th>
+                {% if rjp.metode != "manual" %}
+                <th>{{rjp.metode|capitalize}}</th>
                 {% endif %}
-              </td>
-              {% endif %}
-              <td>Rp. 
-                {% if rjp.metode == "persentase" %}
-                  {% set rumusDNominal = jp.nilaiPendapatan / 100 * jatahDokter %}
-                  <?php $dNominal = number_format((float)$rumusDNominal, 2, '.', '') ?>
-                  <?php $hdNominal = number_format((float)$rumusDNominal, 10, '.', '') ?>
-                  {{ text_field("dNominal"~jp.id, "value": dNominal, "class": "nominalDokter rupiah", "disabled": "disabled", "data-id-jpl-pegawai": jp.id, "data-status-pegawai": "dokter", "data-persentase-pegawai": rjp.persentaseDokter, "style": "width:109px; text-align: center;") }}
-                  {{ hidden_field("hdNominal"~jp.id, "value": hdNominal, "class": "hiddenNominalDokter rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;", "data-precision": "10") }}
+                <th style="width: 148px;">Nominal</th>
+              </tr>
+            </thead>
 
-                {% elseif rjp.metode == "index" %}
-                  {% set rumusDNominal = jp.nilaiPendapatan / totalIndexDokter * jatahDokter %}
-                  <?php $dNominal = number_format((float)$rumusDNominal, 2, '.', '') ?>
-                  <?php $hdNominal = number_format((float)$rumusDNominal, 10, '.', '') ?>
-                  {{ text_field("dNominal"~jp.id, "value": dNominal, "class": "nominalDokter rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;") }}
-                  {{ hidden_field("hdNominal"~jp.id, "value": hdNominal, "class": "hiddenNominalDokter rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;", "data-precision": "10") }}
-
-                {% else %}
-                  {% set nilaiPendapatan = jp.nilaiPendapatan %}
-                  <?php $nilaiPendapatan = number_format((float)$nilaiPendapatan, 2, '.', '') ?>
-                  {{ text_field("dNominal"~jp.id, "value": nilaiPendapatan, "class": "edit nominalDokter rupiah", "data-id-jpl-pegawai": jp.id, "data-status-pegawai":"dokter", "data-persentase-pegawai": rjp.persentaseDokter, "style": "width:109px; text-align: center;") }}
-
+            <tbody>
+              {% set i = 1 %}
+              {% for jp in jplPegawai if jp.pegawai.posisiStatus == "dokter" %}
+              <tr>
+                <td>{{i}}</td>
+                {% set i += 1 %}
+                <td>{{ jp.pegawai.gelarDepan }} {{jp.pegawai.namaPegawai}} {{ jp.pegawai.gelarBelakang }}</td>
+                {% if rjp.metode != "manual" %}
+                <td width="83px">
+                  {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit indexDokter nilaiPendapatan"~jp.id, "data-id-jpl-pegawai": jp.id, "data-status-pegawai": "dokter", "data-persentase-pegawai": rjp.persentaseDokter, "style": "width:54px; text-align: center;") }}
+                  <!-- <span class="edit indexDokter" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}" data-status-pegawai="dokter" data-persentase-pegawai="{{rjp.persentaseDokter}}">{{jp.nilaiPendapatan}}</span> -->
+                  {% if rjp.metode == "persentase" %}
+                  %
+                  {% endif %}
+                </td>
                 {% endif %}
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
- 
-          <tfoot>
-            <tr class="total">
-              <th>Total</th>
-              <th></th>
-              {% if rjp.metode != "manual" %}
-              <th id="totalIndexPersentaseDokter" class="text-center">{{ totalIndexDokter }}{% if rjp.metode == "persentase" %}%{% endif %}</th>
-              {% endif %}
-              <th>Rp. {{ text_field("totalDokter", "class": "rupiah", "disabled": "disabled", "style": "width:120px; text-align: center; font-weight: 700;") }}</th>
-            </tr>
-          </tfoot>
-        </table>
+                <td> 
+                  {% if rjp.metode == "persentase" %}
+                    {% set rumusDNominal = jp.nilaiPendapatan / 100 * jatahDokter %}
+                    <?php $dNominal = number_format((float)$rumusDNominal, 2, '.', '') ?>
+                    <?php $hdNominal = number_format((float)$rumusDNominal, 10, '.', '') ?>
+                    {{ text_field("dNominal"~jp.id, "value": dNominal, "class": "nominalDokter rupiah", "disabled": "disabled", "data-id-jpl-pegawai": jp.id, "data-status-pegawai": "dokter", "data-persentase-pegawai": rjp.persentaseDokter, "style": "width:109px; text-align: center;") }}
+                    {{ hidden_field("hdNominal"~jp.id, "value": hdNominal, "class": "hiddenNominalDokter rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;", "data-precision": "10") }}
+
+                  {% elseif rjp.metode == "index" %}
+                    {% set rumusDNominal = jp.nilaiPendapatan / totalIndexDokter * jatahDokter %}
+                    <?php $dNominal = number_format((float)$rumusDNominal, 2, '.', '') ?>
+                    <?php $hdNominal = number_format((float)$rumusDNominal, 10, '.', '') ?>
+                    {{ text_field("dNominal"~jp.id, "value": dNominal, "class": "nominalDokter rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;") }}
+                    {{ hidden_field("hdNominal"~jp.id, "value": hdNominal, "class": "hiddenNominalDokter rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;", "data-precision": "10") }}
+
+                  {% else %}
+                    {% set nilaiPendapatan = jp.nilaiPendapatan %}
+                    <?php $nilaiPendapatan = number_format((float)$nilaiPendapatan, 2, '.', '') ?>
+                    {{ text_field("dNominal"~jp.id, "value": nilaiPendapatan, "class": "edit nominalDokter rupiah", "data-id-jpl-pegawai": jp.id, "data-status-pegawai":"dokter", "data-persentase-pegawai": rjp.persentaseDokter, "style": "width:109px; text-align: center;") }}
+
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+   
+            <tfoot>
+              <tr class="total">
+                <th>Total</th>
+                <th></th>
+                {% if rjp.metode != "manual" %}
+                <th id="totalIndexPersentaseDokter" class="text-center">{{ totalIndexDokter }}{% if rjp.metode == "persentase" %}%{% endif %}</th>
+                {% endif %}
+                <th>Rp. {{ text_field("totalDokter", "class": "rupiah", "disabled": "disabled", "style": "width:120px; text-align: center; font-weight: 700;") }}</th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
 
       </div>
       <!-- /.box-body -->
@@ -641,71 +664,73 @@ $(document).ready(function() {
           {% endif %}
         </p>
 
-        <table class="table table-striped table-hover">
-          <thead>
-            <tr>
-              <th>No.</th>
-              <th>Nama</th>
-              {% if rjp.metode != "manual" %}
-              <th>{{rjp.metode|capitalize}}</th>
-              {% endif %}
-              <th style="width: 148px;">Nominal</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {% set i = 1 %}
-            {% for jp in jplPegawai if jp.pegawai.posisiStatus == "bukandokter" %}
-            <tr>
-              <td>{{i}}</td>
-              {% set i += 1 %}
-              <td>{{ jp.pegawai.gelarDepan }} {{jp.pegawai.namaPegawai}} {{ jp.pegawai.gelarBelakang }}</td>
-              {% if rjp.metode != "manual" %}
-              <td width="83px">
-                {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit indexPerawat nilaiPendapatan"~jp.id, "data-id-jpl-pegawai": jp.id, "data-status-pegawai": "bukandokter", "data-persentase-pegawai": rjp.persentasePerawat, "style": "width:54px; text-align: center;") }}
-                <!-- <span class="edit indexPerawat" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}" data-status-pegawai="bukandokter" data-persentase-pegawai="{{rjp.persentasePerawat}}">{{jp.nilaiPendapatan}}</span> -->
-                {% if rjp.metode == "persentase" %}
-                %
+        <div class="table-scrolled">
+          <table class="table table-striped table-hover">
+            <thead>
+              <tr>
+                <th>No.</th>
+                <th>Nama</th>
+                {% if rjp.metode != "manual" %}
+                <th>{{rjp.metode|capitalize}}</th>
                 {% endif %}
-              </td>
-              {% endif %}
-              <td>Rp. 
-                {% if rjp.metode == "persentase" %}
-                  {% set rumusBdNominal = jp.nilaiPendapatan / 100 * jatahPerawat %}
-                  <?php $bdNominal = number_format((float)$rumusBdNominal, 2, '.', '') ?>
-                  <?php $hbdNominal = number_format((float)$rumusBdNominal, 10, '.', '') ?>
-                  {{ text_field("bdNominal"~jp.id, "value": bdNominal, "class": "nominalPerawat rupiah", "disabled": "disabled", "data-id-jpl-pegawai": jp.id, "data-status-pegawai": "perawat", "data-persentase-pegawai": rjp.persentaseDokter, "style": "width:109px; text-align: center;") }}
-                  {{ hidden_field("hbdNominal"~jp.id, "value": hbdNominal, "class": "hiddenNominalPerawat rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;", "data-precision": "10") }}
-                  
-                {% elseif rjp.metode == "index" %}
-                  {% set rumusBdNominal = jp.nilaiPendapatan / totalIndexPerawat * jatahPerawat %}
-                  <?php $bdNominal = number_format((float)$rumusBdNominal, 2, '.', '') ?>
-                  <?php $hbdNominal = number_format((float)$rumusBdNominal, 10, '.', '') ?>
-                  {{ text_field("bdNominal"~jp.id, "value": bdNominal, "class": "nominalPerawat rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;") }}
-                  {{ hidden_field("hbdNominal"~jp.id, "value": hbdNominal, "class": "hiddenNominalPerawat rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;", "data-precision": "10") }}
+                <th style="width: 148px;">Nominal</th>
+              </tr>
+            </thead>
 
-                {% else %}
-                  {% set nilaiPendapatan = jp.nilaiPendapatan %}
-                  <?php $nilaiPendapatan = number_format((float)$nilaiPendapatan, 2, '.', '') ?>
-                  {{ text_field("bdNominal"~jp.id, "value": nilaiPendapatan, "class": "edit nominalPerawat rupiah", "data-id-jpl-pegawai": jp.id, "data-status-pegawai":"bukandokter", "data-persentase-pegawai": rjp.persentasePerawat, "style": "width:109px; text-align: center;") }}
-
+            <tbody>
+              {% set i = 1 %}
+              {% for jp in jplPegawai if jp.pegawai.posisiStatus == "bukandokter" %}
+              <tr>
+                <td>{{i}}</td>
+                {% set i += 1 %}
+                <td>{{ jp.pegawai.gelarDepan }} {{jp.pegawai.namaPegawai}} {{ jp.pegawai.gelarBelakang }}</td>
+                {% if rjp.metode != "manual" %}
+                <td width="83px">
+                  {{ text_field("nilaiPendapatan", "value": jp.nilaiPendapatan, "class": "edit indexPerawat nilaiPendapatan"~jp.id, "data-id-jpl-pegawai": jp.id, "data-status-pegawai": "bukandokter", "data-persentase-pegawai": rjp.persentasePerawat, "style": "width:54px; text-align: center;") }}
+                  <!-- <span class="edit indexPerawat" contenteditable="true" data-id-jpl-pegawai="{{jp.id}}" data-status-pegawai="bukandokter" data-persentase-pegawai="{{rjp.persentasePerawat}}">{{jp.nilaiPendapatan}}</span> -->
+                  {% if rjp.metode == "persentase" %}
+                  %
+                  {% endif %}
+                </td>
                 {% endif %}
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
+                <td>
+                  {% if rjp.metode == "persentase" %}
+                    {% set rumusBdNominal = jp.nilaiPendapatan / 100 * jatahPerawat %}
+                    <?php $bdNominal = number_format((float)$rumusBdNominal, 2, '.', '') ?>
+                    <?php $hbdNominal = number_format((float)$rumusBdNominal, 10, '.', '') ?>
+                    {{ text_field("bdNominal"~jp.id, "value": bdNominal, "class": "nominalPerawat rupiah", "disabled": "disabled", "data-id-jpl-pegawai": jp.id, "data-status-pegawai": "perawat", "data-persentase-pegawai": rjp.persentaseDokter, "style": "width:109px; text-align: center;") }}
+                    {{ hidden_field("hbdNominal"~jp.id, "value": hbdNominal, "class": "hiddenNominalPerawat rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;", "data-precision": "10") }}
+                    
+                  {% elseif rjp.metode == "index" %}
+                    {% set rumusBdNominal = jp.nilaiPendapatan / totalIndexPerawat * jatahPerawat %}
+                    <?php $bdNominal = number_format((float)$rumusBdNominal, 2, '.', '') ?>
+                    <?php $hbdNominal = number_format((float)$rumusBdNominal, 10, '.', '') ?>
+                    {{ text_field("bdNominal"~jp.id, "value": bdNominal, "class": "nominalPerawat rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;") }}
+                    {{ hidden_field("hbdNominal"~jp.id, "value": hbdNominal, "class": "hiddenNominalPerawat rupiah", "disabled": "disabled", "style": "width:109px; text-align: center;", "data-precision": "10") }}
 
-          <tfoot>
-            <tr class="total">
-              <th>Total</th>
-              <th></th>
-              {% if rjp.metode != "manual" %}
-              <th id="totalIndexPersentasePerawat" class="text-center">{{ totalIndexPerawat }}{% if rjp.metode == "persentase" %}%{% endif %}</th>
-              {% endif %}
-              <th>{{ text_field("totalPerawat", "class": "rupiah", "disabled": "disabled", "style": "width:120px; text-align: center; font-weight: 700;") }}</th>
-            </tr>
-          </tfoot>
-        </table>
+                  {% else %}
+                    {% set nilaiPendapatan = jp.nilaiPendapatan %}
+                    <?php $nilaiPendapatan = number_format((float)$nilaiPendapatan, 2, '.', '') ?>
+                    {{ text_field("bdNominal"~jp.id, "value": nilaiPendapatan, "class": "edit nominalPerawat rupiah", "data-id-jpl-pegawai": jp.id, "data-status-pegawai":"bukandokter", "data-persentase-pegawai": rjp.persentasePerawat, "style": "width:109px; text-align: center;") }}
+
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+
+            <tfoot>
+              <tr class="total">
+                <th>Total</th>
+                <th></th>
+                {% if rjp.metode != "manual" %}
+                <th id="totalIndexPersentasePerawat" class="text-center">{{ totalIndexPerawat }}{% if rjp.metode == "persentase" %}%{% endif %}</th>
+                {% endif %}
+                <th>{{ text_field("totalPerawat", "class": "rupiah", "disabled": "disabled", "style": "width:120px; text-align: center; font-weight: 700;") }}</th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
 
       </div>
       <!-- /.box-body -->

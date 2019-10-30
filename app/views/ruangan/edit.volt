@@ -63,7 +63,8 @@
             <th>Jenis Pelayanan</th>
             <th>Sarana</th>
             <th>Pelayanan</th>
-            <th></th>
+            <th>JPU</th>
+            <th>JPL</th>
             <th></th>
             <th></th>
           </tr>
@@ -76,8 +77,10 @@
             <td>{{rjp.jenisPelayanan.namaPelayanan}}</td>
             <td>{{rjp.persentaseSarana}}</td>
             <td>{{rjp.persentasePelayanan}}</td>
-            <td width="2%">{{ link_to("ruangan/editPelayanan/" ~ rjp.id, '<i class="glyphicon glyphicon-pencil"></i> Detail', "class": "btn btn-primary") }}</td>
-            <td width="2%">{{ link_to("ruangan/deletePelayanan/" ~ rjp.id, '<i class="glyphicon glyphicon-remove"></i> Delete', "class": "btn btn-danger", "onclick": "return confirm('Are you sure?')") }}</td>
+            <td>{{rjp.persentaseJpu}}</td>
+            <td>{{rjp.persentaseJpl}}</td>
+            <td width="2%">{{ link_to("ruangan/editPelayanan/" ~ rjp.id, '<i class="glyphicon glyphicon-pencil"></i> Detail', "class": "btn btn-primary btn-sm") }}</td>
+            <td width="2%">{{ link_to("ruangan/deletePelayanan/" ~ rjp.id, '<i class="glyphicon glyphicon-remove"></i> Delete', "class": "btn btn-danger btn-sm", "onclick": "return confirm('Are you sure?')") }}</td>
           </tr>
           {% endfor %}
 
