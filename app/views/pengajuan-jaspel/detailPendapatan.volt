@@ -538,7 +538,7 @@ $(document).ready(function() {
         {% if is_back %}
           {% set jatahDokter = jplFixKlaim*persentaseDokter %}
         {% else %}
-          {% set jatahDokter = nominalJplFix*persentaseDokter %}
+          {% set jatahDokter = nominalJplKotor*persentaseDokter %}
         {% endif %}
         <?php $jatahDokter = number_format((float)$jatahDokter, 2, '.', '') ?>
         <p>Jumlah Diterima: <strong>Rp.</strong> {{ text_field("jatahDokter", "value": jatahDokter, "class": "rupiah", "disabled": "disabled", "style": "width:120px; text-align: center; font-weight: 700;") }}</p>
@@ -647,7 +647,7 @@ $(document).ready(function() {
         {% if is_back %}
           {% set jatahPerawat = jplFixKlaim*persentasePerawat %}
         {% else %}
-          {% set jatahPerawat = nominalJplFix*persentasePerawat %}
+          {% set jatahPerawat = nominalJplKotor*persentasePerawat %}
         {% endif %}
         <?php $jatahPerawat = number_format((float)$jatahPerawat, 2, '.', '') ?>
         {#% set jatahPerawat = jplPendapatan.totalPengajuan*rjp.persentasePelayanan/100*rjp.persentasePerawat/100 %#}
