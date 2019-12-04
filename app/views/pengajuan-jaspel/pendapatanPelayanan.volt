@@ -86,6 +86,53 @@
 
   </div>
   <!-- /.box -->
+
+  
+  <div class="box box-primary">
+    <div class="box-header with-border">
+      <h3 class="box-title">Pendapatan Pegawai</h3>
+    </div>
+    <!-- /.box-header -->
+
+    <div class="box-body">
+      <table class="table table-bordered table-striped" align="center">
+        <thead>
+          <tr>
+            <th>Nama Pegawai</th>
+            <th>Total Pendapatan Pelayanan/Ruangan</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for pp in pendapatanPegawai %}
+          <tr>
+            <td>{{pp.namaPegawai}}</td>
+            <td class="rupiah">
+              
+              {% if pp.kategori == "direct" %}
+                <?php $totalPendapatanPegawaiDirect = number_format((float)$pp->totalPendapatanPegawaiDirect, 2, '.', '') ?>
+                <input type="text" class="rupiah" value="{{totalPendapatanPegawaiDirect}}" disabled="disabled">
+              {% else %}
+                <?php $totalPendapatanPegawai = number_format((float)$pp->totalPendapatanPegawai, 2, '.', '') ?>
+                <input type="text" class="rupiah" value="{{totalPendapatanPegawai}}" disabled="disabled">
+              {% endif %}
+              {#% if pp.posisiStatus == "dokter" %}
+                <?php $totalPendapatanPegawaiDokter = number_format((float)$pp->totalPendapatanPegawaiDokter, 2, '.', '') ?>
+                <input type="text" class="rupiah" value="{{totalPendapatanPegawaiDokter}}" disabled="disabled">
+              {% elseif pp.posisiStatus == "perawat" %}
+                <?php $totalPendapatanPegawaiPerawat = number_format((float)$pp->totalPendapatanPegawaiPerawat, 2, '.', '') ?>
+                <input type="text" class="rupiah" value="{{totalPendapatanPegawaiPerawat}}" disabled="disabled">
+              {% endif %#}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+    </div>
+    <!-- /.box-body -->
+
+  </div>
+  <!-- /.box -->
 </div>
 <!-- /.col-md-12 -->
 
@@ -97,7 +144,7 @@ $(document).ready(function() {
     return n % 1 === 0;
   }
 
-  $('.rupiah').maskMoney({thousand: ',', decimal: '.', precision: 2});
+  $('.rupiah').maskMoney({thousands: ',', decimal: '.', precision: 2});
   $('.rupiah').each(function(){ // function to apply mask on load!
     // $(this).maskMoney('mask', $(this).val());
     let v = $(this).val();

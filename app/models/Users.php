@@ -74,7 +74,8 @@ class Users extends Model
         if (empty($this->password)) {
 
             // Generate a plain temporary password
-            $tempPassword = preg_replace('/[^a-zA-Z0-9]/', '', base64_encode(openssl_random_pseudo_bytes(12)));
+            // $tempPassword = preg_replace('/[^a-zA-Z0-9]/', '', base64_encode(openssl_random_pseudo_bytes(12)));
+            $tempPassword = "cepatdiganti";
 
             // The user must change its password in first login
             $this->mustChangePassword = 'Y';

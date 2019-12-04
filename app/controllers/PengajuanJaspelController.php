@@ -109,6 +109,7 @@ class PengajuanJaspelController extends ControllerBase
 			'idPeriode' => $idPeriode,
 			'statusKomplit' => 0
 		]);
+
 		$query1 = $this->modelsManager->createQuery('
 			SELECT 
 				jr.id id,
@@ -670,6 +671,53 @@ class PengajuanJaspelController extends ControllerBase
 	    ]
 		);
 
+		$queryPendapatanPegawai = $this->modelsManager->createQuery('SELECT
+			rjp.id,
+			rjp.idRuangan,
+			rjp.kategori kategori,
+			p.namaPegawai namaPegawai,
+			p.posisiStatus,
+			jpl_pendapatan.totalPengajuan,
+			jpl_pegawai.nilaiPendapatan,
+			-- (jpl_pendapatan.totalPengajuan * rjp.persentasePelayanan / 100) totalPelayanan,
+			((jpl_pendapatan.totalPengajuan * rjp.persentasePelayanan / 100) * (persentase_jaspel.jasa / 100) * (rjp.persentaseJpl / 100) * (rjp.persentaseDokter / 100)) jatahDokter,
+			((jpl_pendapatan.totalPengajuan * rjp.persentasePelayanan / 100) * (persentase_jaspel.jasa / 100) * (rjp.persentaseJpl / 100) * (rjp.persentasePerawat / 100)) jatahPerawat,
+			(SELECT SUM(jplp2.nilaiPendapatan) 
+			    FROM \Jaspel\Models\JplPegawai jplp2 
+			    JOIN \Jaspel\Models\Pegawai p2 ON p2.idPegawai = jplp2.idPegawai 
+			    WHERE jplp2.idJplPendapatan = jpl_pendapatan.id 
+			    AND p2.posisiStatus = p.posisiStatus
+			    GROUP BY jplp2.idJplPendapatan) totalPendapatan,
+			
+			SUM((jpl_pegawai.nilaiPendapatan / 
+					(SELECT SUM(jplp2.nilaiPendapatan) FROM \Jaspel\Models\JplPegawai jplp2 JOIN \Jaspel\Models\Pegawai p2 ON p2.idPegawai = jplp2.idPegawai WHERE jplp2.idJplPendapatan = jpl_pendapatan.id AND p2.posisiStatus = p.posisiStatus GROUP BY jplp2.idJplPendapatan) * 
+					IF(p.posisiStatus = "dokter", 
+							((jpl_pendapatan.totalPengajuan * rjp.persentasePelayanan / 100) * (persentase_jaspel.jasa / 100) * (rjp.persentaseJpl / 100) * (rjp.persentaseDokter / 100)), 
+							((jpl_pendapatan.totalPengajuan * rjp.persentasePelayanan / 100) * (persentase_jaspel.jasa / 100) * (rjp.persentaseJpl / 100) * (rjp.persentasePerawat / 100))
+							))) totalPendapatanPegawai,
+			
+			SUM((jpl_pegawai.nilaiPendapatan / 
+					(SELECT SUM(jplp2.nilaiPendapatan) FROM \Jaspel\Models\JplPegawai jplp2 JOIN \Jaspel\Models\Pegawai p2 ON p2.idPegawai = jplp2.idPegawai WHERE jplp2.idJplPendapatan = jpl_pendapatan.id GROUP BY jplp2.idJplPendapatan) * 
+					IF(p.posisiStatus = "dokter", 
+							((jpl_pendapatan.totalPengajuan * rjp.persentasePelayanan / 100) * (persentase_jaspel.jasa / 100) * (rjp.persentaseJpl / 100) * (rjp.persentaseDokter / 100)), 
+							((jpl_pendapatan.totalPengajuan * rjp.persentasePelayanan / 100) * (persentase_jaspel.jasa / 100) * (rjp.persentaseJpl / 100) * (rjp.persentasePerawat / 100))
+							))) totalPendapatanPegawaiDirect
+			FROM
+			\Jaspel\Models\JplPendapatan jpl_pendapatan
+			JOIN \Jaspel\Models\JplPegawai jpl_pegawai ON jpl_pegawai.idJplPendapatan = jpl_pendapatan.id
+			JOIN \Jaspel\Models\Pegawai p ON p.idPegawai = jpl_pegawai.idPegawai
+			JOIN \Jaspel\Models\RuanganJenisPelayanan rjp ON rjp.id = jpl_pendapatan.idRuanganJenisPelayanan
+			JOIN \Jaspel\Models\PersentaseJaspel persentase_jaspel ON persentase_jaspel.idPJaspel = 1
+			WHERE rjp.idRuangan = :idRuangan:
+			AND jpl_pendapatan.idPeriode = :idPeriode:
+			GROUP BY jpl_pegawai.idPegawai');
+		$pendapatanPegawai  = $queryPendapatanPegawai->execute(
+	    [
+	      'idRuangan' => $idRuangan,
+	      'idPeriode' => $idPeriode
+	    ]
+		);
+
 		$pengajuanBatal = [];
 		foreach ($ruanganJenisPelayanan as $rjp) {
 			$jplPendapatan = JplPendapatan::find([
@@ -790,7 +838,8 @@ class PengajuanJaspelController extends ControllerBase
 			'idPeriode' => $idPeriode,
 			'pendapatanPelayanan' => $pendapatanPelayanan,
 			'jplRuang' => $jplRuang,
-			'pengajuanBatal' => $pengajuanBatal
+			'pengajuanBatal' => $pengajuanBatal,
+			'pendapatanPegawai' => $pendapatanPegawai
 		]);
 
 		if ($this->request->isPost() && $this->request->isAjax()) {
