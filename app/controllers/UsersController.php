@@ -59,7 +59,7 @@ class UsersController extends ControllerBase
     $this->view->form = new UsersForm();
     $numberPage = 1;
     if ($this->request->isPost()) {
-      $query = Criteria::fromInput($this->di, 'Jaspel\Models\Users', $this->request->getPost());
+      $query = Criteria::fromInput($this->di, '\Jaspel\Models\Users', $this->request->getPost());
       $this->persistent->searchParams = $query->getParams();
     } else {
       $numberPage = $this->request->getQuery("page", "int");
