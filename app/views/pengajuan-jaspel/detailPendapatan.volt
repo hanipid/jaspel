@@ -83,7 +83,7 @@ function thousandSep(val) {
   <div class="col-md-12">
     <div class="box box-primary">
       <div class="box-header with-border">
-        <h3 class="box-title">Pengajuan Detail {{rjp.jenisPelayanan.namaPelayanan}} | April 2018</h3>
+        <h3 class="box-title">Pengajuan Detail {{rjp.jenisPelayanan.namaPelayanan}} | <?= date('F Y'), strtotime($jplRuang->periodeJaspel->startPeriode) ?></h3>
         <div class="box-tools pull-right">
           {% if is_back %}
             <script>
@@ -458,7 +458,7 @@ $(document).ready(function() {
   <div class="col-md-12">
     <div class="box box-primary">
       <div class="box-header with-border">
-        <h3 class="box-title">Pengajuan Detail {{rjp.jenisPelayanan.namaPelayanan}} | April 2018</h3>
+        <h3 class="box-title">Pengajuan Detail {{rjp.jenisPelayanan.namaPelayanan}} | <?= date('F Y', strtotime($jplRuang->periodeJaspel->startPeriode)) ?></h3>
         <div class="box-tools pull-right">
           {% set url = this.request.getHeader('REFERER') %}
           <?php #$is_back = stripos($url, 'editKlaim'); ?>
