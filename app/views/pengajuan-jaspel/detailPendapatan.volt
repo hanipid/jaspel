@@ -83,7 +83,7 @@ function thousandSep(val) {
   <div class="col-md-12">
     <div class="box box-primary">
       <div class="box-header with-border">
-        <h3 class="box-title">Pengajuan Detail {{rjp.jenisPelayanan.namaPelayanan}} | <?= date('F Y'), strtotime($jplRuang->periodeJaspel->startPeriode) ?></h3>
+        <h3 class="box-title">Pengajuan Detail {{rjp.jenisPelayanan.namaPelayanan}} | <?= date('F Y', strtotime($jplRuang->periodeJaspel->startPeriode)) ?></h3>
         <div class="box-tools pull-right">
           {% if is_back %}
             <script>
@@ -149,11 +149,12 @@ function thousandSep(val) {
           <span class="pull-left">Selisih: Rp. {{ text_field("totalIndex", "class": "rupiah", "disabled": "disabled") }}</span>
         {% endif %}
         
-        <div class="table-scrolled">
-          <table class="table table-striped table-hover" id="table">
+        <div class="">
+          <table class="table table-striped table-hover" id="table-direct">
             <thead>
               <tr>
-                <th>No.</th>
+                <!-- <th>No.</th> -->
+                <th>Posisi</th>
                 <th>Nama</th>
                 {% if rjp.metode != "manual" %}
                 <th class="text-center">{{rjp.metode|capitalize}}</th>
@@ -165,7 +166,10 @@ function thousandSep(val) {
             <tbody>
               {% for jp in jplPegawai %}
               <tr>
-                <td>{{loop.index}}</td>
+                <!-- <td>{{loop.index}}</td> -->
+                <td>
+                  {{ jp.pegawai.posisiStatus }}
+                </td>
                 <td>{{ jp.pegawai.gelarDepan }} {{jp.pegawai.namaPegawai}} {{ jp.pegawai.gelarBelakang }}</td>
                 {% if rjp.metode != "manual" %}
                 <td class="text-center">
@@ -202,6 +206,7 @@ function thousandSep(val) {
             <tfoot>
               <tr class="total">
                 <th>Total</th>
+                <!-- <th></th> -->
                 <th></th>
                 {% if rjp.metode != "manual" %}
                 <th id="totalIndexPersentase" class="text-center">{{ totalIndex }}{% if rjp.metode == "persentase" %}%{% endif %}</th>
@@ -225,10 +230,13 @@ function thousandSep(val) {
   </div>
   <!-- /.col-md-12 -->
 </form>
-
+{{ stylesheet_link("vendor/almasaeed2010/adminlte/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css") }}
+{{ javascript_include("vendor/almasaeed2010/adminlte/bower_components/datatables.net/js/jquery.dataTables.min.js") }}
+{{ javascript_include("vendor/almasaeed2010/adminlte/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js") }}
 
 <script>
 $(document).ready(function() {
+  $('#table-direct').DataTable();
 
   function roundTo(n, digits) {
     var negative = false;
