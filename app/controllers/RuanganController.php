@@ -224,21 +224,20 @@ class RuanganController extends ControllerBase
 				}
 			}
 
-			// Jika mengubah nama pelayanan
-			if ($namaPelayanan != $namaPelayananLama) {
-				$lastRuanganJenisPelayanan = RuanganJenisPelayanan::find()->getLast();
-				$this->flashSession->success('yup'. $lastRuanganJenisPelayanan->id);
-				// mengupdate data di jpl_pendapatan dimana status periode_jaspel = 0 
-				$jplPendapatan = JplPendapatan::findByIdRuanganJenisPelayanan($id);
-				foreach ($jplPendapatan as $jplpen) {
-					if ($jplpen->getPeriodeJaspel()->statusPeriode == 0) {
-						$updateJplPendapatan = JplPendapatan::findFirstById($jplpen->id);
-						$updateJplPendapatan->idRuanganJenisPelayanan = $lastRuanganJenisPelayanan->id;
-						$updateJplPendapatan->save();
-					}
-				}
-				
-			}
+			// Jika mengubah nama pelayanan update jpl_pendapatan
+			// if ($namaPelayanan != $namaPelayananLama) {
+			// 	$lastRuanganJenisPelayanan = RuanganJenisPelayanan::find()->getLast();
+			// 	$this->flashSession->success('yup'. $lastRuanganJenisPelayanan->id);
+			// 	// mengupdate data di jpl_pendapatan dimana status periode_jaspel = 0 
+			// 	$jplPendapatan = JplPendapatan::findByIdRuanganJenisPelayanan($id);
+			// 	foreach ($jplPendapatan as $jplpen) {
+			// 		if ($jplpen->getPeriodeJaspel()->statusPeriode == 0) {
+			// 			$updateJplPendapatan = JplPendapatan::findFirstById($jplpen->id);
+			// 			$updateJplPendapatan->idRuanganJenisPelayanan = $lastRuanganJenisPelayanan->id;
+			// 			$updateJplPendapatan->save();
+			// 		}
+			// 	}
+			// }
 
 			$this->response->redirect("ruangan/edit/" . $ruanganJenisPelayanan->idRuangan);
 		}
