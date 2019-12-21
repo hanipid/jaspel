@@ -149,7 +149,7 @@ function thousandSep(val) {
           <span class="pull-left">Selisih: Rp. {{ text_field("totalIndex", "class": "rupiah", "disabled": "disabled") }}</span>
         {% endif %}
         
-        <div class="">
+        <div class="table-wrapper">
           <table class="table table-striped table-hover" id="table-direct">
             <thead>
               <tr>
@@ -168,7 +168,9 @@ function thousandSep(val) {
               <tr>
                 <!-- <td>{{loop.index}}</td> -->
                 <td>
-                  {{ jp.pegawai.posisiStatus }}
+                  {% if jp.pegawai.posisiStatus == 'dokter' %}
+                    {{ jp.pegawai.posisiStatus }}
+                  {% endif %}
                 </td>
                 <td>{{ jp.pegawai.gelarDepan }} {{jp.pegawai.namaPegawai}} {{ jp.pegawai.gelarBelakang }}</td>
                 {% if rjp.metode != "manual" %}
@@ -209,9 +211,9 @@ function thousandSep(val) {
                 <!-- <th></th> -->
                 <th></th>
                 {% if rjp.metode != "manual" %}
-                <th id="totalIndexPersentase" class="text-center">{{ totalIndex }}{% if rjp.metode == "persentase" %}%{% endif %}</th>
+                <th id="totalIndexPersentase" class="text-center totalIndexPersentase" style="color:black;">{{ totalIndex }}{% if rjp.metode == "persentase" %}%{% endif %}</th>
                 {% endif %}
-                <th>Rp. {{ text_field("total", "class": "rupiah", "disabled": "disabled", "style": "width:120px; text-align: center; font-weight: 700;") }}
+                <th>Rp. {{ text_field("total", "class": "rupiah total", "disabled": "disabled", "style": "width:120px; text-align: center; font-weight: 700;") }}
                   <!-- Rp. <span id="total"></span> --></th>
               </tr>
             </tfoot>
@@ -236,7 +238,11 @@ function thousandSep(val) {
 
 <script>
 $(document).ready(function() {
-  $('#table-direct').DataTable();
+  $('#table-direct').DataTable({
+    "scrollY":        "70vh",
+    "scrollCollapse": true,
+    'paging': false
+  });
 
   function roundTo(n, digits) {
     var negative = false;
@@ -313,15 +319,15 @@ $(document).ready(function() {
               $("#totalIndex").text(thousandSep(res.totalIndex))
             } else if (metode == "persentase") {
               $("#totalIndex").text(100 - res.totalIndex)
-              $("#totalIndexPersentase").text(res.totalIndex)
+              $("#totalIndexPersentase, .totalIndexPersentase").text(res.totalIndex)
             } else {
               $("#totalIndex").maskMoney("mask", Number(("{{nominalJplFix}}" - totalNominal()).toFixed(2)) )
             }
-            $("#total").maskMoney('mask', totalNominal())
+            $("#total, .total").maskMoney('mask', totalNominal())
             if ("{{nominalJplFix}}" != totalNominal()) {
-              $("#total").css({background: "#DD4B39", color: "white"})
+              $("#total, .total").css({background: "#DD4B39", color: "white"})
             } else {
-              $("#total").css({background: "#00A65A", color: "white"})
+              $("#total, .total").css({background: "#00A65A", color: "white"})
             }
 
           }
@@ -365,7 +371,7 @@ $(document).ready(function() {
     // console.log((tot).toFixed(2))
     return (Number(roundTo(tot, 2)))
   }
-  $("#total").maskMoney('mask', totalNominal())
+  $("#total, .total").maskMoney('mask', totalNominal())
   if ("{{rjp.metode}}" == "index") {
     $("#totalIndex").text(thousandSep("{{totalIndex}}"));
   } else {
@@ -419,15 +425,15 @@ $(document).ready(function() {
         $("#totalIndex").text(thousandSep(res.totalIndex))
       } else if (metode == "persentase") {
         $("#totalIndex").text(100 - res.totalIndex)
-        $("#totalIndexPersentase").text(res.totalIndex)
+        $("#totalIndexPersentase, .totalIndexPersentase").text(res.totalIndex)
       } else {
         $("#totalIndex").maskMoney("mask", Number(("{{nominalJplFix}}" - totalNominal()).toFixed(2)) )
       }
-      $("#total").maskMoney('mask', totalNominal())
+      $("#total, .total").maskMoney('mask', totalNominal())
       if ("{{nominalJplFix}}" != totalNominal()) {
-        $("#total").css({background: "#DD4B39", color: "white"})
+        $("#total, .total").css({background: "#DD4B39", color: "white"})
       } else {
-        $("#total").css({background: "#00A65A", color: "white"})
+        $("#total, .total").css({background: "#00A65A", color: "white"})
       }
       // $(".nominal" + idJplPegawai).text(Number(value) / response * Number(total))
      }
