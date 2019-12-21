@@ -80,7 +80,13 @@
             <td>{{rjp.persentaseJpu}}</td>
             <td>{{rjp.persentaseJpl}}</td>
             <td width="2%">{{ link_to("ruangan/editPelayanan/" ~ rjp.id, '<i class="glyphicon glyphicon-pencil"></i> Detail', "class": "btn btn-primary btn-sm") }}</td>
-            <td width="2%">{{ link_to("ruangan/deletePelayanan/" ~ rjp.id, '<i class="glyphicon glyphicon-remove"></i> Delete', "class": "btn btn-danger btn-sm", "onclick": "return confirm('Are you sure?')") }}</td>
+            <td width="2%">
+              {% if rjp.statusAktif == 0 %}
+                {{ link_to("ruangan/deletePelayanan/" ~ rjp.id, '<i class="glyphicon glyphicon-check"></i> Aktif', "class": "btn btn-success btn-sm btn-block", "onclick": "return confirm('Are you sure?')") }}
+              {% else %}
+                {{ link_to("ruangan/deletePelayanan/" ~ rjp.id, '<i class="glyphicon glyphicon-remove"></i> Non Aktif', "class": "btn btn-danger btn-sm btn-block", "onclick": "return confirm('Are you sure?')") }}
+              {% endif %}
+            </td>
           </tr>
           {% endfor %}
 

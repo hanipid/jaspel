@@ -236,7 +236,7 @@ function thousandSep(val) {
 
 <script>
 $(document).ready(function() {
-  $('#table-direct').DataTable();
+  var table_direct = $('#table-direct').DataTable();
 
   function roundTo(n, digits) {
     var negative = false;
@@ -379,9 +379,15 @@ $(document).ready(function() {
     $(this).addClass('editMode');
   });
 
+  $('#table-direct tbody').on('click', 'tr', function () {
+      var data = table_direct.row( this ).data();
+      console.log( 'You clicked on '+data[1]+'\'s row' );
+  } );
+
   // Save data
   $(".edit").focusout(function(){
     $(this).removeClass("editMode");
+    // console.log(table_direct.row(this));
     let idJplPegawai = this.dataset.idJplPegawai;
     // let param = "{{rjp.metode}}"
     let total = "{{jplPendapatan.totalPengajuan}}"

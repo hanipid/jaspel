@@ -15,5 +15,9 @@ class JplPendapatan extends \Phalcon\Mvc\Model
     $this->belongsTo('idRuanganJenisPelayanan', __NAMESPACE__ . '\RuanganJenisPelayanan', 'id', [
       'alias' => 'ruanganJenisPelayanan'
     ]);
+
+    $this->belongsTo('idPeriode', __NAMESPACE__ . '\PeriodeJaspel', 'idPeriode', [
+      'alias' => 'PeriodeJaspel'
+    ]);
   }
 }

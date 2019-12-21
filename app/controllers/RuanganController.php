@@ -5,6 +5,7 @@ use Jaspel\Forms\RuanganForm;
 use Jaspel\Models\Ruangan;
 use Jaspel\Models\JenisPelayanan;
 use Jaspel\Models\RuanganJenisPelayanan;
+use Jaspel\Models\JplPendapatan;
 
 /**
  * Controller Setting Ruangan
@@ -161,6 +162,11 @@ class RuanganController extends ControllerBase
 	public function editPelayananAction($id)
 	{
 		$ruanganJenisPelayanan = RuanganJenisPelayanan::findFirstById($id);
+		$persentaseDokter = $ruanganJenisPelayanan->persentaseDokter;
+		$persentasePerawat = $ruanganJenisPelayanan->persentasePerawat;
+		$kategori = $ruanganJenisPelayanan->kategori;
+		$metode = $ruanganJenisPelayanan->metode;
+		$idRuangan = $ruanganJenisPelayanan->idRuangan;
 		$jenPel = JenisPelayanan::find();
 		$arr = [];
 		foreach ($jenPel as $jp) {
@@ -170,34 +176,68 @@ class RuanganController extends ControllerBase
 		$this->view->rjp = $ruanganJenisPelayanan;
 
 		if ($this->request->isPost()) {
+
 			$namaPelayanan = $this->request->getPost('namaPelayanan');
 
-			// apakah ada di tabel jenis pelayanan?
+			// apakah nama ada di tabel jenis pelayanan?
 			$namaJP = JenisPelayanan::findFirstByNamaPelayanan($namaPelayanan);
-			if (isset($namaJP->namaPelayanan)){
-				// jika ada, update idJenisPelayanan
-				$ruanganJenisPelayanan->idJenisPelayanan = (string) $namaJP->id;
-			} else {
-				// jika tidak ada, creat new jenis pelayanan, update idJenisPelayanan dengan yang baru
-				$newJP = new JenisPelayanan();
-				$newJP->namaPelayanan = $namaPelayanan;
-				if (!$newJP->save()) {
-					$this->flashSession->error('Error create newJenisPelayanan.');
+
+			// Jika mengubah nama pelayanan
+			$namaPelayananLama = $ruanganJenisPelayanan->getJenisPelayanan()->namaPelayanan;
+			if ($namaPelayanan != $namaPelayananLama) {
+				// menonaktifkan RJP lama
+				$ruanganJenisPelayanan->statusAktif = 0;
+				$ruanganJenisPelayanan->save();
+
+				// buat RJP baru
+				$ruanganJenisPelayanan = new RuanganJenisPelayanan();
+				$ruanganJenisPelayanan->statusAktif 				= 1;
+				$ruanganJenisPelayanan->persentaseDokter		= $persentaseDokter;
+				$ruanganJenisPelayanan->persentasePerawat		= $persentasePerawat;
+				$ruanganJenisPelayanan->kategori 						= $kategori;
+				$ruanganJenisPelayanan->metode 							= $metode;
+
+				if (isset($namaJP->namaPelayanan)){
+					// jika ada, update idJenisPelayanan
+					$ruanganJenisPelayanan->idJenisPelayanan = (string) $namaJP->id;
+				} else {
+					// jika tidak ada, create new jenis pelayanan, update idJenisPelayanan dengan yang baru
+					$newJP = new JenisPelayanan();
+					$newJP->namaPelayanan = $namaPelayanan;
+					if (!$newJP->save()) {
+						$this->flashSession->error('Error create newJenisPelayanan.');
+					}
+					$selectJP = JenisPelayanan::findFirstByNamaPelayanan($namaPelayanan);
+					$ruanganJenisPelayanan->idJenisPelayanan = (string) $selectJP->id;
 				}
-				$selectJP = JenisPelayanan::findFirstByNamaPelayanan($namaPelayanan);
-				$ruanganJenisPelayanan->idJenisPelayanan = (string) $selectJP->id;
-			}
+				$ruanganJenisPelayanan->idRuangan = $idRuangan;
+			} // E.O. Jika mengubah nama pelayanan
 
 			$ruanganJenisPelayanan->persentaseSarana		= $this->request->getPost('persentaseSarana');
 			$ruanganJenisPelayanan->persentasePelayanan	= $this->request->getPost('persentasePelayanan');
 			$ruanganJenisPelayanan->persentaseJpu 			= $this->request->getPost('persentaseJpu');
 			$ruanganJenisPelayanan->persentaseJpl 			= $this->request->getPost('persentaseJpl');
-			$ruanganJenisPelayanan->persentasePerawat		= $this->request->getPost('persentasePerawat');
 
 			if (!$ruanganJenisPelayanan->save()) {
 				foreach ($ruanganJenisPelayanan->getMessages() as $m) {
 					$this->flashSession->error('Error create jenisPelayanan. ' . $m);
 				}
+			}
+
+			// Jika mengubah nama pelayanan
+			if ($namaPelayanan != $namaPelayananLama) {
+				$lastRuanganJenisPelayanan = RuanganJenisPelayanan::find()->getLast();
+				$this->flashSession->success('yup'. $lastRuanganJenisPelayanan->id);
+				// mengupdate data di jpl_pendapatan dimana status periode_jaspel = 0 
+				$jplPendapatan = JplPendapatan::findByIdRuanganJenisPelayanan($id);
+				foreach ($jplPendapatan as $jplpen) {
+					if ($jplpen->getPeriodeJaspel()->statusPeriode == 0) {
+						$updateJplPendapatan = JplPendapatan::findFirstById($jplpen->id);
+						$updateJplPendapatan->idRuanganJenisPelayanan = $lastRuanganJenisPelayanan->id;
+						$updateJplPendapatan->save();
+					}
+				}
+				
 			}
 
 			$this->response->redirect("ruangan/edit/" . $ruanganJenisPelayanan->idRuangan);
@@ -207,11 +247,19 @@ class RuanganController extends ControllerBase
 	public function deletePelayananAction($id)
 	{
 		$ruanganJenisPelayanan = RuanganJenisPelayanan::findFirstById($id);
-		if (!$ruanganJenisPelayanan->delete()) {
-			foreach ($ruanganJenisPelayanan->getMessages() as $m) {
-				$this->flashSession->error('Error delete ruanganJenisPelayanan. ' . $m);
-			}
+
+		if ($ruanganJenisPelayanan->statusAktif == 0) {
+			$ruanganJenisPelayanan->statusAktif = 1;
+		} else {
+			$ruanganJenisPelayanan->statusAktif = 0;
 		}
+		
+		$ruanganJenisPelayanan->save();
+		// if (!$ruanganJenisPelayanan->delete()) {
+		// 	foreach ($ruanganJenisPelayanan->getMessages() as $m) {
+		// 		$this->flashSession->error('Error delete ruanganJenisPelayanan. ' . $m);
+		// 	}
+		// }
 
 		// $rJenisPelayanan = RuanganJenisPelayanan::findByIdJenisPelayanan($ruanganJenisPelayanan->idJenisPelayanan);
 		// if (!$rJenisPelayanan) {
