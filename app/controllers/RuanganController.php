@@ -84,7 +84,13 @@ class RuanganController extends ControllerBase
 
 		$this->view->form = new RuanganForm($ruangan, ['edit' => true]);
 		$this->view->ruangan = $ruangan;
-		$this->view->ruanganJenisPelayanan = RuanganJenisPelayanan::findByIdRuangan($id);
+		$this->view->ruanganJenisPelayanan = RuanganJenisPelayanan::find([
+			"idRuangan = ?1 AND statusAktif = ?2",
+			"bind" => [
+				"1" => $id,
+				"2" => 1
+			]
+		]);
 	}
 
 	public function deleteAction($idRuangan)
