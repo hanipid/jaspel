@@ -38,8 +38,8 @@
           {% for jp in jenisPelayanan %}
           <tr>
             <td>{{jp.jenisPelayanan.namaPelayanan}}</td>
-            <td>{{jp.persentaseDokter}}%</td>
-            <td>{{jp.persentasePerawat}}%</td>
+            <td>{{jp.persentaseDokter + 0}}%</td>
+            <td>{{jp.persentasePerawat + 0}}%</td>
             <td>{{persentaseJaspel.admin}}%</td>
             <td>{{jp.metode}}</td>
             <td width="2%">

@@ -24,7 +24,7 @@
             <div class="form-group col-md-3">
               <label for="dokter">Dokter</label>
               <div class="input-group">
-                {{ text_field("dokter", "class": "form-control", "value": rjp.persentaseDokter) }}
+                {{ text_field("dokter", "class": "form-control", "value": (rjp.persentaseDokter + 0)) }}
                 <span class="input-group-addon">%</span>
               </div>
             </div>
@@ -34,7 +34,7 @@
             <div class="form-group col-md-3">
               <label for="perawat">Perawat</label>
               <div class="input-group">
-                {{ text_field("perawat", "class": "form-control", "value": rjp.persentasePerawat) }}
+                {{ text_field("perawat", "class": "form-control", "value": (rjp.persentasePerawat + 0)) }}
                 <span class="input-group-addon">%</span>
               </div>
             </div>
