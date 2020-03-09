@@ -87,6 +87,40 @@
   </div>
   <!-- /.box -->
 
+  <!-- <section>
+    <div class="print-header text-center">
+      <p>DATA PASIEN BPJS KLINIK PENYAKIT INFEKSI</p>
+      <p>BULAN SEPTEMBER 2019 - JANUARI 2020</p>
+    </div>
+
+    <div class="print-table">
+      <table>
+        <thead>
+          <tr>
+            <th>NO.</th>
+            <th>URAIAN</th>
+            <th>KARCIS</th>
+            <th>TINDAKAN</th>
+            <th>KONSULTASI</th>
+            <th>JUMLAH</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td></td>
+          </tr>
+        </tbody>
+
+        <tfoot>
+          <tr>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </section> -->
+
   
   <div class="box box-primary">
     <div class="box-header with-border">

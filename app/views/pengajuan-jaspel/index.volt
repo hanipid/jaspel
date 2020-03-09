@@ -28,7 +28,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for pj in periodeJaspel %}
+          {% for pj in periodeJaspel if pj.statusPeriode >= 0 %}
           <tr>
             <td>{{pj.startPeriode}} - {{pj.endPeriode}}</td>
             <td>
