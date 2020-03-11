@@ -22,6 +22,7 @@
       <table id="dataTable" class="table table-hover table-striped">
         <thead>
           <tr>
+            <th>#</th>
             <th>Periode</th>
             <th></th>
             <th></th>
@@ -30,7 +31,8 @@
         <tbody>
           {% for pj in periodeJaspel if pj.statusPeriode >= 0 %}
           <tr>
-            <td>{{pj.startPeriode}} - {{pj.endPeriode}}</td>
+            <td>{{loop.index}}</td>
+            <td><?= date('d M Y',strtotime($pj->startPeriode))?> - <?= date('d M Y',strtotime($pj->endPeriode))?></td>
             <td>
               <h4><span class="label label-info">{{pj.jenisJaspel.namaJaspel}}</span> 
               {% if pj.statusPeriode == 0 %}
@@ -84,7 +86,7 @@
 <script>
 $(document).ready(function() {
     $('#dataTable').dataTable( {
-        "order": [[ 1, "desc" ]]
+        "order": []
     } );
 } );
 </script>
