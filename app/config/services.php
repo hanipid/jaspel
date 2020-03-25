@@ -62,8 +62,8 @@ $di->set('view', function () {
             ]);
 
             // // add native php function
-            // $compiler = $volt->getCompiler();
-            // $compiler->addFunction('bcadd', 'bcadd');
+            $compiler = $volt->getCompiler();
+            $compiler->addFunction('strtotime', 'strtotime');
 
             return $volt;
         }

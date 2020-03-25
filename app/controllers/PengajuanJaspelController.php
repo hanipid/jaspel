@@ -671,51 +671,90 @@ class PengajuanJaspelController extends ControllerBase
 	    ]
 		);
 
-		$queryPendapatanPegawai = $this->modelsManager->createQuery('SELECT
-			rjp.id,
-			rjp.idRuangan,
-			rjp.kategori kategori,
-			p.namaPegawai namaPegawai,
-			p.posisiStatus,
-			jpl_pendapatan.totalPengajuan,
-			jpl_pegawai.nilaiPendapatan,
-			-- (jpl_pendapatan.totalPengajuan * rjp.persentasePelayanan / 100) totalPelayanan,
-			((jpl_pendapatan.totalPengajuan * rjp.persentasePelayanan / 100) * (persentase_jaspel.jasa / 100) * (rjp.persentaseJpl / 100) * (rjp.persentaseDokter / 100)) jatahDokter,
-			((jpl_pendapatan.totalPengajuan * rjp.persentasePelayanan / 100) * (persentase_jaspel.jasa / 100) * (rjp.persentaseJpl / 100) * (rjp.persentasePerawat / 100)) jatahPerawat,
-			(SELECT SUM(jplp2.nilaiPendapatan) 
-			    FROM \Jaspel\Models\JplPegawai jplp2 
-			    JOIN \Jaspel\Models\Pegawai p2 ON p2.idPegawai = jplp2.idPegawai 
-			    WHERE jplp2.idJplPendapatan = jpl_pendapatan.id 
-			    AND p2.posisiStatus = p.posisiStatus
-			    GROUP BY jplp2.idJplPendapatan) totalPendapatan,
+		// $queryPendapatanPegawai = $this->modelsManager->createQuery('SELECT
+		// 	rjp.id,
+		// 	rjp.idRuangan,
+		// 	rjp.kategori kategori,
+		// 	p.namaPegawai namaPegawai,
+		// 	p.posisiStatus,
+		// 	jpl_pendapatan.totalPengajuan,
+		// 	jpl_pegawai.nilaiPendapatan,
+		// 	-- (jpl_pendapatan.totalPengajuan * rjp.persentasePelayanan / 100) totalPelayanan,
+		// 	((jpl_pendapatan.totalPengajuan * rjp.persentasePelayanan / 100) * (persentase_jaspel.jasa / 100) * (rjp.persentaseJpl / 100) * (rjp.persentaseDokter / 100)) jatahDokter,
+		// 	((jpl_pendapatan.totalPengajuan * rjp.persentasePelayanan / 100) * (persentase_jaspel.jasa / 100) * (rjp.persentaseJpl / 100) * (rjp.persentasePerawat / 100)) jatahPerawat,
+		// 	(SELECT SUM(jplp2.nilaiPendapatan) 
+		// 	    FROM \Jaspel\Models\JplPegawai jplp2 
+		// 	    JOIN \Jaspel\Models\Pegawai p2 ON p2.idPegawai = jplp2.idPegawai 
+		// 	    WHERE jplp2.idJplPendapatan = jpl_pendapatan.id 
+		// 	    AND p2.posisiStatus = p.posisiStatus
+		// 	    GROUP BY jplp2.idJplPendapatan) totalPendapatan,
 			
-			SUM((jpl_pegawai.nilaiPendapatan / 
-					(SELECT SUM(jplp2.nilaiPendapatan) FROM \Jaspel\Models\JplPegawai jplp2 JOIN \Jaspel\Models\Pegawai p2 ON p2.idPegawai = jplp2.idPegawai WHERE jplp2.idJplPendapatan = jpl_pendapatan.id AND p2.posisiStatus = p.posisiStatus GROUP BY jplp2.idJplPendapatan) * 
-					IF(p.posisiStatus = "dokter", 
-							((jpl_pendapatan.totalPengajuan * rjp.persentasePelayanan / 100) * (persentase_jaspel.jasa / 100) * (rjp.persentaseJpl / 100) * (rjp.persentaseDokter / 100)), 
-							((jpl_pendapatan.totalPengajuan * rjp.persentasePelayanan / 100) * (persentase_jaspel.jasa / 100) * (rjp.persentaseJpl / 100) * (rjp.persentasePerawat / 100))
-							))) totalPendapatanPegawai,
+		// 	SUM((jpl_pegawai.nilaiPendapatan / 
+		// 			(SELECT SUM(jplp2.nilaiPendapatan) FROM \Jaspel\Models\JplPegawai jplp2 JOIN \Jaspel\Models\Pegawai p2 ON p2.idPegawai = jplp2.idPegawai WHERE jplp2.idJplPendapatan = jpl_pendapatan.id AND p2.posisiStatus = p.posisiStatus GROUP BY jplp2.idJplPendapatan) * 
+		// 			IF(p.posisiStatus = "dokter", 
+		// 					((jpl_pendapatan.totalPengajuan * rjp.persentasePelayanan / 100) * (persentase_jaspel.jasa / 100) * (rjp.persentaseJpl / 100) * (rjp.persentaseDokter / 100)), 
+		// 					((jpl_pendapatan.totalPengajuan * rjp.persentasePelayanan / 100) * (persentase_jaspel.jasa / 100) * (rjp.persentaseJpl / 100) * (rjp.persentasePerawat / 100))
+		// 					))) totalPendapatanPegawai,
 			
-			SUM((jpl_pegawai.nilaiPendapatan / 
-					(SELECT SUM(jplp2.nilaiPendapatan) FROM \Jaspel\Models\JplPegawai jplp2 JOIN \Jaspel\Models\Pegawai p2 ON p2.idPegawai = jplp2.idPegawai WHERE jplp2.idJplPendapatan = jpl_pendapatan.id GROUP BY jplp2.idJplPendapatan) * 
-					IF(p.posisiStatus = "dokter", 
-							((jpl_pendapatan.totalPengajuan * rjp.persentasePelayanan / 100) * (persentase_jaspel.jasa / 100) * (rjp.persentaseJpl / 100) * (rjp.persentaseDokter / 100)), 
-							((jpl_pendapatan.totalPengajuan * rjp.persentasePelayanan / 100) * (persentase_jaspel.jasa / 100) * (rjp.persentaseJpl / 100) * (rjp.persentasePerawat / 100))
-							))) totalPendapatanPegawaiDirect
+		// 	SUM((jpl_pegawai.nilaiPendapatan / 
+		// 			(SELECT SUM(jplp2.nilaiPendapatan) FROM \Jaspel\Models\JplPegawai jplp2 JOIN \Jaspel\Models\Pegawai p2 ON p2.idPegawai = jplp2.idPegawai WHERE jplp2.idJplPendapatan = jpl_pendapatan.id GROUP BY jplp2.idJplPendapatan) * 
+		// 			IF(p.posisiStatus = "dokter", 
+		// 					((jpl_pendapatan.totalPengajuan * rjp.persentasePelayanan / 100) * (persentase_jaspel.jasa / 100) * (rjp.persentaseJpl / 100) * (rjp.persentaseDokter / 100)), 
+		// 					((jpl_pendapatan.totalPengajuan * rjp.persentasePelayanan / 100) * (persentase_jaspel.jasa / 100) * (rjp.persentaseJpl / 100) * (rjp.persentasePerawat / 100))
+		// 					))) totalPendapatanPegawaiDirect
+		// 	FROM
+		// 	\Jaspel\Models\JplPendapatan jpl_pendapatan
+		// 	JOIN \Jaspel\Models\JplPegawai jpl_pegawai ON jpl_pegawai.idJplPendapatan = jpl_pendapatan.id
+		// 	JOIN \Jaspel\Models\Pegawai p ON p.idPegawai = jpl_pegawai.idPegawai
+		// 	JOIN \Jaspel\Models\RuanganJenisPelayanan rjp ON rjp.id = jpl_pendapatan.idRuanganJenisPelayanan
+		// 	JOIN \Jaspel\Models\PersentaseJaspel persentase_jaspel ON persentase_jaspel.idPJaspel = 1
+		// 	WHERE rjp.idRuangan = :idRuangan:
+		// 	AND jpl_pendapatan.idPeriode = :idPeriode:
+		// 	GROUP BY jpl_pegawai.idPegawai');
+		// $pendapatanPegawai  = $queryPendapatanPegawai->execute(
+	    // [
+	    //   'idRuangan' => $idRuangan,
+	    //   'idPeriode' => $idPeriode
+	    // ]
+		// );
+		$pendapatanPegawai = Pegawai::find(); // buat percobaan biar loading gak lemot
+
+		$queryCetakPendapatanPelayanan = $this->modelsManager->createQuery('SELECT 
+			jp.idPeriode idPeriode,
+			pj.startPeriode startPeriode,
+			jp.id idJplPendapatan,
+			rjp.id idRjp,
+			namaPelayanan, 
+			persentaseSarana, persentasePelayanan,
+			persentaseDokter, persentasePerawat,
+			totalPengajuan,
+			jp.status statusJplPendapatan
 			FROM
-			\Jaspel\Models\JplPendapatan jpl_pendapatan
-			JOIN \Jaspel\Models\JplPegawai jpl_pegawai ON jpl_pegawai.idJplPendapatan = jpl_pendapatan.id
-			JOIN \Jaspel\Models\Pegawai p ON p.idPegawai = jpl_pegawai.idPegawai
-			JOIN \Jaspel\Models\RuanganJenisPelayanan rjp ON rjp.id = jpl_pendapatan.idRuanganJenisPelayanan
-			JOIN \Jaspel\Models\PersentaseJaspel persentase_jaspel ON persentase_jaspel.idPJaspel = 1
-			WHERE rjp.idRuangan = :idRuangan:
-			AND jpl_pendapatan.idPeriode = :idPeriode:
-			GROUP BY jpl_pegawai.idPegawai');
-		$pendapatanPegawai  = $queryPendapatanPegawai->execute(
-	    [
-	      'idRuangan' => $idRuangan,
-	      'idPeriode' => $idPeriode
-	    ]
+			\Jaspel\Models\RuanganJenisPelayanan rjp
+			INNER JOIN
+			\Jaspel\Models\JenisPelayanan jPel
+			ON 
+			rjp.idJenisPelayanan = jPel.id
+			JOIN
+			\Jaspel\Models\JplPendapatan jp
+			ON
+			jp.idRuanganJenisPelayanan=rjp.id
+			JOIN
+			\Jaspel\Models\PeriodeJaspel pj
+			ON
+			pj.idPeriode = jp.idPeriode
+			WHERE
+			idRuangan = :idRuangan:
+			AND
+			(jp.idPeriode BETWEEN 2 AND :idPeriode:)
+			AND
+			pj.statusPeriode >= 0');
+
+		$cetakPendapatanPelayanan  = $queryCetakPendapatanPelayanan->execute(
+		[
+		  'idRuangan' => $idRuangan,
+		  'idPeriode' => $idPeriode
+		]
 		);
 
 		$pengajuanBatal = [];
@@ -830,6 +869,11 @@ class PengajuanJaspelController extends ControllerBase
 
 				
 		} // e.o. ruanganJenisPelayanan
+
+		$periode = PeriodeJaspel::find([
+			'statusPeriode = ?1 AND idPeriode <= ?2',
+			'bind' => ['1' => 1, '2' => $idPeriode]
+		]);
 		
 		$this->view->setVars([
 			'ruanganJenisPelayanan' 	=> $ruanganJenisPelayanan,
@@ -839,7 +883,9 @@ class PengajuanJaspelController extends ControllerBase
 			'pendapatanPelayanan' => $pendapatanPelayanan,
 			'jplRuang' => $jplRuang,
 			'pengajuanBatal' => $pengajuanBatal,
-			'pendapatanPegawai' => $pendapatanPegawai
+			'pendapatanPegawai' => $pendapatanPegawai,
+			'cetakPendapatanPelayanan' => $cetakPendapatanPelayanan,
+			'periodeJaspel' => $periode
 		]);
 
 		if ($this->request->isPost() && $this->request->isAjax()) {
@@ -1122,6 +1168,68 @@ class PengajuanJaspelController extends ControllerBase
 			'totalIndexDokter' => $totalIndexDokter,
 			'totalIndexPerawat' => $totalIndexPerawat,
 			'jplRuang' => $jplRuang
+		]);
+	}
+
+	function cetakPendapatanPelayananAction()
+	{
+		if (!$this->request->isPost())
+			$this->response->redirect('dashboard');
+		$idPeriode1 = $this->request->getPost('idPeriode1');
+		$idPeriode2 = $this->request->getPost('idPeriode2');
+		$idRuangan = $this->request->getPost('idRuangan');
+		
+		$queryCetakPendapatanPelayanan = $this->modelsManager->createQuery('SELECT 
+			jp.idPeriode idPeriode,
+			pj.startPeriode startPeriode,
+			jj.namaJaspel,
+			r.namaRuang,
+			jp.id idJplPendapatan,
+			rjp.id idRjp,
+			namaPelayanan, 
+			persentaseSarana, persentasePelayanan,
+			persentaseDokter, persentasePerawat,
+			totalPengajuan,
+			jp.status statusJplPendapatan
+			FROM
+			\Jaspel\Models\RuanganJenisPelayanan rjp
+			INNER JOIN
+			\Jaspel\Models\JenisPelayanan jPel
+			ON 
+			rjp.idJenisPelayanan = jPel.id
+			JOIN
+			\Jaspel\Models\JplPendapatan jp
+			ON
+			jp.idRuanganJenisPelayanan=rjp.id
+			JOIN
+			\Jaspel\Models\PeriodeJaspel pj
+			ON
+			pj.idPeriode = jp.idPeriode
+			JOIN
+			\Jaspel\Models\JenisJaspel jj
+			ON
+			jj.idJaspel = pj.idJaspel
+			JOIN
+			\Jaspel\Models\Ruangan r
+			ON
+			r.id = rjp.idRuangan
+			WHERE
+			idRuangan = :idRuangan:
+			AND
+			(jp.idPeriode BETWEEN :idPeriode1: AND :idPeriode2:)
+			AND
+			pj.statusPeriode >= 0');
+
+		$cetakPendapatanPelayanan  = $queryCetakPendapatanPelayanan->execute(
+			[
+			'idRuangan' => $idRuangan,
+			'idPeriode1' => $idPeriode1,
+			'idPeriode2' => $idPeriode2
+			]
+		);
+		$this->view->setVars([
+			'cetakPendapatanPelayanan' => $cetakPendapatanPelayanan,
+			'idPeriode1' => $idPeriode1
 		]);
 	}
 }

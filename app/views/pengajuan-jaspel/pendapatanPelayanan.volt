@@ -84,32 +84,85 @@
     </div>
     <!-- /.box-body -->
 
+    <div class="box-footer">
+      <form class="pull-right form-inline" action="{{url('pengajuan-jaspel/cetakPendapatanPelayanan/')}}" method="post">
+        <input type="hidden" name="idRuangan" value="{{namaRuangan.id}}">
+        <input type="hidden" name="idPeriode2" value="{{idPeriode}}">
+        <div class="form-group">
+          <select name="idPeriode1" class="form-control">
+            {% for periode in periodeJaspel %}
+
+              <option value="{{periode.idPeriode}}">{{date('F Y', strtotime(periode.startPeriode))}}</option>
+
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <button type="submit" name"submit" class="btn btn-info">cetak</button>
+        </div>
+      </form>
+    </div>
+
   </div>
   <!-- /.box -->
 
-  <!-- <section>
+  {# <section>
     <div class="print-header text-center">
       <p>DATA PASIEN BPJS KLINIK PENYAKIT INFEKSI</p>
       <p>BULAN SEPTEMBER 2019 - JANUARI 2020</p>
     </div>
 
     <div class="print-table">
-      <table>
+      <table class="table table-sm">
         <thead>
-          <tr>
-            <th>NO.</th>
-            <th>URAIAN</th>
-            <th>KARCIS</th>
-            <th>TINDAKAN</th>
-            <th>KONSULTASI</th>
-            <th>JUMLAH</th>
-          </tr>
+          {% set oldId = 2 %}
+            {% set i = 1 %}
+            {% for cppCol in cetakPendapatanPelayanan %}
+              {% if loop.first %}
+                <tr>
+                  <th>NO.</th>
+                  <th>URAIAN</th>
+              {% endif %}
+              {% if oldId == cppCol.idPeriode %}
+                  <th> {{cppCol.namaPelayanan|upper}}</th>
+              {% endif %}
+              {% if loop.last %}
+                  <th>JUMLAH</th>
+                </tr>
+              {% endif %}
+            {% endfor %}
         </thead>
 
         <tbody>
-          <tr>
-            <td></td>
-          </tr>
+            {% set oldId = 2 %}
+            {% set i = 1 %}
+            {% set total = 0 %}
+            {% for cppCol in cetakPendapatanPelayanan %}
+              {% if loop.first %}
+                <tr>
+                  <td>{{i}}</td>
+                  <td><?= date('F Y', strtotime($cppCol->startPeriode)) ?></td>
+              {% endif %}
+              {% if oldId == cppCol.idPeriode %}
+                  <td><input type="text" class="rupiah" value="{{cppCol.totalPengajuan}}" style="border:0; background:none;"></td>
+                  {% set total += cppCol.totalPengajuan %}
+              {% else %}
+                {% set oldId = cppCol.idPeriode %}
+                {% set i += 1 %}
+                  <td><input type="text" class="rupiah" value="{{total}}" style="border:0; background:none;"></td>
+                  {% set total = 0 %}
+                </tr>
+                <tr>
+                  <td>{{i}}</td>
+                  <td><?= date('F Y', strtotime($cppCol->startPeriode)) ?></td>
+                  <td> <input type="text" class="rupiah" value="{{cppCol.totalPengajuan}}" style="border:0; background:none;"> </td>
+                  {% set total += cppCol.totalPengajuan %}
+              {% endif %}
+              {% if loop.last %}
+                  <td><input type="text" class="rupiah" value="{{total}}" style="border:0; background:none;"></td>
+                </tr>
+              {% endif %}
+            {% endfor %}
         </tbody>
 
         <tfoot>
@@ -119,7 +172,7 @@
         </tfoot>
       </table>
     </div>
-  </section> -->
+  </section> #}
 
   
   <div class="box box-primary">

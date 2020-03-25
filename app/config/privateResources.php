@@ -142,7 +142,8 @@ return new Config([
       'detailPendapatan',
       'showDireksi',
       'showJpl',
-      'showJpu'
+      'showJpu',
+      'cetakPendapatanPelayanan'
     ],
     
     'pegawai-ruangan' => [
