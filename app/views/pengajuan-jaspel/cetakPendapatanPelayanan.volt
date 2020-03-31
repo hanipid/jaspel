@@ -13,7 +13,9 @@ table.table-bordered > tbody > tr > td{
 .print {
   max-width:90% !important;
 }
+@page { size: auto;  margin: 0mm; }
 </style>
+<title></title>
 {{ content() }}
 <div id="printable">
   <div class="print-header text-center">
@@ -90,7 +92,7 @@ table.table-bordered > tbody > tr > td{
       </tfoot> #}
     </table>
     <div class="row">
-      <div class="col-md-4 col-md-offset-8 text-center">
+      <div class="col-md-4 text-center" style="margin-left:65%;">
         <p>Blitar, {{ date('j F Y') }}</p>
         <p>Penanggung Jawab KPI</p>
         <p style="margin-top:80px;">.............................</p>
@@ -126,6 +128,7 @@ function printDiv(divName) {
   var printContents = document.getElementById(divName).innerHTML;
   var originalContents = document.body.innerHTML;
 
+  document.title = "-";
   document.body.innerHTML = printContents;
   callMaskMoney()
 
