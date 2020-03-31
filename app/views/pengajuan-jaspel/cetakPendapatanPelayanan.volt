@@ -89,11 +89,20 @@ table.table-bordered > tbody > tr > td{
         </tr>
       </tfoot> #}
     </table>
+    <div class="row">
+      <div class="col-md-4 col-md-offset-8 text-center">
+        <p>Blitar, {{ date('j F Y') }}</p>
+        <p>Penanggung Jawab KPI</p>
+        <p style="margin-top:80px;">.............................</p>
+      </div>
+    </div>
   </div>
 </div>
 
+<div class="row">
   <button onclick="goBack()" class="btn btn-warning">Kembali</button>
   <input type="button" onclick="printDiv('printable')" value="Cetak!" class="btn btn-info" />
+</div>
 
 
 
