@@ -1218,7 +1218,7 @@ class PengajuanJaspelController extends ControllerBase
 			AND
 			(jp.idPeriode BETWEEN :idPeriode1: AND :idPeriode2:)
 			AND
-			pj.statusPeriode >= 0');
+			pj.statusPeriode > 0');
 
 		$cetakPendapatanPelayanan  = $queryCetakPendapatanPelayanan->execute(
 			[

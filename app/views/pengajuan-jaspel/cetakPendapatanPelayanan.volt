@@ -20,8 +20,10 @@ table.table-bordered > tbody > tr > td{
 <div id="printable">
   <div class="print-header text-center">
       {% set cppLast = cetakPendapatanPelayanan|length %}
+      {% set date1 = date('F Y',strtotime(cetakPendapatanPelayanan[0].startPeriode))|upper %}
+      {% set date2 = date('F Y',strtotime(cetakPendapatanPelayanan[cppLast-1].startPeriode))|upper %}
     <p><strong>DATA PASIEN {{cetakPendapatanPelayanan[0].namaJaspel|upper}} KLINIK {{cetakPendapatanPelayanan[0].namaRuang|upper}}</strong></p>
-    <p><strong>BULAN {{date('F Y',strtotime(cetakPendapatanPelayanan[0].startPeriode))|upper}} - {{date('F Y',strtotime(cetakPendapatanPelayanan[cppLast-1].startPeriode))|upper}}</strong></p>
+    <p><strong>BULAN {{ date1 }} {% if date1 != date2 %} - {{ date2 }} {% endif %}</strong></p>
   </div>
 
   <div class="print-table">
@@ -102,8 +104,10 @@ table.table-bordered > tbody > tr > td{
 </div>
 
 <div class="row">
-  <button onclick="goBack()" class="btn btn-warning">Kembali</button>
-  <input type="button" onclick="printDiv('printable')" value="Cetak!" class="btn btn-info" />
+  <div class="col-md-12">
+    <button onclick="goBack()" class="btn btn-warning">Kembali</button>
+    <input type="button" onclick="printDiv('printable')" value="Cetak!" class="btn btn-info" />
+  </div>
 </div>
 
 
