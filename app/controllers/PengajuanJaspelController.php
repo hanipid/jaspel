@@ -871,8 +871,12 @@ class PengajuanJaspelController extends ControllerBase
 		} // e.o. ruanganJenisPelayanan
 
 		$periode = PeriodeJaspel::find([
-			'statusPeriode = ?1 AND idPeriode <= ?2',
-			'bind' => ['1' => 1, '2' => $idPeriode]
+			'statusPeriode >= ?1 AND idPeriode BETWEEN ?2 AND ?3',
+			'bind' => [
+				'1' => 0,
+				'2' => 1,
+				'3' => $idPeriode
+			]
 		]);
 		
 		$this->view->setVars([
@@ -1218,7 +1222,7 @@ class PengajuanJaspelController extends ControllerBase
 			AND
 			(jp.idPeriode BETWEEN :idPeriode1: AND :idPeriode2:)
 			AND
-			pj.statusPeriode > 0');
+			pj.statusPeriode >= 0');
 
 		$cetakPendapatanPelayanan  = $queryCetakPendapatanPelayanan->execute(
 			[
