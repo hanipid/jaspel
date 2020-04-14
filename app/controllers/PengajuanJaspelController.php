@@ -37,6 +37,22 @@ class PengajuanJaspelController extends ControllerBase
 	public function indexAction()
 	{
 		// $this->view->form = new PengajuanJaspelForm();
+		$idPeriodeHapus = $this->request->getPost('hapus');
+		if ($this->request->isPost() && $idPeriodeHapus > 0) 
+		{
+			// $this->view->disable();
+			// echo $idPeriodeHapus;
+			$periodeJaspel = PeriodeJaspel::findFirstByIdPeriode($idPeriodeHapus);
+			$periodeJaspel->statusPeriode = -1;
+			if (!$periodeJaspel->save()) {
+				foreach ($periodeJaspel->getMessages() as $m) {
+					$this->flashSession->error('Gagal menghapus periode jaspel.');
+				}
+			} else {
+				$this->flashSession->success('Berhasil menghapus periode jaspel.');
+			}
+		}
+
 		$this->view->periodeJaspel = PeriodeJaspel::find([
 			'order' => 'startPeriode DESC'
 		]);

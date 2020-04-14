@@ -42,12 +42,21 @@
               {% endif %}
               </h4>
             </td>
-            <td width="2%">
+            <td width="22%">
               
-              {% if auth.getIdentity()["profile"] == "Pelayanan" %}
-                {{ link_to("pengajuan-jaspel/pendapatanPelayanan/" ~ pj.idPeriode, '<i class="glyphicon glyphicon-pencil"></i> Detail', "class": "btn btn-info") }}
-              {% else %}
-                {{ link_to("pengajuan-jaspel/edit/" ~ pj.idPeriode, '<i class="glyphicon glyphicon-pencil"></i> Detail', "class": "btn btn-primary") }}
+              
+              {% if auth.getIdentity()["profile"] == "Super User" OR auth.getIdentity()["profile"] == "Tim Jaspel" %}
+                <form class="form-inline" method="post" action="{{url('pengajuan-jaspel')}}">
+                  <div class="form-group">
+                    {% if auth.getIdentity()["profile"] == "Pelayanan" %}
+                      {{ link_to("pengajuan-jaspel/pendapatanPelayanan/" ~ pj.idPeriode, '<i class="glyphicon glyphicon-pencil"></i> Detail', "class": "btn btn-info") }}
+                    {% else %}
+                      {{ link_to("pengajuan-jaspel/edit/" ~ pj.idPeriode, '<i class="glyphicon glyphicon-pencil"></i> Detail', "class": "btn btn-primary") }}
+                    {% endif %}
+                    <input type="hidden" value="{{pj.idPeriode}}" name="hapus">
+                    <button onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')" type="submit" class="btn btn-danger"><i class='glyphicon glyphicon-trash'></i></button>
+                  </div>
+                </form>
               {% endif %}
             </td>
           </tr>
