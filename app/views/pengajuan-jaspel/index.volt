@@ -45,7 +45,7 @@
             <td width="22%">
               
               
-              {% if auth.getIdentity()["profile"] == "Super User" OR auth.getIdentity()["profile"] == "Tim Jaspel" %}
+              
                 <form class="form-inline" method="post" action="{{url('pengajuan-jaspel')}}">
                   <div class="form-group">
                     {% if auth.getIdentity()["profile"] == "Pelayanan" %}
@@ -53,11 +53,13 @@
                     {% else %}
                       {{ link_to("pengajuan-jaspel/edit/" ~ pj.idPeriode, '<i class="glyphicon glyphicon-pencil"></i> Detail', "class": "btn btn-primary") }}
                     {% endif %}
-                    <input type="hidden" value="{{pj.idPeriode}}" name="hapus">
-                    <button onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')" type="submit" class="btn btn-danger"><i class='glyphicon glyphicon-trash'></i></button>
+                    {% if auth.getIdentity()["profile"] == "Super User" OR auth.getIdentity()["profile"] == "Tim Jaspel" %}
+                      <input type="hidden" value="{{pj.idPeriode}}" name="hapus">
+                      <button onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')" type="submit" class="btn btn-danger"><i class='glyphicon glyphicon-trash'></i></button>
+                    {% endif %}
                   </div>
                 </form>
-              {% endif %}
+              
             </td>
           </tr>
           {% endfor %}
