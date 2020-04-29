@@ -195,7 +195,7 @@
             <td>{{pp.namaPegawai}}</td>
             <td class="rupiah">
               
-              {% if pp.kategori == "direct" %}
+              {#% if pp.kategori == "direct" %}
                 <?php $totalPendapatanPegawaiDirect = number_format((float)$pp->totalPendapatanPegawaiDirect, 2, '.', '') ?>
                 <input type="text" class="rupiah" value="{{totalPendapatanPegawaiDirect}}" disabled="disabled">
               {% else %}

@@ -733,7 +733,19 @@ class PengajuanJaspelController extends ControllerBase
 	    //   'idPeriode' => $idPeriode
 	    // ]
 		// );
-		$pendapatanPegawai = Pegawai::find(); // buat percobaan biar loading gak lemot
+		$pendapatanPegawai = $this->modelsManager->createQuery('SELECT 
+			p.namaPegawai
+			FROM \Jaspel\Models\JplPegawai jplPeg
+			JOIN \Jaspel\Models\JplPendapatan jplPen ON jplPen.id = jplPeg.idJplPendapatan
+			JOIN \Jaspel\Models\Pegawai p ON p.idPegawai = jplPeg.idPegawai
+			JOIN \Jaspel\Models\RuanganJenisPelayanan rjp ON rjp.id = jplPen.idRuanganJenisPelayanan
+			WHERE rjp.idRuangan = :idRuangan: AND jplPen.idPeriode = :idPeriode:
+			GROUP BY p.idPegawai')->execute([
+				'idRuangan' => $idRuangan,
+				'idPeriode' => $idPeriode
+			]); // buat percobaan biar loading gak lemot
+
+			
 
 		$queryCetakPendapatanPelayanan = $this->modelsManager->createQuery('SELECT 
 			jp.idPeriode idPeriode,
