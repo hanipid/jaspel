@@ -744,7 +744,7 @@ class PengajuanJaspelController extends ControllerBase
 		// 	'idRuangan' => $idRuangan,
 		// 	'idPeriode' => $idPeriode
 		// ]); // buat percobaan biar loading gak lemot
-		$pendapatanPegawai = $this->modelsManager->createQuery('SELECT *, namaPegawai, posisiStatus, sum(dokterPelayanan) totalDokter, sum(perawatPelayanan) totalPerawat
+		$pendapatanPegawai = $this->modelsManager->createQuery('SELECT *, namaPegawai, posisiStatus, kategori, metode, sum(dokterPelayanan) totalDokter, sum(perawatPelayanan) totalPerawat, sum(pegawaiPelayanan) totalPegawai
 		FROM \Jaspel\Models\VPendapatanPegawaiRuangan
 		WHERE idRuangan = :idRuangan: AND idPeriode = :idPeriode:
 		group by idPegawai')->execute([

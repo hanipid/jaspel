@@ -202,13 +202,19 @@
                 <?php $totalPendapatanPegawai = number_format((float)$pp->totalPendapatanPegawai, 2, '.', '') ?>
                 <input type="text" class="rupiah" value="{{totalPendapatanPegawai}}" disabled="disabled">
               {% endif %#}
-              {% if pp.posisiStatus == "dokter" %}
-                <?php $totalPendapatanPegawaiDokter = number_format((float)$pp->totalDokter, 2, '.', '') ?>
-                <input type="text" class="rupiah" value="{{totalPendapatanPegawaiDokter}}" disabled="disabled">
-              {% elseif pp.posisiStatus == "bukandokter" %}
-                <?php $totalPendapatanPegawaiPerawat = number_format((float)$pp->totalPerawat, 2, '.', '') ?>
-                <input type="text" class="rupiah" value="{{totalPendapatanPegawaiPerawat}}" disabled="disabled">
+              {% if pp.kategori == 'split' %}
+                {% if pp.posisiStatus == "dokter" %}
+                  <?php $totalPendapatanPegawaiDokter = number_format((float)$pp->totalDokter, 2, '.', '') ?>
+                  <input type="text" class="rupiah" value="{{totalPendapatanPegawaiDokter}}" disabled="disabled">
+                {% elseif pp.posisiStatus == "bukandokter" %}
+                  <?php $totalPendapatanPegawaiPerawat = number_format((float)$pp->totalPerawat, 2, '.', '') ?>
+                  <input type="text" class="rupiah" value="{{totalPendapatanPegawaiPerawat}}" disabled="disabled">
+                {% endif %}
+              {% else %}
+                <?php $totalPendapatanPegawai = number_format((float)$pp->totalPegawai, 2, '.', '') ?>
+                <input type="text" class="rupiah" value="{{totalPendapatanPegawai}}" disabled="disabled">
               {% endif %}
+              
             </td>
           </tr>
           {% endfor %}
