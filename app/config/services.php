@@ -64,6 +64,7 @@ $di->set('view', function () {
             // // add native php function
             $compiler = $volt->getCompiler();
             $compiler->addFunction('strtotime', 'strtotime');
+            $compiler->addFunction('in_array', 'in_array');
 
             return $volt;
         }

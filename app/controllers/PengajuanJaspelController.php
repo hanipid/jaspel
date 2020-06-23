@@ -661,6 +661,7 @@ class PengajuanJaspelController extends ControllerBase
 		$query = $this->modelsManager->createQuery('SELECT 
 			jp.id idJplPendapatan,
 			rjp.id idRjp,
+			rjp.idJenisPelayanan idJenisPelayanan,
 			namaPelayanan, 
 			persentaseSarana, persentasePelayanan,
 			persentaseDokter, persentasePerawat,
@@ -744,12 +745,36 @@ class PengajuanJaspelController extends ControllerBase
 		// 	'idRuangan' => $idRuangan,
 		// 	'idPeriode' => $idPeriode
 		// ]); // buat percobaan biar loading gak lemot
-		$pendapatanPegawai = $this->modelsManager->createQuery('SELECT *, namaPegawai, posisiStatus, kategori, metode, sum(dokterPelayanan) totalDokter, sum(perawatPelayanan) totalPerawat, sum(pegawaiPelayanan) totalPegawai
+
+		//-- namaPegawai, posisiStatus, kategori, metode, sum(dokterPelayanan) totalDokter, sum(perawatPelayanan) totalPerawat, sum(pegawaiPelayanan) totalPegawai
+		//-- group by idPegawai
+		$pendapatanPegawai = $this->modelsManager->createQuery('SELECT *
 		FROM \Jaspel\Models\VPendapatanPegawaiRuangan
 		WHERE idRuangan = :idRuangan: AND idPeriode = :idPeriode:
-		group by idPegawai')->execute([
+		ORDER BY idPegawai, idJenisPelayanan
+		')->execute([
 				'idRuangan' => $idRuangan,
 				'idPeriode' => $idPeriode
+			]);
+
+		// $maxIdJenisPelayanan = $this->modelsManager->createQuery('SELECT max(idJenisPelayanan) idJenisPelayanan
+		// FROM \Jaspel\Models\VPendapatanPegawaiRuangan
+		// WHERE idRuangan = :idRuangan: AND idPeriode = :idPeriode:
+		// ORDER BY idPegawai
+		// LIMIT 10
+		// ')->execute([
+		// 		'idRuangan' => $idRuangan,
+		// 		'idPeriode' => $idPeriode
+		// 	])->first();
+
+			$maxIdJenisPelayanan = \Jaspel\Models\VPendapatanPegawaiRuangan::maximum([
+				'column' => 'idJenisPelayanan',
+				'idRuangan = :1: AND idPeriode = :2:',
+				'bind' => [
+					'1' => $idRuangan,
+					'2' => $idPeriode
+				],
+				'sort' => 'idJenisPelayanan DESC'
 			]);
 
 			
@@ -849,18 +874,18 @@ class PengajuanJaspelController extends ControllerBase
 				// $totalJplPegawai / $totalIndex * $nominalJplFix
 				if ($rjp->kategori == 'direct' && $rjp->metode == 'index') {
 					if ($totalJplPegawai <= 0 & $totalPengajuan > 0) {
-						array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
+						array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->id);
 					}
 				} elseif ($rjp->kategori == 'direct' && $rjp->metode == 'persentase') {
 
 					// jika total nominal pegawai TIDAK DIISI dan totalPengajuan pendapatan DIISI, PENGAJUAN BATAL
 					if ($totalJplPegawai == 0 && $nominalJplFix > 0) {
-						array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
+						array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->id);
 					} elseif ($totalJplPegawai > 0) {
 
 						// jika total nominal pegawai TIDAK SAMA dengan totalPengajuan pendpatana, PENGAJUAN BATAL
 						if (($totalJplPegawai / 100 * $nominalJplFix) != $nominalJplFix) {
-							array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
+							array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->id);
 						}
 					}
 					
@@ -868,35 +893,35 @@ class PengajuanJaspelController extends ControllerBase
 
 					// jika total nominal pegawai TIDAK SAMA dengan totalPengajuan pendpatana, PENGAJUAN BATAL
 					if ($totalJplPegawai != $nominalJplFix) {
-						array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
+						array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->id);
 					}
 
 				} elseif ($rjp->kategori == 'split' && $rjp->metode == 'persentase') {
 
 					// jika total nominal pegawai TIDAK DIISI dan totalPengajuan pendapatan DIISI, PENGAJUAN BATAL
 					if (($totalJplPegawaiDokter == 0 && $nominalDokter > 0) || ($totalJplPegawaiPerawat == 0 && $nominalPerawat > 0) ) {
-						array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
+						array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->id);
 					} elseif ($totalJplPegawaiDokter > 0 && $totalJplPegawaiPerawat > 0) {
 
 						// jika total nominal pegawai TIDAK SAMA dengan totalPengajuan pendpatana, PENGAJUAN BATAL
 						if ($totalJplPegawaiDokter / 100 * $nominalDokter != $nominalDokter || $totalJplPegawaiPerawat / 100 * $nominalPerawat != $nominalPerawat) {
-							array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
+							array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->id);
 						}
 					}
 						
 					
 				} elseif ($rjp->kategori == 'split' && $rjp->metode == 'manual') {
 					if ($totalJplPegawaiDokter != $nominalJplFix * $persentaseDokter || $totalJplPegawaiPerawat != $nominalJplFix * $persentasePerawat) {
-						array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
+						array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->id);
 					}
 				} elseif ($rjp->kategori == 'split' && $rjp->metode == 'index') {
 					if (($totalJplPegawaiDokter <= 0) && $totalPengajuan > 0) {
-						array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
+						array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->id);
 					} elseif ($totalJplPegawaiPerawat <= 0 && $totalPengajuan > 0) {
-						array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
+						array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->id);
 					}
 				} else {
-					array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->namaPelayanan);
+					array_push($pengajuanBatal, $jp->ruanganJenisPelayanan->jenisPelayanan->id);
 				}
 				
 			} // e.o. jplPendapatan
@@ -924,7 +949,8 @@ class PengajuanJaspelController extends ControllerBase
 			'pengajuanBatal' => $pengajuanBatal,
 			'pendapatanPegawai' => $pendapatanPegawai,
 			'cetakPendapatanPelayanan' => $cetakPendapatanPelayanan,
-			'periodeJaspel' => $periode
+			'periodeJaspel' => $periode,
+			'maxIdJenisPelayanan' => $maxIdJenisPelayanan
 		]);
 
 		if ($this->request->isPost() && $this->request->isAjax()) {
