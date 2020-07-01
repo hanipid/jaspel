@@ -242,7 +242,7 @@ class PengajuanJaspelController extends ControllerBase
 				}
 			} else {
 				$namaPTambahan = $this->request->getPost('namaPTambahan');
-				$nominal = $this->request->getPost('nominal');
+				$nominal = $this->request->getPost('nominal', 'float');
 				$pendapatanTambahanLength = count($namaPTambahan);
 
 				for ($i=0; $i < $pendapatanTambahanLength; $i++) {

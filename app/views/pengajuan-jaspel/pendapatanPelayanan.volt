@@ -287,7 +287,7 @@
 
                 {% if pp.idJenisPelayanan == maxIdJenisPelayanan %}
                 <tr>
-                  <td>{{pp.namaPegawai}}</td>
+                  <td>{{pp.gelarDepan}} {{pp.namaPegawai}} {{pp.gelarBelakang}}</td>
                   <td>
                     <input type="text" class="rupiah" value="{{uangPegawai}}" disabled="disabled">
                     {# {{ uangPegawai }} #}

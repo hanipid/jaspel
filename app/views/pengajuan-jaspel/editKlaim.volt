@@ -236,9 +236,10 @@
 						<div class="tree-diagram">
 						  <ul>
 								<li>
+								<?php $pendapatanKonversi = number_format((float)$vKlaimJaspel->pendapatanKonversi, 2, '.', ''); ?>
 									<button class="btn btn-default btn-lg" data-toggle="collapse" data-target=".child-tree-diagram" aria-expanded="false" aria-controls="child-tree-diagram">
 										<h4>Total Pendapatan Konversi</h4>
-			    					{{ text_field("totalKlaim", "class": "rupiah input-no-style", "value": vKlaimJaspel.pendapatanKonversi, "style": "font-size: 32px; max-width: 100%; text-align:center;", "disabled": "disabled") }}
+			    					{{ text_field("totalKlaim", "class": "rupiah input-no-style", "value": pendapatanKonversi, "style": "font-size: 32px; max-width: 100%; text-align:center;", "disabled": "disabled") }}
 									</button>
 									<ul class="child-tree-diagram collapse">
 										<li>
