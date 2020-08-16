@@ -52,9 +52,9 @@
         				<th>Jabatan</th>
         				<th>{{periodeJaspel.jenisJaspel.namaJaspel}}</th>
         				<th>%</th>
-        				<th>Pajak</th>
+        				<!-- <th>Pajak</th>
         				<th>%</th>
-        				<th>Jumlah Diterima</th>
+        				<th>Jumlah Diterima</th> -->
         			</tr>
         		</thead>
 
@@ -80,9 +80,9 @@
 					          <td></td>
 					          <td></td>
 					          <td></td>
+					          <!-- <td></td>
 					          <td></td>
-					          <td></td>
-					          <td></td>
+					          <td></td> -->
 					        </tr>
 							    {% set t2 = t1 %}
 							  {% endif %}
@@ -91,16 +91,16 @@
 	        				<td>{{ d.jabatan.namaJabatan }}</td>
 	        				<td>
 										<?php $direksi = number_format((float)$d->pendapatanDireksi, 2, '.', '') ?>
-	        					{{direksi}}
+	        					<input type="text" name="jpuPegawai" class="rupiah input-no-style" value="{{direksi}}" disabled="disabled">
 	        				</td>
 	        				<td>({{d.nilaiPersentase}}%)</td>
-	        				<td>
+	        				{#<td>
 	        					{% set pajak = direksi * d.golongan.pajak / 100 %}
 										<?php $pajak = number_format((float)$pajak, 2, '.', '') ?>
 	        					{{pajak}} 
 	        				</td>
 	        				<td>({{d.golongan.pajak}}%)</td>
-	        				<td>{{direksi - pajak}}</td>
+	        				<td>{{direksi - pajak}}</td>#}
 	        				{% set diterima = direksi - pajak %}
 									<?php $diterima = number_format((float)$diterima, 2, '.', '') ?>
 	        			</tr>

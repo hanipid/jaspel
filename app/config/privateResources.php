@@ -143,6 +143,7 @@ return new Config([
       'showDireksi',
       'showJpl',
       'showJpu',
+      'showJasa',
       'cetakPendapatanPelayanan'
     ],
     

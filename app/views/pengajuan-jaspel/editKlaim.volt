@@ -326,7 +326,7 @@
 	    		</div>
 
 	    		<div class="col-md-6">
-	    			<button class="btn btn-lg btn-block btn-warning">JASA</button>
+	    			<a href="{{url('pengajuan-jaspel/showJasa/'~idKlaim)}}" class="btn btn-lg btn-block btn-warning">JASA</a>
 	    			<p class="text-center">
 	    				<?php $totJasa = number_format((float)$vKlaimJaspel->totJasa, 2, '.', '') ?>
 						  Rp. <input type="text" name="totJasa" class="rupiah input-no-style" value="{{totJasa}}" disabled="disabled">

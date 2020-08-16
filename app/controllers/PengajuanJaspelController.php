@@ -21,6 +21,7 @@ use Jaspel\Models\VKlaimJaspel;
 use Jaspel\Models\VJplKlaim;
 use Jaspel\Models\VJplFix;
 use Jaspel\Models\VJpuKlaim;
+use Jaspel\Models\VJasa;
 use Jaspel\Tanggal\Tanggal;
 
 /**
@@ -628,6 +629,19 @@ class PengajuanJaspelController extends ControllerBase
 			"vKlaimJaspel" => $vKlaimJaspel,
 			"vJpuKlaim" => $vJpuKlaim,
 			"periodeJaspel" => $periodeJaspel,
+			'tanggal' => $tanggal
+		]);
+	}
+
+	public function showJasaAction($idKlaim)
+	{
+		$tanggal = new Tanggal();
+		$vJasa = VJasa::findByIdKlaim($idKlaim);
+		$periodeJaspel = PeriodeJaspel::findFirstByIdPeriode($vJasa[0]->idPeriode);
+		$this->view->setVars([
+			'idKlaim' => $idKlaim,
+			"vJasa" => $vJasa,
+			'periodeJaspel'=> $periodeJaspel,
 			'tanggal' => $tanggal
 		]);
 	}

@@ -157,37 +157,37 @@ class SetpegDataPegawaiController extends ControllerBase
 
 			$data = $this->request->getPost();
 			if ($this->request->hasFiles(true) == true) {
-	      foreach ($this->request->getUploadedFiles() as $file) {
+				foreach ($this->request->getUploadedFiles() as $file) {
 
-	      	if ($file->getExtension() == 'png' || $file->getExtension() == 'PNG' ||
-	      			$file->getExtension() == 'jpg' || $file->getExtension() == 'JPG' || 
-	      			$file->getExtension() == 'jpeg' || $file->getExtension() == 'JPEG' || 
-	      			$file->getExtension() == 'gif' || $file->getExtension() == 'GIF') {
+					if ($file->getExtension() == 'png' || $file->getExtension() == 'PNG' ||
+							$file->getExtension() == 'jpg' || $file->getExtension() == 'JPG' || 
+							$file->getExtension() == 'jpeg' || $file->getExtension() == 'JPEG' || 
+							$file->getExtension() == 'gif' || $file->getExtension() == 'GIF') {
 
-	      		// $upload_dir = __DIR__ . '/../../public/uploads/photos/';
-	      		$foto = substr($data['namaPegawai'], 0, 6) . $random->base64Safe(8) . '.' . $file->getExtension();
-	      		if (!is_dir($this->upload_dir)) {
-			        mkdir($this->upload_dir, 0755);
-			      }
-			      unlink($this->upload_dir . $getPegawai->foto);
-	        	if($file->moveTo($this->upload_dir . $foto)){
-	        		$this->flashSession->success($foto.' has been successfully uploaded.');
-        		} else {
-        			$this->flashSession->error($foto.' could not be uploaded.');
-        		}
-	        	Pegawai::updateData($idPegawai, $data, $foto);
+						// $upload_dir = __DIR__ . '/../../public/uploads/photos/';
+						$foto = substr($data['namaPegawai'], 0, 6) . $random->base64Safe(8) . '.' . $file->getExtension();
+						if (!is_dir($this->upload_dir)) {
+							mkdir($this->upload_dir, 0755);
+						}
+						unlink($this->upload_dir . $getPegawai->foto);
+						if($file->moveTo($this->upload_dir . $foto)){
+							$this->flashSession->success($foto.' has been successfully uploaded.');
+						} else {
+							$this->flashSession->error($foto.' could not be uploaded.');
+						}
+						Pegawai::updateData($idPegawai, $data, $foto);
 
-	      	} 
-	      }
-	      if (!$file->getName()) {
-	      	// var_dump();
-	      	die();
-	      	Pegawai::updateData($idPegawai, $data, $getPegawai->foto);
-	      }
-	    } else {
-				Pegawai::updateData($idPegawai, $data, $getPegawai->foto);
-	    }
-	    $this->response->redirect('setpeg-data-pegawai/edit/' . $idPegawai);
+					}
+				}
+				if (!$file->getName()) {
+					var_dump($data);
+					// die();
+					Pegawai::updateData($idPegawai, $data, $getPegawai->foto);
+				}
+			} else {
+					Pegawai::updateData($idPegawai, $data, $getPegawai->foto);
+			}
+			$this->response->redirect('setpeg-data-pegawai/edit/' . $idPegawai);
 
 		}
 
