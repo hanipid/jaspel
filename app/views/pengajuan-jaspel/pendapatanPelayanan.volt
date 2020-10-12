@@ -265,7 +265,11 @@
                     <?php $totalPendapatanPegawai = number_format((float)$pp->perawatPelayanan, 2, '.', '') ?>
                   {% endif %}
                 {% else %}
-                  <?php $totalPendapatanPegawai = number_format((float)$pp->pegawaiPelayanan, 2, '.', '') ?>
+                  {% if pp.metode == 'index' %}
+                    <?php $totalPendapatanPegawai = number_format((float)$pp->pegawaiPelayanan/100, 2, '.', '') ?>
+                  {% else %}
+                    <?php $totalPendapatanPegawai = number_format((float)$pp->pegawaiPelayanan, 2, '.', '') ?>
+                  {% endif %}
                 {% endif %}
                 
                 {# {% if (idPegawai > 0 AND idPegawai != pp.idPegawai) %}
@@ -278,6 +282,7 @@
                 </tr>
                 {% endif %} #}
 
+                {# menjumlah pendapatan masing-masing pegawai #}
                 {% if idPegawai == pp.idPegawai %}
                   {% set uangPegawai += totalPendapatanPegawai %}
                 {% else  %}

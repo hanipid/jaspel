@@ -41,6 +41,7 @@
 		    <div class="box-body">
 		    	<h3 class="text-center">PENDAPATAN {{periodeJaspel.jenisJaspel.namaJaspel|uppercase}} RSUD MARDI WALUYO KOTA BLITAR</h3>
 		    	<h3 class="text-center" style="text-transform: uppercase;">{{tanggal.indo(periodeJaspel.startPeriode)['bulan']}} TAHUN {{tanggal.indo(periodeJaspel.startPeriode)['tahun']}}</h3>
+		    	{#{sumJpu[0].sumJpu}#}
 		    	<table class="table" id="tabel-jpu">
 		    		<thead>
 		    			<tr>
@@ -60,8 +61,8 @@
 			    				<td>{{jpu.namaGolongan}}</td>
 			    				<td>{{jpu.indexPegawai}}</td>
 			    				<td>
-	    							<?php $jpuPegawai = number_format((float)$jpu->jpuPegawai, 2, '.', '') ?>
-			    					Rp. <input type="text" name="jpuPegawai" class="rupiah input-no-style" value="{{jpuPegawai}}" disabled="disabled">
+	    							<?php $jpuPegawai = number_format(($jpu->indexPegawai/$jpu->totalIndex*$sumJpu[0]->sumJpu), 2, '.', '') ?>
+			    					Rp. <input type="text" name="jpuPegawai" class="rupiah input-no-style" value="{{jpuPegawai}}" disabled="disabled"> 
 			    				</td>
 			    			</tr>
 			    			{% set totalIndexPegawai += jpu.indexPegawai %}

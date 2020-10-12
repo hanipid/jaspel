@@ -623,13 +623,17 @@ class PengajuanJaspelController extends ControllerBase
 		$vKlaimJaspel = VKlaimJaspel::findFirstByIdKlaim($idKlaim);
 		$vJpuKlaim = VJpuKlaim::findByIdKlaim($idKlaim);
 		$periodeJaspel = PeriodeJaspel::findFirstByIdPeriode($vKlaimJaspel->idPeriode);
+		$sumJpu = $this->modelsManager->createQuery('
+			SELECT *, sum(jpu) sumJpu
+			FROM \Jaspel\Models\VJasa')->execute();
 
 		$this->view->setVars([
 			'idKlaim' => $idKlaim,
 			"vKlaimJaspel" => $vKlaimJaspel,
 			"vJpuKlaim" => $vJpuKlaim,
 			"periodeJaspel" => $periodeJaspel,
-			'tanggal' => $tanggal
+			'tanggal' => $tanggal,
+			'sumJpu' => $sumJpu
 		]);
 	}
 
